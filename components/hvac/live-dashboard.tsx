@@ -890,8 +890,8 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
                 {zone.label}
               </span>
             </div>
-            <div className="flex items-end justify-between gap-3">
-              <div className="flex items-baseline gap-2">
+            <div className="flex items-end justify-between flex-wrap gap-x-3 gap-y-1 overflow-hidden">
+              <div className="flex items-baseline gap-2 min-w-0 shrink-0">
                 <span className="text-5xl font-black tabular-nums text-foreground leading-none">{ph.toFixed(2)}</span>
                 <span className={`text-xl font-black leading-none ${
                   phTrendChar === "↑" ? "text-rose-500" :
@@ -900,7 +900,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
                 }`}>{phTrendChar}</span>
               </div>
               {dPh !== null && (
-                <div className="flex flex-col items-end gap-0.5 pb-0.5">
+                <div className="flex flex-col items-end gap-0.5 pb-0.5 shrink-0">
                   <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/40">Δ od ref.</span>
                   <span className={`text-lg font-black tabular-nums leading-none ${
                     dPh > 0.05 ? "text-rose-500" :
@@ -929,8 +929,8 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
               {rs.flowTrend === "raste" ? "Raste" : rs.flowTrend === "pada" ? "Pada" : "Stabilan"}
             </span>
           </div>
-          <div className="flex items-end justify-between gap-3">
-            <div className="flex items-baseline gap-1.5">
+          <div className="flex items-end justify-between flex-wrap gap-x-3 gap-y-1 overflow-hidden">
+            <div className="flex items-baseline gap-1.5 min-w-0 shrink-0">
               {currFlow != null ? (
                 <>
                   <span className="text-4xl font-black tabular-nums text-foreground leading-none">{currFlow.toFixed(1)}</span>
@@ -941,7 +941,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
               )}
             </div>
             {deltaFlowAbs !== null && (
-              <div className="flex flex-col items-end gap-0.5 pb-0.5">
+              <div className="flex flex-col items-end gap-0.5 pb-0.5 shrink-0">
                 <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/40">Δ od ref.</span>
                 <span className={`text-lg font-black tabular-nums leading-none ${
                   deltaFlowAbs > 0.1 ? "text-emerald-500" :
@@ -984,8 +984,8 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
                 <span className="text-[10px] text-muted-foreground/50">ref. {refTOut.toFixed(1)} °C</span>
               ) : null}
             </div>
-            <div className="flex items-end justify-between gap-3">
-              <div className="flex items-baseline gap-1.5">
+            <div className="flex items-end justify-between flex-wrap gap-x-3 gap-y-1 overflow-hidden">
+              <div className="flex items-baseline gap-1.5 min-w-0 shrink-0">
                 {tOut !== null ? (
                   <>
                     <span className="text-4xl font-black tabular-nums text-foreground leading-none">{tOut.toFixed(1)}</span>

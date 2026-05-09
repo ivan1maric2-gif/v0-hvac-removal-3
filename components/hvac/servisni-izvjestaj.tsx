@@ -158,7 +158,7 @@ function MjerenjaTable({ mjerenja }: { mjerenja: Mjerenje[] }) {
   );
 }
 
-// ─── Top-up table ─────────────────────────────────────────────────────────────
+// ─── Top-up table ───────────────────────────────────────────────���─────────────
 
 function NadopuneTable({ nadopune }: { nadopune: NadopunaKemikalije[] }) {
   if (nadopune.length === 0) return <p className="text-xs text-muted-foreground italic">Nema nadopuna.</p>;
@@ -206,12 +206,12 @@ function CiklusBlok({ ciklus, idx }: { ciklus: Ciklus; idx: number }) {
 
   return (
     <div className="border border-border rounded-2xl overflow-hidden">
-      <div className="flex items-center justify-between gap-2 px-4 py-3 bg-muted/30 border-b border-border">
-        <h4 className="text-sm font-black text-foreground">
+      <div className="flex items-center justify-between gap-2 px-4 py-3 bg-muted/30 border-b border-border overflow-hidden">
+        <h4 className="text-sm font-black text-foreground min-w-0 truncate">
           Ciklus #{ciklus.cycleNumber ?? ciklus.broj ?? idx + 1}
           {ciklus.name ? ` — ${ciklus.name}` : ""}
         </h4>
-        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
+        <span className={`shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full ${
           ciklus.status === "zavrsen" ? "bg-emerald-500/10 text-emerald-800 dark:text-emerald-200" :
           ciklus.status === "prekinut" ? "bg-rose-500/10 text-rose-800 dark:text-rose-200" :
           "bg-amber-400/10 text-amber-800 dark:text-amber-200"
@@ -221,20 +221,20 @@ function CiklusBlok({ ciklus, idx }: { ciklus: Ciklus; idx: number }) {
       </div>
 
       <div className="px-4 py-3 flex flex-col gap-3">
-      <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-muted-foreground">
-        <span>Proizvod: <strong className="text-foreground">{ciklus.chemicalProductName ?? ciklus.kemikalija ?? "—"}</strong></span>
-        <span>Vol. otopine: <strong className="text-foreground">{fNum(ciklus.totalSolutionVolumeL ?? ciklus.waterVolumeL)} L</strong></span>
-        <span>Kemikalija: <strong className="text-foreground">{ciklus.chemicalAmount} {ciklus.chemicalUnit}</strong></span>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
+        <span className="min-w-0 break-words">Proizvod: <strong className="text-foreground">{ciklus.chemicalProductName ?? ciklus.kemikalija ?? "—"}</strong></span>
+        <span className="min-w-0">Vol. otopine: <strong className="text-foreground tabular-nums">{fNum(ciklus.totalSolutionVolumeL ?? ciklus.waterVolumeL)} L</strong></span>
+        <span className="min-w-0">Kemikalija: <strong className="text-foreground tabular-nums">{ciklus.chemicalAmount} {ciklus.chemicalUnit}</strong></span>
         {ciklus.chemicalPercent != null && (
-          <span>Postotak: <strong className="text-foreground">{ciklus.chemicalPercent.toFixed(2)} %</strong></span>
+          <span className="min-w-0">Postotak: <strong className="text-foreground tabular-nums">{ciklus.chemicalPercent.toFixed(2)} %</strong></span>
         )}
-        <span>Mjerenja: <strong className="text-foreground">{ciklus.mjerenja.length}</strong></span>
-        <span>Nadopune: <strong className="text-foreground">{ciklus.nadopune.length}</strong></span>
+        <span className="min-w-0">Mjerenja: <strong className="text-foreground tabular-nums">{ciklus.mjerenja.length}</strong></span>
+        <span className="min-w-0">Nadopune: <strong className="text-foreground tabular-nums">{ciklus.nadopune.length}</strong></span>
         {lastDecision && (
-          <span className="col-span-2">Odluka: <strong className="text-foreground">{lastDecision.decisionLabel}</strong></span>
+          <span className="col-span-2 min-w-0 break-words">Odluka: <strong className="text-foreground">{lastDecision.decisionLabel}</strong></span>
         )}
         {eff.cleaningEffectivenessStatus && (
-          <span className="col-span-2">Zaključak: <strong className="text-foreground">
+          <span className="col-span-2 min-w-0 break-words">Zaključak: <strong className="text-foreground">
             {eff.cleaningEffectivenessStatus === "Vrlo dobar učinak" ? "Uspješno očišćeno — preporučuje se ispiranje i završetak servisa."
              : eff.cleaningEffectivenessStatus === "Dobar učinak" ? "Dobro čišćenje — protočnost poboljšana."
              : eff.cleaningEffectivenessStatus === "Umjeren učinak" ? "Umjereno čišćenje — razmotrite kontrolni servis."
@@ -320,9 +320,9 @@ function MeasurementStatsGrid({ stats }: { stats: FinalReport["measurement_stats
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
       {rows.map(([label, value]) => (
-        <div key={label} className="border border-border rounded-xl px-3 py-2 flex flex-col gap-0.5">
-          <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
-          <p className="text-sm font-bold font-mono text-foreground">{value}</p>
+        <div key={label} className="border border-border rounded-xl px-3 py-2 flex flex-col gap-0.5 overflow-hidden min-w-0">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground truncate">{label}</p>
+          <p className="text-sm font-bold font-mono tabular-nums text-foreground break-all">{value}</p>
         </div>
       ))}
     </div>
