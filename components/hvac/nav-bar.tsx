@@ -94,7 +94,7 @@ function ThemeToggle() {
       type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label={isDark ? "Prebaci na svjetlu temu" : "Prebaci na tamnu temu"}
-      className="w-9 h-9 flex items-center justify-center rounded-xl transition-all active:scale-95 text-muted-foreground bg-muted hover:text-foreground"
+      className="w-10 h-10 flex items-center justify-center rounded-xl transition-all active:scale-95 text-muted-foreground bg-muted hover:text-foreground"
     >
       {isDark ? (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -138,7 +138,7 @@ function MicButton() {
       type="button"
       onClick={handleClick}
       aria-label="Glasovni unos"
-      className={`relative w-9 h-9 flex items-center justify-center rounded-xl transition-all active:scale-95 ${
+      className={`relative w-10 h-10 flex items-center justify-center rounded-xl transition-all active:scale-95 ${
         active
           ? "text-white bg-red-500 shadow-sm shadow-red-500/40"
           : "text-muted-foreground bg-muted hover:text-foreground"
@@ -175,7 +175,7 @@ export function NavBar() {
 
         {/* LEFT: brand name on pocetni / back+forward na ostalim ekranima */}
         {isPocetni ? (
-          <span className="text-sm font-bold text-foreground tracking-tight shrink-0">
+          <span className="text-sm font-black text-foreground tracking-tight shrink-0">
             HVAC Descaling
           </span>
         ) : (
@@ -220,7 +220,7 @@ export function NavBar() {
             <button
               onClick={idi_na_pocetni}
               aria-label="Pocetna"
-              className="flex items-center justify-center w-9 h-9 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 transition-all shadow-sm"
+              className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 transition-all shadow-sm"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                 <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z" />

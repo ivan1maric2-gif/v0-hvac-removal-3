@@ -204,13 +204,13 @@ export function DodavanjeKemije({
         </div>
 
         {/* Koncentracija - pomoćni kalkulator */}
-        <div className="mb-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+        <div className="mb-6 p-4 bg-primary/8 border border-primary/20 rounded-xl">
           <div className="flex items-center gap-2 mb-3">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-500">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary">
               <circle cx="12" cy="12" r="10" />
               <path d="M12 16v-4M12 8h.01" />
             </svg>
-            <span className="text-sm font-semibold text-blue-700 dark:text-blue-300">
+            <span className="text-sm font-semibold text-primary">
               Pomoć: Izračun količine kemije
             </span>
           </div>
@@ -229,8 +229,8 @@ export function DodavanjeKemije({
                   }}
                   className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
                     concentrationMode === "preset" && selectedConcentration === c
-                      ? "bg-blue-500 text-white"
-                      : "bg-background text-foreground border border-border hover:border-blue-500/50"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-background text-foreground border border-border hover:border-primary/50"
                   }`}
                 >
                   {c}%
@@ -241,8 +241,8 @@ export function DodavanjeKemije({
                 onClick={() => setConcentrationMode("manual")}
                 className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
                   concentrationMode === "manual"
-                    ? "bg-blue-500 text-white"
-                    : "bg-background text-foreground border border-border hover:border-blue-500/50"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-background text-foreground border border-border hover:border-primary/50"
                 }`}
               >
                 Ručno
@@ -274,7 +274,7 @@ export function DodavanjeKemije({
               <button
                 type="button"
                 onClick={applyCalculatedAmount}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-semibold hover:bg-blue-600 transition-colors"
+                className="px-4 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-bold hover:opacity-90 transition-colors"
               >
                 Primijeni
               </button>

@@ -2788,7 +2788,7 @@ function ProductEngineDebugPanel({ engine }: ProductEngineDebugPanelProps) {
   const [open, setOpen] = React.useState(false);
 
   const indicatorBadgeColor =
-    engine.id === "rector_descaler"  ? "bg-purple-900/40 text-purple-300 border-purple-700/50" :
+    engine.id === "rector_descaler"  ? "bg-primary/10 text-primary border-primary/30" :
     engine.id === "scalebreaker_fx"  ? "bg-orange-900/40 text-orange-300 border-orange-700/50" :
     engine.id === "ds3"              ? "bg-yellow-900/40 text-yellow-300 border-yellow-700/50" :
     engine.id === "ds40"             ? "bg-red-900/40 text-red-300 border-red-700/50" :
