@@ -895,7 +895,7 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
           </>
         )}
 
-        {/* ══════════════════════════════════════════════════════════════
+        {/* ══════════════════════════════════════════════════���═══════════
             MODE B — Subsession workflow
         ══════════════════════════════════════════════════════════════ */}
         {isModeB && (
@@ -1241,6 +1241,10 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
           onNoviCiklus={() => {
             setSavedMjerenje(null);
             setModal({ tip: "novi_ciklus" });
+          }}
+          onZavrsiCiklus={() => {
+            setSavedMjerenje(null);
+            zavrsiCiklusSesije(sesijaId, aktivanCiklus.id);
           }}
           onPrimaryAction={(action: PreporukaAkcija) => {
             setSavedMjerenje(null);
@@ -1872,7 +1876,7 @@ function SesijaScaleKartica({ sesija }: { sesija: Sesija }) {
     const fp = flowImprovementPercent ?? 0;
     const tp = tempOutImprovementC ?? 0;
     if (fp >= 30 && tp >= 3)  return "Izvrsno čišćenje";
-    if (fp >= 20 || tp >= 3)  return "Vrlo dobro čišćenje";
+    if (fp >= 20 || tp >= 3)  return "Vrlo dobro ��išćenje";
     if (fp >= 10 || tp >= 1)  return "Dobro čišćenje";
     if (fp >= 3  || tp >= 0.5) return "Umjereno čišćenje";
     if (fp > 0)               return "Blago poboljšanje";

@@ -297,6 +297,8 @@ export interface RezultatMjerenjaProps {
   onNovoMjerenje: () => void;
   onDodajNadopunu: () => void;
   onNoviCiklus: () => void;
+  /** Završava aktivni ciklus — prikazuje se samo dok je ciklus aktivan */
+  onZavrsiCiklus?: () => void;
   onPrimaryAction: (action: PreporukaAkcija) => void;
   onClose: () => void;
   /** Ako je true — ciklus/sesija su završeni, prikazuje se završni izvještaj bez LIVE akcija */
@@ -393,6 +395,7 @@ export function RezultatMjerenja({
   onNovoMjerenje,
   onDodajNadopunu,
   onNoviCiklus,
+  onZavrsiCiklus,
   onPrimaryAction,
   onClose,
   ciklusZavrsen = false,
@@ -1022,7 +1025,7 @@ export function RezultatMjerenja({
           </button>
         ) : (
           <>
-            {/* Glavni CTA — uvijek "Dodaj novo mjerenje" */}
+            {/* PRIMARY: Dodaj novo mjerenje — uvijek vidljiv dok je ciklus aktivan */}
             <button
               type="button"
               onClick={onNovoMjerenje}
@@ -1034,33 +1037,53 @@ export function RezultatMjerenja({
               </svg>
               Dodaj novo mjerenje
             </button>
-            {/* Sekundarne akcije — manje, u redu */}
-            <div className="flex gap-2">
+
+            {/* PRIMARY: Završi ciklus — vidljiv samo dok je ciklus aktivan (onZavrsiCiklus je proslijeđen) */}
+            {onZavrsiCiklus && (
               <button
                 type="button"
-                onClick={onDodajNadopunu}
-                className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl border border-amber-400/50 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 font-bold text-xs hover:bg-amber-100 active:scale-95 transition-all"
-                style={{ minHeight: 48 }}
+                onClick={onZavrsiCiklus}
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-emerald-600 text-white font-bold text-base hover:bg-emerald-700 active:scale-[0.98] transition-all shadow-sm"
+                style={{ minHeight: 56 }}
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-                  <path d="M12 5v14M5 12h14" />
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                  <path d="M20 6L9 17l-5-5" />
                 </svg>
-                Nadopuna
+                Završi ciklus
               </button>
+            )}
+
+            {/* SECONDARY: Nadopuna — uvijek vidljiva dok je ciklus aktivan */}
+            <button
+              type="button"
+              onClick={onDodajNadopunu}
+              className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl border border-amber-400/50 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 font-bold text-sm hover:bg-amber-100 active:scale-95 transition-all"
+              style={{ minHeight: 48 }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              Nadopuna sredstva
+            </button>
+
+            {/* TERTIARY: Novi ciklus — prikazuje se SAMO ako onZavrsiCiklus nije proslijeđen
+                (tj. ciklus je već završen ili se radi o edge-case prikazu) */}
+            {!onZavrsiCiklus && (
               <button
                 type="button"
                 onClick={onNoviCiklus}
-                className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl border border-border text-muted-foreground font-bold text-xs hover:border-destructive/40 hover:text-destructive active:scale-95 transition-all"
+                className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl border border-border text-muted-foreground font-bold text-sm hover:border-destructive/40 hover:text-destructive active:scale-95 transition-all"
                 style={{ minHeight: 48 }}
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                   <polyline points="23 4 23 10 17 10" />
                   <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
                 </svg>
                 Novi ciklus
               </button>
-            </div>
-            {/* Sekundarna navigacija — mala, ne dominantna */}
+            )}
+
+            {/* Sekundarna navigacija */}
             <button
               type="button"
               onClick={onClose}
