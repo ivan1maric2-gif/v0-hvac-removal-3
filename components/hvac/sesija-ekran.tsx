@@ -264,28 +264,38 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
 
   return (
     <div className="flex flex-col flex-1 bg-background pb-24">
-      {/* ── Header ──────���─────────────�����──────���────────────────────────────── */}
-      <header className="bg-secondary text-secondary-foreground px-4 pt-4 pb-5 flex flex-col gap-4">
+      {/* ── Header ─────────────────────────────────────────────────────── */}
+      <header className="bg-secondary text-secondary-foreground px-4 pt-4 pb-5 flex flex-col gap-3">
 
-        {/* ── 1. Naziv + Status ─────────────────────────────────────────── */}
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1 min-w-0 flex flex-wrap items-center gap-2">
-            <h1 className="text-xl font-bold leading-tight break-words whitespace-normal">
-              {sesija.naziv_objekta}
-            </h1>
+        {/* ── 1. Back nav row + status + demo badge ─────────────────────── */}
+        <div className="flex items-center justify-between gap-2">
+          <button
+            onClick={idi_na_pocetni}
+            aria-label="Natrag na početni ekran"
+            className="flex items-center gap-1.5 text-[11px] font-semibold text-secondary-foreground/50 hover:text-secondary-foreground/80 transition-colors -ml-0.5 py-1"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+            Početni ekran
+          </button>
+          <div className="flex items-center gap-2 shrink-0">
             {sesija.isDemo && (
-              <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded px-1.5 py-0.5">
+              <span className="text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded-full px-2 py-0.5">
                 DEMO
               </span>
             )}
-          </div>
-          <div className="shrink-0 mt-0.5">
             <StatusBadge status={sesija.status} size="md" />
           </div>
         </div>
 
-        {/* ── 2. Session meta (Serviser, Lokacija, Datum) ───────────────── */}
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-secondary-foreground/80">
+        {/* ── 2. Naziv objekta ─────────────────────────────────────────── */}
+        <h1 className="text-2xl font-black leading-tight tracking-tight text-secondary-foreground break-words whitespace-normal">
+          {sesija.naziv_objekta}
+        </h1>
+
+        {/* ── 3. Session meta (Serviser, Lokacija, Datum) ──────────────── */}
+        <div className="flex flex-wrap gap-x-5 gap-y-1.5">
           <HeaderMetaItem label="Serviser" value={sesija.serviser} />
           <HeaderMetaItem label="Lokacija" value={sesija.lokacija} />
           <HeaderMetaItem label="Datum" value={formatDate(sesija.datum)} />
@@ -295,17 +305,17 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
         </div>
 
         {sesija.opis_problema && (
-          <p className="text-xs text-secondary-foreground/70 italic leading-relaxed border-t border-secondary-foreground/20 pt-2.5 whitespace-normal break-words">
+          <p className="text-xs text-secondary-foreground/60 leading-relaxed border-t border-secondary-foreground/10 pt-2.5 whitespace-normal break-words">
             {sesija.opis_problema}
           </p>
         )}
 
-        {/* ── 3. Info traka — način rada + brojač (sekundarno) ─────────── */}
-        <div className="flex items-center gap-2 flex-wrap border-t border-secondary-foreground/15 pt-2.5">
-          <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded ${
+        {/* ── 4. Info traka — način rada + brojač + akcije ─────────────── */}
+        <div className="flex items-center gap-2 flex-wrap border-t border-secondary-foreground/10 pt-3">
+          <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${
             isModeA
-              ? "bg-blue-400/15 text-blue-300 border border-blue-400/25"
-              : "bg-teal-400/15 text-teal-300 border border-teal-400/25"
+              ? "bg-blue-400/15 text-blue-300 border border-blue-400/20"
+              : "bg-teal-400/15 text-teal-300 border border-teal-400/20"
           }`}>
             {isModeA ? (
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -320,13 +330,13 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
             {isModeA ? "Jedan uređaj" : "Više dijelova"}
           </span>
 
-          <span className="text-secondary-foreground/25 text-[10px] select-none">·</span>
+          <span className="text-secondary-foreground/20 text-[10px] select-none">·</span>
 
           {isModeA && (() => {
             const c = (sesija.ciklusi ?? []).length;
             const m = (sesija.ciklusi ?? []).reduce((s, k) => s + (k.mjerenja ?? []).length, 0);
             return (
-              <span className="text-[11px] text-secondary-foreground/55 font-medium">
+              <span className="text-[11px] text-secondary-foreground/50 font-medium">
                 {c === 0 ? "Nema ciklusa" : `Ciklusa: ${c}`}
                 {m > 0 && <> · Mjerenja: {m}</>}
               </span>
@@ -339,7 +349,7 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
               (s, pd) => s + (pd.ciklusi ?? []).reduce((s2, k) => s2 + (k.mjerenja ?? []).length, 0), 0
             );
             return (
-              <span className="text-[11px] text-secondary-foreground/55 font-medium">
+              <span className="text-[11px] text-secondary-foreground/50 font-medium">
                 {p === 0 ? "Nema uređaja" : `Uređaja: ${p}`}
                 {c > 0 && <> · Ciklusa: {c}</>}
                 {m > 0 && <> · Mjerenja: {m}</>}
@@ -355,7 +365,7 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
                 onClick={() => setWorkTab("pregled")}
                 onTouchEnd={(e) => { e.preventDefault(); setWorkTab("pregled"); }}
                 aria-label="Otvori LIVE pregled"
-                className="flex items-center gap-1 text-[11px] font-bold bg-blue-500/20 border border-blue-400/40 text-blue-200 rounded px-2.5 py-1 hover:bg-blue-500/30 transition-colors touch-manipulation"
+                className="flex items-center gap-1.5 text-[11px] font-bold bg-teal-500/20 border border-teal-400/30 text-teal-300 rounded-full px-3 py-1.5 hover:bg-teal-500/30 transition-colors touch-manipulation"
                 style={{ WebkitTapHighlightColor: "transparent" }}
               >
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -367,7 +377,7 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
             <button
               onClick={() => setShowIzvjestaj(true)}
               aria-label="Otvori servisni izvještaj"
-              className="flex items-center gap-1 text-[11px] font-semibold bg-secondary-foreground/10 border border-secondary-foreground/20 text-secondary-foreground rounded px-2.5 py-1 hover:bg-secondary-foreground/15 transition-colors"
+              className="flex items-center gap-1.5 text-[11px] font-semibold bg-secondary-foreground/8 border border-secondary-foreground/15 text-secondary-foreground/70 rounded-full px-3 py-1.5 hover:bg-secondary-foreground/15 transition-colors"
             >
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
@@ -377,7 +387,7 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
             <button
               onClick={handleExportSession}
               aria-label="Spremi sesiju kao JSON"
-              className="flex items-center gap-1 text-[11px] font-semibold bg-secondary-foreground/10 border border-secondary-foreground/20 text-secondary-foreground rounded px-2.5 py-1 hover:bg-secondary-foreground/15 transition-colors"
+              className="flex items-center gap-1.5 text-[11px] font-semibold bg-secondary-foreground/8 border border-secondary-foreground/15 text-secondary-foreground/70 rounded-full px-3 py-1.5 hover:bg-secondary-foreground/15 transition-colors"
             >
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
@@ -392,12 +402,12 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
 
         {/* Demo data warning */}
         {sesija.isDemo && (
-          <div className="bg-amber-50 border border-amber-300 rounded-xl px-4 py-3 flex items-start gap-2.5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-amber-600 shrink-0 mt-0.5">
+          <div className="bg-amber-400/10 border border-amber-400/30 rounded-2xl px-4 py-3.5 flex items-start gap-3">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-amber-500 shrink-0 mt-0.5">
               <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
               <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
-            <p className="text-xs text-amber-800 leading-relaxed">
+            <p className="text-xs text-amber-700 leading-relaxed">
               <span className="font-bold">DEMO sesija</span> — Ovo su demo podaci za prikaz i testiranje aplikacije. Ne koristiti za stvarna terenska izvješća.
             </p>
           </div>
@@ -415,10 +425,10 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
 
             {/* CTA: Pocetno mjerenje */}
             {cekaPocetnoMjerenjeA && aktivanCiklus && (
-              <div className="bg-violet-500/10 border-2 border-violet-500/40 rounded-2xl p-4 flex flex-col gap-3">
+              <div className="bg-teal-500/10 border-2 border-teal-500/30 rounded-2xl p-4 flex flex-col gap-3">
                 <div className="flex items-start gap-3">
-                  <div className="shrink-0 w-9 h-9 rounded-full bg-violet-500/20 flex items-center justify-center">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-violet-500">
+                  <div className="shrink-0 w-10 h-10 rounded-2xl bg-teal-500/20 flex items-center justify-center">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-teal-500">
                       <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
                     </svg>
                   </div>
@@ -427,7 +437,7 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
                       Referentno mjerenje (nakon ~3 min cirkulacije)
                     </p>
                     <details className="mt-1 group">
-                      <summary className="text-xs text-primary cursor-pointer list-none flex items-center gap-1">
+                      <summary className="text-xs text-teal-600 cursor-pointer list-none flex items-center gap-1">
                         <span>Upute</span>
                         <svg className="w-3 h-3 transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M6 9l6 6 6-6" />
@@ -441,7 +451,7 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
                 </div>
                 <button
                   onClick={() => setModal({ tip: "mjerenje", measurementType: "initial_cycle_measurement" })}
-                  className="w-full bg-violet-600 text-white rounded-xl py-3 font-bold text-sm hover:bg-violet-700 active:scale-[0.98] transition-all"
+                  className="w-full bg-teal-600 text-white rounded-xl py-3.5 font-bold text-sm hover:bg-teal-700 active:scale-[0.98] transition-all"
                   style={{ minHeight: 48, maxHeight: 52 }}
                 >
                   Unesi referentno mjerenje
@@ -1522,8 +1532,8 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
 function HeaderMetaItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-0.5">
-  <span className="text-secondary-foreground/50 text-[10px] uppercase tracking-wider">{label}</span>
-  <span className="text-secondary-foreground/90 font-medium">{value}</span>
+      <span className="text-secondary-foreground/45 text-[10px] font-bold uppercase tracking-widest">{label}</span>
+      <span className="text-secondary-foreground/90 text-sm font-semibold">{value}</span>
     </div>
   );
 }
@@ -2173,7 +2183,7 @@ function CleaningEffectivenessKartica({ eff }: { eff: CleaningEffectiveness }) {
   );
 }
 
-// ─── Analiza prethodnog ciklusa ��� preporuke za sljedeci ──────────────────────
+// ─── Analiza prethodnog ciklusa ����� preporuke za sljedeci ──────────────────────
 
 function AnalizaPrethCiklusa({ ciklus }: { ciklus: Ciklus }) {
   const nonInitial = ciklus.mjerenja.filter(
