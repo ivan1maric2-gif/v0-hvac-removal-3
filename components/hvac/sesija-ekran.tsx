@@ -726,6 +726,32 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
               </div>
             )}
 
+            {/* ALL DONE — svi ciklusi završeni, sesija može biti zatvorena */}
+            {sviZavrseni && !jeZavrsena && (
+              <div className="bg-emerald-500/10 border-2 border-emerald-500/30 rounded-2xl p-6 flex flex-col gap-4 items-center text-center">
+                <div className="shrink-0 w-14 h-14 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-emerald-500">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-base font-black text-foreground">Svi ciklusi završeni</p>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                    Svi ciklusi su uspješno završeni. Sesija je spremna za završetak i dokumentaciju.
+                  </p>
+                </div>
+                <button
+                  onClick={handleZavrsiSesiju}
+                  disabled={!mozeLiZavrsitiSesiju(sesija).canFinish}
+                  className="w-full bg-emerald-600 text-white rounded-xl py-4 font-bold text-base hover:bg-emerald-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none shadow-sm"
+                  style={{ minHeight: 56 }}
+                >
+                  Završi sesiju
+                </button>
+              </div>
+            )}
+
+
             {/* Mode A — no cycles yet: large empty state */}
             {nemaCiklusa && !jeZavrsena && (
               <div className="bg-primary/8 border-2 border-primary/30 rounded-2xl p-5 flex flex-col gap-4">
@@ -895,7 +921,7 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
           </>
         )}
 
-        {/* ══════════════════════════════════════════════════���═══════════
+        {/* ══════════════════════════════════════════════════�����═══════════
             MODE B — Subsession workflow
         ══════════════════════════════════════════════════════════════ */}
         {isModeB && (
@@ -2479,7 +2505,7 @@ function ZavrsenCiklusKartica({ ciklus, sesija }: { ciklus: Ciklus; sesija?: Ses
         </button>
       </div>
 
-      {/* ��─ Expandable timeline ───────────────────────────────────────────── */}
+      {/* ��─ Expandable timeline ──���────────────────────────────────────────── */}
       {expanded && (ciklus.mjerenja.length > 0 || ciklus.nadopune.length > 0) && (
         <div className="border-t border-slate-700/60 px-4 py-4">
           <CiklusVremenskiSlijed ciklus={ciklus} sesija={sesija} showTitle={false} />
