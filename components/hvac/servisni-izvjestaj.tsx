@@ -125,15 +125,31 @@ function MjerenjaTable({ mjerenja }: { mjerenja: Mjerenje[] }) {
       <table className="w-full text-left border-collapse">
         <thead>
           <tr className="bg-muted/30">
-            <th className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 px-3 py-2 border-b border-border w-1/2">Parametar</th>
-            <th className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 px-3 py-2 border-b border-border">Vrijednost</th>
+            <Th>#</Th>
+            <Th>Tip</Th>
+            <Th>Vrijeme</Th>
+            <Th>pH</Th>
+            <Th>Tlak (bar)</Th>
+            <Th>Temp (°C)</Th>
+            <Th>Protok (L/min)</Th>
+            <Th>Učinak</Th>
           </tr>
         </thead>
         <tbody>
-          {rows.map(([label, val], i) => (
-            <tr key={i} className={i % 2 === 0 ? "bg-background" : "bg-muted/20"}>
-              <td className="px-3 py-2.5 text-xs text-muted-foreground border-b border-border/40">{label}</td>
-              <td className="px-3 py-2.5 text-sm font-bold text-foreground border-b border-border/40 font-mono tabular-nums">{val}</td>
+          {rows.map(({ m, isInit, seq }, i) => (
+            <tr key={m.id} className={i % 2 === 0 ? "bg-background" : "bg-muted/20"}>
+              <Td mono>{isInit ? "0" : seq}</Td>
+              <Td>
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${isInit ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"}`}>
+                  {isInit ? "Ref" : "Mjr"}
+                </span>
+              </Td>
+              <Td mono>{m.timestamp ? new Date(m.timestamp).toLocaleTimeString("hr-HR", { hour: "2-digit", minute: "2-digit" }) : "—"}</Td>
+              <Td mono>{m.ph_value != null ? m.ph_value.toFixed(2) : "—"}</Td>
+              <Td mono>{m.pressure_bar != null ? m.pressure_bar.toFixed(2) : "—"}</Td>
+              <Td mono>{m.temperature_c != null ? m.temperature_c.toFixed(1) : "—"}</Td>
+              <Td mono>{m.flow_lpm != null ? m.flow_lpm.toFixed(1) : "—"}</Td>
+              <Td><EffBadge status={m.effectiveness_status ?? null} /></Td>
             </tr>
           ))}
         </tbody>
