@@ -971,10 +971,18 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
                   />
                   <div className="border-t border-border pt-2.5 flex flex-col gap-2">
                     {!modeBBlockers.canFinish ? (
-                      <div className="bg-muted rounded-xl px-4 py-3 flex flex-col gap-1.5">
-                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Završetak sesije nije moguć</p>
+                      <div className="rounded-2xl border-2 border-rose-500/30 bg-rose-500/8 px-4 py-4 flex flex-col gap-2.5">
+                        <div className="flex items-center gap-2">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-rose-500 shrink-0">
+                            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                          </svg>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-rose-700 dark:text-rose-300">Završetak sesije nije moguć</p>
+                        </div>
                         {modeBBlockers.blockers.map((b, i) => (
-                          <p key={i} className="text-xs text-foreground leading-snug">{b}</p>
+                          <div key={i} className="flex items-start gap-2">
+                            <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5" />
+                            <p className="text-sm font-semibold text-foreground leading-snug">{b}</p>
+                          </div>
                         ))}
                       </div>
                     ) : (
@@ -2556,8 +2564,8 @@ function CompletionPhasesPanel({
 
   function CheckItem({ label, done }: { label: string; done: boolean }) {
     return (
-      <div className="flex items-center gap-2.5">
-        <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${done ? "bg-green-500" : "bg-muted border border-border"}`}>
+      <div className="flex items-center gap-3">
+        <span className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${done ? "bg-emerald-500" : "bg-muted border border-border"}`}>
           {done ? (
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
               <polyline points="20 6 9 17 4 12" />
@@ -2566,7 +2574,7 @@ function CompletionPhasesPanel({
             <span className="w-2 h-2 rounded-full bg-muted-foreground/30 block" />
           )}
         </span>
-        <span className={`text-sm ${done ? "text-green-800 font-medium" : "text-muted-foreground"}`}>{label}</span>
+        <span className={`text-sm font-medium ${done ? "text-foreground" : "text-muted-foreground"}`}>{label}</span>
       </div>
     );
   }
@@ -2585,9 +2593,18 @@ function CompletionPhasesPanel({
     disabled?: boolean;
   }) {
     return (
-      <div className={`flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 ${done ? "bg-green-50 border border-green-200" : "bg-card border border-border"}`}>
-        <div className="flex items-center gap-2 min-w-0">
-          <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${done ? "bg-green-500" : "bg-muted"}`}>
+      <div
+        style={{ minHeight: 56 }}
+        className={`flex items-center justify-between gap-3 rounded-2xl px-4 py-3 ${
+          done
+            ? "bg-emerald-500/8 border border-emerald-500/25"
+            : disabled
+            ? "bg-muted/30 border border-border opacity-60"
+            : "bg-card border-2 border-primary/20 hover:border-primary/40 transition-colors"
+        }`}
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <span className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${done ? "bg-emerald-500" : "bg-muted border border-border"}`}>
             {done ? (
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
                 <polyline points="20 6 9 17 4 12" />
@@ -2596,13 +2613,13 @@ function CompletionPhasesPanel({
               <span className="w-2 h-2 rounded-full bg-muted-foreground/40 block" />
             )}
           </span>
-          <span className={`text-sm font-medium truncate ${done ? "text-green-800" : "text-foreground"}`}>{label}</span>
+          <span className={`text-sm font-semibold truncate ${done ? "text-emerald-800 dark:text-emerald-200" : "text-foreground"}`}>{label}</span>
         </div>
         {!done && (
           <button
             onClick={onAction}
             disabled={disabled}
-            className="shrink-0 text-xs font-semibold text-primary hover:opacity-70 transition-opacity disabled:opacity-30 disabled:pointer-events-none"
+            className="shrink-0 text-sm font-bold text-primary bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-xl transition-all disabled:opacity-30 disabled:pointer-events-none"
           >
             {buttonLabel}
           </button>
@@ -2612,11 +2629,11 @@ function CompletionPhasesPanel({
   }
 
   return (
-    <div className="border border-border rounded-2xl overflow-hidden">
+    <div className="border-2 border-primary/20 rounded-2xl overflow-hidden">
       {/* Header */}
-      <div className="bg-muted px-4 py-3 border-b border-border">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Obavezne faze završetka</p>
-        <p className="text-sm font-semibold text-foreground mt-0.5">
+      <div className="bg-primary/5 px-4 py-4 border-b border-primary/15">
+        <p className="text-[9px] font-black uppercase tracking-widest text-primary/60 mb-1">Obavezne faze završetka</p>
+        <p className="text-base font-black text-foreground leading-tight">
           Kemijska reakcija završena — slijedi ispiranje i neutralizacija.
         </p>
       </div>
@@ -2649,9 +2666,9 @@ function CompletionPhasesPanel({
 
       {/* Final checklist + confirmation — shown when all phases done */}
       {allPhasesOk && (
-        <div className="border-t border-border px-4 py-4 flex flex-col gap-3 bg-green-50/50">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Sažetak završetka</p>
-          <div className="flex flex-col gap-2">
+        <div className="border-t border-emerald-500/20 px-4 py-5 flex flex-col gap-4 bg-emerald-500/5">
+          <p className="text-[9px] font-black uppercase tracking-widest text-emerald-700 dark:text-emerald-400">Sažetak završetka</p>
+          <div className="flex flex-col gap-2.5">
             <CheckItem label="Reakcija završena" done={true} />
             <CheckItem label="Ispiranje provedeno" done={ispiranjeOk} />
             <CheckItem
@@ -2659,20 +2676,20 @@ function CompletionPhasesPanel({
               done={neutralizacijaOk}
             />
             <CheckItem
-              label={`Kontrola završnog pH — ${phases?.zavrsniPH?.ph1?.toFixed(2) ?? "—"}${phases?.zavrsniPH?.ph2 != null ? ` / ${phases.zavrsniPH.ph2.toFixed(2)}` : ""} (Završno ispiranje)`}
+              label={`Kontrola završnog pH — ${phases?.zavrsniPH?.ph1?.toFixed(2) ?? "—"}${phases?.zavrsniPH?.ph2 != null ? ` / ${phases.zavrsniPH.ph2.toFixed(2)}` : ""}`}
               done={zavrsniPhOk}
             />
           </div>
 
           {/* Technician confirmation checkbox */}
-          <label className="flex items-start gap-3 cursor-pointer bg-card border border-border rounded-xl px-3 py-2.5 mt-1">
+          <label className={`flex items-start gap-3.5 cursor-pointer rounded-2xl px-4 py-4 border transition-colors ${techConfirmed ? "bg-emerald-500/10 border-emerald-500/30" : "bg-card border-border hover:bg-muted/40"}`}>
             <input
               type="checkbox"
               checked={techConfirmed}
               onChange={(e) => setTechConfirmed(e.target.checked)}
               className="mt-0.5 accent-primary shrink-0 w-4 h-4"
             />
-            <span className="text-xs font-semibold text-foreground leading-relaxed">
+            <span className="text-sm font-semibold text-foreground leading-relaxed">
               Potvrđujem da je posao završen u skladu sa servisnim protokolom.
             </span>
           </label>
@@ -2681,12 +2698,13 @@ function CompletionPhasesPanel({
           <button
             onClick={onZavrsiSesiju}
             disabled={!canFinish}
-            className="w-full py-4 rounded-xl font-bold text-sm bg-green-600 text-white hover:bg-green-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none"
+            className="w-full py-4 rounded-2xl font-bold text-base bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none shadow-sm"
+            style={{ minHeight: 56 }}
           >
             Završi sesiju
           </button>
           {!canFinish && !techConfirmed && (
-            <p className="text-[10px] text-muted-foreground text-center -mt-1">
+            <p className="text-xs font-semibold text-muted-foreground text-center -mt-2">
               Označite potvrdu servisera za završetak.
             </p>
           )}

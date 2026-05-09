@@ -25,7 +25,7 @@ import { genId, nowISO } from "@/lib/utils";
 
 function SectionHeader({ label }: { label: string }) {
   return (
-    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mt-1">
+    <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mt-1 border-b border-border pb-2">
       {label}
     </p>
   );
@@ -33,24 +33,24 @@ function SectionHeader({ label }: { label: string }) {
 
 function FieldRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium text-foreground">{label}</label>
+    <div className="flex flex-col gap-1.5">
+      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{label}</label>
       {children}
     </div>
   );
 }
 
 const inputCls =
-  "w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40";
+  "w-full rounded-2xl border border-border bg-background px-4 py-3.5 text-base text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all";
 const selectCls =
-  "w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40";
+  "w-full rounded-2xl border border-border bg-background px-4 py-3.5 text-base text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all";
 
 // ─── ISPIRANJE MODAL ──────────────────────────────────────────────────────────
 
 const RINSE_PH_STATUS_STYLES: Record<RinsePhStatus, { bg: string; border: string; text: string; label: string }> = {
-  prihvatljivo:        { bg: "bg-green-50",  border: "border-green-300",  text: "text-green-800",  label: "Ispiranje prihvatljivo" },
-  provjeriti:          { bg: "bg-amber-50",  border: "border-amber-300",  text: "text-amber-800",  label: "Provjeriti ispiranje" },
-  nastaviti_ispiranje: { bg: "bg-rose-50",   border: "border-rose-300",   text: "text-rose-800",   label: "Nastaviti ispiranje / razmotriti neutralizaciju" },
+  prihvatljivo:        { bg: "bg-emerald-500/8",  border: "border-emerald-500/30",  text: "text-emerald-800 dark:text-emerald-200",  label: "Ispiranje prihvatljivo" },
+  provjeriti:          { bg: "bg-amber-400/8",    border: "border-amber-400/30",    text: "text-amber-800   dark:text-amber-200",    label: "Provjeriti ispiranje" },
+  nastaviti_ispiranje: { bg: "bg-rose-500/8",     border: "border-rose-500/30",     text: "text-rose-800    dark:text-rose-200",     label: "Nastaviti ispiranje / razmotriti neutralizaciju" },
 };
 
 interface IspiranjeFazaProps {
@@ -112,16 +112,17 @@ export function IspiranjeFazaModal({ onSave, onClose, systemCategory = "technica
     >
       <div className="bg-card border border-border rounded-2xl w-full max-w-md shadow-xl flex flex-col max-h-[92dvh]">
         {/* Header */}
-        <div className="flex items-start justify-between p-5 pb-3 border-b border-border shrink-0">
-          <div className="flex flex-col gap-0.5">
-            <h2 className="text-base font-bold text-foreground">Faza ispiranja</h2>
-            <p className="text-xs text-muted-foreground">
+        <div className="flex items-start justify-between p-5 pb-4 border-b border-border shrink-0">
+          <div className="flex flex-col gap-1">
+            <p className="text-[9px] font-black uppercase tracking-widest text-primary/60 mb-0.5">Faza završetka</p>
+            <h2 className="text-xl font-black leading-tight tracking-tight text-foreground">Ispiranje sustava</h2>
+            <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
               Ispirati sustav čistom vodom. pH nakon ispiranja određuje je li neutralizacija potrebna.
             </p>
           </div>
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground p-1 rounded-lg"
+            className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground shrink-0"
             aria-label="Zatvori"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -135,14 +136,14 @@ export function IspiranjeFazaModal({ onSave, onClose, systemCategory = "technica
 
           <SectionHeader label="Ispuštanje otopine" />
 
-          <label className="flex items-start gap-3 cursor-pointer">
+          <label className={`flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer transition-colors ${solutionDrained ? "border-primary/40 bg-primary/5" : "border-border hover:bg-muted/40"}`}>
             <input
               type="checkbox"
               checked={solutionDrained}
               onChange={(e) => setSolutionDrained(e.target.checked)}
-              className="mt-0.5 accent-primary w-4 h-4"
+              className="mt-0.5 accent-primary w-4 h-4 shrink-0"
             />
-            <span className="text-sm text-foreground leading-snug">
+            <span className="text-sm font-medium text-foreground leading-snug">
               Otopina je ispuštena iz sustava
             </span>
           </label>
@@ -163,14 +164,14 @@ export function IspiranjeFazaModal({ onSave, onClose, systemCategory = "technica
 
           <SectionHeader label="Ispiranje čistom vodom" />
 
-          <label className="flex items-start gap-3 cursor-pointer">
+          <label className={`flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer transition-colors ${systemRinsed ? "border-primary/40 bg-primary/5" : "border-border hover:bg-muted/40"}`}>
             <input
               type="checkbox"
               checked={systemRinsed}
               onChange={(e) => setSystemRinsed(e.target.checked)}
-              className="mt-0.5 accent-primary w-4 h-4"
+              className="mt-0.5 accent-primary w-4 h-4 shrink-0"
             />
-            <span className="text-sm text-foreground leading-snug">
+            <span className="text-sm font-medium text-foreground leading-snug">
               Sustav je ispran čistom vodom
             </span>
           </label>
@@ -207,28 +208,28 @@ export function IspiranjeFazaModal({ onSave, onClose, systemCategory = "technica
 
               {/* Live evaluation card */}
               {rinseEval && (
-                <div className={`rounded-xl border px-4 py-3 flex flex-col gap-1.5 ${RINSE_PH_STATUS_STYLES[rinseEval.status].bg} ${RINSE_PH_STATUS_STYLES[rinseEval.status].border}`}>
+                <div className={`rounded-2xl border-2 px-4 py-4 flex flex-col gap-2 ${RINSE_PH_STATUS_STYLES[rinseEval.status].bg} ${RINSE_PH_STATUS_STYLES[rinseEval.status].border}`}>
                   <div className="flex items-center justify-between">
-                    <p className={`text-sm font-bold ${RINSE_PH_STATUS_STYLES[rinseEval.status].text}`}>
+                    <p className={`text-base font-black ${RINSE_PH_STATUS_STYLES[rinseEval.status].text}`}>
                       {RINSE_PH_STATUS_STYLES[rinseEval.status].label}
                     </p>
                     {rinseEval.diff !== null && (
-                      <span className={`text-xs font-mono font-bold ${RINSE_PH_STATUS_STYLES[rinseEval.status].text}`}>
+                      <span className={`text-sm font-mono font-bold tabular-nums ${RINSE_PH_STATUS_STYLES[rinseEval.status].text}`}>
                         Δ {rinseEval.diff.toFixed(2)} pH
                       </span>
                     )}
                   </div>
-                  <p className={`text-xs leading-relaxed ${RINSE_PH_STATUS_STYLES[rinseEval.status].text} opacity-80`}>
+                  <p className={`text-sm leading-relaxed ${RINSE_PH_STATUS_STYLES[rinseEval.status].text} opacity-80`}>
                     {rinseEval.statusDescription}
                   </p>
-                  <div className={`flex items-center gap-1.5 mt-0.5 ${RINSE_PH_STATUS_STYLES[rinseEval.status].text}`}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <div className={`flex items-center gap-2 mt-1 px-3 py-2 rounded-xl bg-background/40 border border-current/10 ${RINSE_PH_STATUS_STYLES[rinseEval.status].text}`}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       {rinseEval.neutralizationRequired
                         ? <><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></>
                         : <><polyline points="20 6 9 17 4 12"/></>
                       }
                     </svg>
-                    <span className="text-xs font-semibold">
+                    <span className="text-sm font-bold">
                       Neutralizacija: {rinseEval.neutralizationRequired ? "preporučena / potrebna" : "nije potrebna"}
                     </span>
                   </div>
@@ -274,24 +275,31 @@ export function IspiranjeFazaModal({ onSave, onClose, systemCategory = "technica
           </FieldRow>
 
           {!canSave && (
-            <p className="text-xs text-amber-600 font-medium">
-              Potvrdite da je sustav ispran čistom vodom za nastavak.
-            </p>
+            <div className="flex items-center gap-2.5 rounded-2xl border border-amber-400/30 bg-amber-400/8 px-4 py-3.5">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-amber-500 shrink-0">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <p className="text-sm font-bold text-amber-800 dark:text-amber-200">
+                Potvrdite da je sustav ispran čistom vodom za nastavak.
+              </p>
+            </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="flex flex-col gap-2 p-5 pt-3 border-t border-border shrink-0">
+        <div className="flex flex-col gap-2.5 p-5 pt-3 border-t border-border shrink-0">
           <button
             onClick={handleSave}
             disabled={!canSave}
-            className="w-full rounded-xl bg-primary text-primary-foreground font-semibold text-sm py-3 transition-opacity disabled:opacity-40 active:scale-[0.98]"
+            className="w-full rounded-2xl bg-primary text-primary-foreground font-bold text-base py-4 transition-all disabled:opacity-40 active:scale-[0.98] shadow-sm"
+            style={{ minHeight: 56 }}
           >
             Spremi ispiranje
           </button>
           <button
             onClick={onClose}
-            className="w-full rounded-xl bg-muted text-foreground font-semibold text-sm py-3 active:scale-[0.98]"
+            className="w-full rounded-2xl border border-border text-muted-foreground font-semibold text-sm py-3.5 hover:bg-muted/50 active:scale-[0.98] transition-all"
+            style={{ minHeight: 48 }}
           >
             Odustani
           </button>
@@ -352,16 +360,17 @@ export function NeutralizacijaFazaModal({ onSave, onClose }: NeutralizacijaFazaP
     >
       <div className="bg-card border border-border rounded-2xl w-full max-w-md shadow-xl flex flex-col max-h-[92dvh]">
         {/* Header */}
-        <div className="flex items-start justify-between p-5 pb-3 border-b border-border shrink-0">
-          <div className="flex flex-col gap-0.5">
-            <h2 className="text-base font-bold text-foreground">Neutralizacija</h2>
-            <p className="text-xs text-muted-foreground">
+        <div className="flex items-start justify-between p-5 pb-4 border-b border-border shrink-0">
+          <div className="flex flex-col gap-1">
+            <p className="text-[9px] font-black uppercase tracking-widest text-primary/60 mb-0.5">Faza završetka</p>
+            <h2 className="text-xl font-black leading-tight tracking-tight text-foreground">Neutralizacija</h2>
+            <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
               Neutralizacija je obavezna faza prije završetka posla.
             </p>
           </div>
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground p-1 rounded-lg"
+            className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground shrink-0"
             aria-label="Zatvori"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -449,24 +458,31 @@ export function NeutralizacijaFazaModal({ onSave, onClose }: NeutralizacijaFazaP
           </FieldRow>
 
           {!canSave && (
-            <p className="text-xs text-amber-600 font-medium">
-              Unesite naziv neutralizatora i količinu za nastavak.
-            </p>
+            <div className="flex items-center gap-2.5 rounded-2xl border border-amber-400/30 bg-amber-400/8 px-4 py-3.5">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-amber-500 shrink-0">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <p className="text-sm font-bold text-amber-800 dark:text-amber-200">
+                Unesite naziv neutralizatora i količinu za nastavak.
+              </p>
+            </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="flex flex-col gap-2 p-5 pt-3 border-t border-border shrink-0">
+        <div className="flex flex-col gap-2.5 p-5 pt-3 border-t border-border shrink-0">
           <button
             onClick={handleSave}
             disabled={!canSave}
-            className="w-full rounded-xl bg-primary text-primary-foreground font-semibold text-sm py-3 transition-opacity disabled:opacity-40 active:scale-[0.98]"
+            className="w-full rounded-2xl bg-primary text-primary-foreground font-bold text-base py-4 transition-all disabled:opacity-40 active:scale-[0.98] shadow-sm"
+            style={{ minHeight: 56 }}
           >
             Spremi neutralizaciju
           </button>
           <button
             onClick={onClose}
-            className="w-full rounded-xl bg-muted text-foreground font-semibold text-sm py-3 active:scale-[0.98]"
+            className="w-full rounded-2xl border border-border text-muted-foreground font-semibold text-sm py-3.5 hover:bg-muted/50 active:scale-[0.98] transition-all"
+            style={{ minHeight: 48 }}
           >
             Odustani
           </button>
@@ -488,10 +504,10 @@ interface ZavrsniPhCheckProps {
 }
 
 const FINAL_PH_STATUS_COLORS: Record<FinalPhStatus, { bg: string; text: string; border: string }> = {
-  prihvatljiv: { bg: "bg-green-50", text: "text-green-800", border: "border-green-300" },
-  nestabilan: { bg: "bg-red-50", text: "text-red-800", border: "border-red-300" },
-  izvan_raspona: { bg: "bg-red-50", text: "text-red-800", border: "border-red-300" },
-  potrebna_provjera: { bg: "bg-amber-50", text: "text-amber-800", border: "border-amber-300" },
+  prihvatljiv:       { bg: "bg-emerald-500/8", text: "text-emerald-800 dark:text-emerald-200", border: "border-2 border-emerald-500/30" },
+  nestabilan:        { bg: "bg-rose-500/8",    text: "text-rose-800    dark:text-rose-200",    border: "border-2 border-rose-500/40" },
+  izvan_raspona:     { bg: "bg-rose-500/8",    text: "text-rose-800    dark:text-rose-200",    border: "border-2 border-rose-500/40" },
+  potrebna_provjera: { bg: "bg-amber-400/8",   text: "text-amber-800   dark:text-amber-200",   border: "border-2 border-amber-400/30" },
 };
 
 const FINAL_PH_STATUS_LABELS: Record<FinalPhStatus, string> = {
@@ -574,17 +590,17 @@ export function ZavrsniPhCheckModal({ sessionId, systemCategory, onSave, onClose
     >
       <div className="bg-card border border-border rounded-2xl w-full max-w-md shadow-xl flex flex-col max-h-[92dvh]">
         {/* Header */}
-        <div className="flex items-start justify-between p-5 pb-3 border-b border-border shrink-0">
+        <div className="flex items-start justify-between p-5 pb-4 border-b border-border shrink-0">
           <div className="flex flex-col gap-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Završetak sesije</p>
-            <h2 className="text-base font-bold text-foreground">Kontrola završnog pH nakon ispiranja</h2>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-[9px] font-black uppercase tracking-widest text-primary/60 mb-0.5">Završetak sesije</p>
+            <h2 className="text-xl font-black leading-tight tracking-tight text-foreground">Kontrola završnog pH</h2>
+            <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
               Usporedba pH izlazne vode s pH mrežne vode. Kisela reakcija pripada ciklusu — ovdje se mjeri neutralnost ispiranja.
             </p>
           </div>
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground p-1 rounded-lg"
+            className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground shrink-0"
             aria-label="Zatvori"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -669,14 +685,17 @@ export function ZavrsniPhCheckModal({ sessionId, systemCategory, onSave, onClose
 
           {/* Live evaluation */}
           {evaluatedStatus && statusColors && (
-            <div className={`rounded-xl border px-4 py-3 ${statusColors.bg} ${statusColors.border}`}>
-              <p className={`text-sm font-bold ${statusColors.text}`}>
+            <div className={`rounded-2xl px-4 py-4 flex flex-col gap-2 ${statusColors.bg} ${statusColors.border}`}>
+              <p className={`text-base font-black ${statusColors.text}`}>
                 {FINAL_PH_STATUS_LABELS[evaluatedStatus]}
               </p>
               {unstable && (
-                <p className="text-xs mt-1 text-red-700">
+                <div className={`flex items-start gap-2 text-sm font-semibold leading-relaxed ${statusColors.text}`}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0 mt-0.5">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
                   Završni pH nije stabilan. Nastaviti ispiranje i/ili neutralizaciju.
-                </p>
+                </div>
               )}
             </div>
           )}
@@ -732,8 +751,8 @@ export function ZavrsniPhCheckModal({ sessionId, systemCategory, onSave, onClose
             </span>
           </label>
           {roughEstimateEnabled && (
-            <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
-              <p className="text-xs text-amber-800 font-medium">
+            <div className="rounded-2xl border border-amber-400/30 bg-amber-400/8 px-4 py-3.5">
+              <p className="text-sm font-semibold text-amber-800 dark:text-amber-200">
                 Gruba procjena — ovo je okvirna procjena, ne laboratorijski dokaz.
               </p>
             </div>
@@ -741,31 +760,33 @@ export function ZavrsniPhCheckModal({ sessionId, systemCategory, onSave, onClose
 
           {/* Technician confirmation */}
           <SectionHeader label="Potvrda servisera" />
-          <label className="flex items-start gap-3 cursor-pointer">
+          <label className={`flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer transition-colors ${technicianConfirmed ? "border-primary/40 bg-primary/5" : "border-border hover:bg-muted/40"}`}>
             <input
               type="checkbox"
               checked={technicianConfirmed}
               onChange={(e) => setTechnicianConfirmed(e.target.checked)}
-              className="mt-0.5 accent-primary w-4 h-4"
+              className="mt-0.5 accent-primary w-4 h-4 shrink-0"
             />
-            <span className="text-sm text-foreground leading-snug font-medium">
+            <span className="text-sm font-semibold text-foreground leading-snug">
               Potvrđujem završni pH i rezultate ispiranja
             </span>
           </label>
         </div>
 
         {/* Footer */}
-        <div className="flex flex-col gap-2 p-5 pt-3 border-t border-border shrink-0">
+        <div className="flex flex-col gap-2.5 p-5 pt-3 border-t border-border shrink-0">
           <button
             onClick={handleSave}
             disabled={!canSave}
-            className="w-full rounded-xl bg-primary text-primary-foreground font-semibold text-sm py-3 transition-opacity disabled:opacity-40 active:scale-[0.98]"
+            className="w-full rounded-2xl bg-primary text-primary-foreground font-bold text-base py-4 transition-all disabled:opacity-40 active:scale-[0.98] shadow-sm"
+            style={{ minHeight: 56 }}
           >
             Spremi završni pH
           </button>
           <button
             onClick={onClose}
-            className="w-full rounded-xl bg-muted text-foreground font-semibold text-sm py-3 active:scale-[0.98]"
+            className="w-full rounded-2xl border border-border text-muted-foreground font-semibold text-sm py-3.5 hover:bg-muted/50 active:scale-[0.98] transition-all"
+            style={{ minHeight: 48 }}
           >
             Odustani
           </button>
