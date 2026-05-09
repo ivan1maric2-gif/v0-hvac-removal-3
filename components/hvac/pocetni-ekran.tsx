@@ -755,14 +755,9 @@ export function PocetniEkran() {
             style={{ height: 52, width: "auto", maxWidth: 180 }}
             className="object-contain object-left"
           />
-          <div className="flex items-center gap-2">
-            <p className="text-muted-foreground text-xs font-normal leading-snug">
-              HVAC vodič za uklanjanje kamenca
-            </p>
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-muted-foreground/60 tabular-nums select-none">
-              v0.1.0
-            </span>
-          </div>
+          <p className="text-muted-foreground text-xs font-normal leading-snug">
+            HVAC vodič za uklanjanje kamenca
+          </p>
         </div>
 
         {/* Desno: Rectorko maskota */}
