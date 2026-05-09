@@ -111,24 +111,24 @@ function SljedecaAkcijaBlok({
   }, [akcija, govori]);
 
   return (
-    <div className="rounded-2xl border-2 border-primary/40 bg-primary/8 px-4 py-4 flex flex-col gap-3">
+    <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 px-4 py-5 flex flex-col gap-3">
       {/* Header red: label + TTS gumb */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-base font-black text-primary leading-none">→</span>
-          <span className="text-[10px] font-black uppercase tracking-widest text-primary/70">Sljedeća akcija</span>
+          <span className="text-lg font-black text-primary leading-none">→</span>
+          <span className="text-[9px] font-black uppercase tracking-widest text-primary/60">Sljedeća akcija</span>
         </div>
         {/* TTS gumb */}
         <button
           onClick={govoriAkciju}
           aria-label={govori === "govor" ? "Zaustavi govor" : "Reproduciraj uputu"}
           title={govori === "unsupported" ? "Glasovni izlaz nije podržan u ovom pregledniku" : undefined}
-          className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all active:scale-90 ${
+          className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all active:scale-90 ${
             govori === "govor"
               ? "bg-primary text-primary-foreground animate-pulse"
               : govori === "unsupported"
               ? "bg-muted text-muted-foreground/30 cursor-not-allowed"
-              : "bg-primary/20 text-primary hover:bg-primary/30"
+              : "bg-primary/15 text-primary hover:bg-primary/25"
           }`}
         >
           {govori === "govor" ? (
@@ -264,17 +264,17 @@ function resolveDeltaTInterpretacija(
 // ─── Color maps ───────────────────────────────────────────────────────────────
 
 const ZONE_BG: Record<"green" | "yellow" | "orange" | "red", string> = {
-  green:  "bg-green-50  border-green-300  text-green-900",
-  yellow: "bg-amber-50  border-amber-300  text-amber-900",
-  orange: "bg-orange-50 border-orange-300 text-orange-900",
-  red:    "bg-red-50    border-red-300    text-red-900",
+  green:  "border-emerald-500/30 bg-emerald-500/8  text-emerald-900 dark:text-emerald-100",
+  yellow: "border-amber-400/30  bg-amber-400/8   text-amber-900  dark:text-amber-100",
+  orange: "border-orange-500/30 bg-orange-500/8  text-orange-900 dark:text-orange-100",
+  red:    "border-rose-500/30   bg-rose-500/8    text-rose-900   dark:text-rose-100",
 };
 
 const ZONE_BADGE: Record<"green" | "yellow" | "orange" | "red", string> = {
-  green:  "bg-green-100  text-green-700",
-  yellow: "bg-amber-100  text-amber-700",
-  orange: "bg-orange-100 text-orange-700",
-  red:    "bg-red-100    text-red-700",
+  green:  "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
+  yellow: "bg-amber-400/15  text-amber-700   dark:text-amber-400",
+  orange: "bg-orange-500/15 text-orange-700  dark:text-orange-400",
+  red:    "bg-rose-500/15   text-rose-700    dark:text-rose-400",
 };
 
 const ACTION_BG: Record<PreporukaAkcija, string> = {
@@ -384,7 +384,7 @@ function InitialDetailsSection({ mjerenje }: { mjerenje: Mjerenje }) {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+// ─── Main component ───────────────────────���───────────────────────────────────
 
 export function RezultatMjerenja({
   mjerenje,
@@ -461,39 +461,39 @@ export function RezultatMjerenja({
         <button
           type="button"
           onClick={onClose}
-          className="p-1 -ml-1 hover:opacity-70 transition-opacity"
+          className="p-2 -ml-1.5 rounded-xl hover:bg-muted transition-colors"
           aria-label="Zatvori"
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
         </button>
         <div className="flex-1 min-w-0">
           {isInitial ? (
             <>
-              <p className="text-sm font-black uppercase tracking-widest text-amber-500 leading-none mb-1.5">
+              <p className="text-[9px] font-black uppercase tracking-widest text-amber-500/80 mb-0.5">
                 Referentno mjerenje
               </p>
-              <h1 className="text-2xl font-black leading-tight text-foreground">
+              <h1 className="text-xl font-black leading-tight tracking-tight text-foreground">
                 Rezultat
               </h1>
             </>
           ) : (
             <>
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground leading-none mb-1.5">
+              <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/50 mb-0.5">
                 Mjerenje
               </p>
-              <h1 className="text-2xl font-black leading-tight text-foreground">
+              <h1 className="text-xl font-black leading-tight tracking-tight text-foreground">
                 Rezultat
               </h1>
             </>
           )}
         </div>
-        <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 border border-green-200">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-green-600">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-emerald-600 dark:text-emerald-400">
             <polyline points="20 6 9 17 4 12" />
           </svg>
-          <span className="text-[10px] font-bold text-green-700">Spremljeno</span>
+          <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400">Spremljeno</span>
         </div>
       </div>
 
@@ -549,22 +549,22 @@ export function RezultatMjerenja({
               {/* ── PRIMARY: pH + Protok — side by side, veliki */}
               <div className="grid grid-cols-2 gap-3">
                 {/* pH */}
-                <div className="rounded-2xl border-2 border-amber-500/40 bg-card px-4 py-4 flex flex-col gap-1">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">pH</span>
+                <div className="rounded-2xl border-2 border-amber-500/30 bg-card px-4 py-5 flex flex-col gap-1.5">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">pH</span>
                   <span className="text-4xl font-black tabular-nums text-foreground leading-none">{ph.toFixed(2)}</span>
-                  <span className="text-[11px] font-medium text-muted-foreground mt-1">{phZonaLabel}</span>
-                  <span className={`text-xs font-black px-2 py-0.5 rounded-lg border w-fit mt-1 ${snaga.color}`}>{snaga.label}</span>
+                  <span className="text-[11px] font-semibold text-muted-foreground mt-1">{phZonaLabel}</span>
+                  <span className={`text-xs font-black px-2.5 py-1 rounded-xl border w-fit mt-0.5 ${snaga.color}`}>{snaga.label}</span>
                 </div>
 
                 {/* Protok */}
-                <div className="rounded-2xl border-2 border-blue-500/40 bg-card px-4 py-4 flex flex-col gap-1">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Protok</span>
+                <div className="rounded-2xl border-2 border-primary/20 bg-card px-4 py-5 flex flex-col gap-1.5">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">Protok</span>
                   {mjerenje.flowLMin !== undefined ? (
                     <>
                       <span className="text-4xl font-black tabular-nums text-foreground leading-none">
                         {mjerenje.flowLMin.toFixed(1)}
                       </span>
-                      <span className="text-[11px] font-medium text-muted-foreground mt-1">L/min</span>
+                      <span className="text-[11px] font-semibold text-muted-foreground mt-1">L/min</span>
                     </>
                   ) : (
                     <span className="text-2xl font-black text-muted-foreground/30 leading-none mt-1">—</span>
@@ -1003,7 +1003,8 @@ export function RezultatMjerenja({
           <button
             type="button"
             onClick={onClose}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-secondary text-foreground font-semibold text-sm hover:bg-muted active:scale-[0.98] transition-all"
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-secondary text-foreground font-bold text-sm hover:bg-muted active:scale-[0.98] transition-all"
+            style={{ minHeight: 56 }}
           >
             Zatvori
           </button>
@@ -1012,6 +1013,7 @@ export function RezultatMjerenja({
             type="button"
             onClick={onClose}
             className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl bg-primary text-primary-foreground font-bold text-base hover:bg-primary/90 active:scale-[0.98] transition-all shadow-sm"
+            style={{ minHeight: 56 }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
@@ -1024,7 +1026,8 @@ export function RezultatMjerenja({
             <button
               type="button"
               onClick={onNovoMjerenje}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 active:scale-[0.98] transition-all shadow-sm"
+              className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-primary text-primary-foreground font-bold text-base hover:bg-primary/90 active:scale-[0.98] transition-all shadow-sm"
+              style={{ minHeight: 56 }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                 <path d="M12 5v14M5 12h14" />
@@ -1036,7 +1039,8 @@ export function RezultatMjerenja({
               <button
                 type="button"
                 onClick={onDodajNadopunu}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-amber-400/60 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 font-semibold text-xs hover:bg-amber-100 active:scale-95 transition-all"
+                className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl border border-amber-400/50 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 font-bold text-xs hover:bg-amber-100 active:scale-95 transition-all"
+                style={{ minHeight: 48 }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                   <path d="M12 5v14M5 12h14" />
@@ -1046,7 +1050,8 @@ export function RezultatMjerenja({
               <button
                 type="button"
                 onClick={onNoviCiklus}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-border text-muted-foreground font-semibold text-xs hover:border-destructive/40 hover:text-destructive active:scale-95 transition-all"
+                className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl border border-border text-muted-foreground font-bold text-xs hover:border-destructive/40 hover:text-destructive active:scale-95 transition-all"
+                style={{ minHeight: 48 }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                   <polyline points="23 4 23 10 17 10" />
@@ -1059,7 +1064,7 @@ export function RezultatMjerenja({
             <button
               type="button"
               onClick={onClose}
-              className="w-full py-2 text-xs font-medium text-muted-foreground/60 hover:text-muted-foreground transition-colors text-center"
+              className="w-full py-2 text-xs font-semibold text-muted-foreground/60 hover:text-muted-foreground transition-colors text-center"
             >
               Natrag na sesiju
             </button>

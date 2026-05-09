@@ -306,15 +306,16 @@ function Chip({
 }) {
   const sizeClass =
     size === "lg"
-      ? "px-5 py-3 text-base font-bold"
+      ? "px-5 py-4 text-base font-bold"
       : size === "sm"
-      ? "px-3 py-2 text-xs font-semibold"
-      : "px-4 py-2.5 text-sm font-semibold";
+      ? "px-3.5 py-2.5 text-xs font-bold"
+      : "px-4 py-3 text-sm font-semibold";
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`${sizeClass} rounded-xl border transition-all active:scale-95 ${
+      style={{ minHeight: size === "lg" ? 52 : 44 }}
+      className={`${sizeClass} rounded-2xl border transition-all active:scale-95 ${
         selected
           ? "bg-primary text-primary-foreground border-primary shadow-sm"
           : "bg-card text-foreground border-border hover:border-primary/40"
@@ -336,11 +337,11 @@ function SekcijaHeader({
 }) {
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
         {label}
       </span>
       {required && (
-        <span className="text-[10px] font-bold text-destructive uppercase tracking-widest">
+        <span className="text-[10px] font-black text-destructive uppercase tracking-widest">
           *
         </span>
       )}
@@ -803,20 +804,20 @@ export function BrziUnosMjerenja({
         <button
           type="button"
           onClick={onClose}
-          className="p-1 -ml-1 hover:opacity-70 transition-opacity"
+          className="p-2 -ml-1.5 rounded-xl hover:bg-muted transition-colors"
           aria-label="Natrag"
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
         </button>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground truncate">
+          <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/50 mb-0.5 truncate">
             {isInitial
-              ? `Ciklus #${ciklus.cycleNumber} — Referentno mjerenje`
+              ? `Ciklus #${ciklus.cycleNumber} — Referentno`
               : `Ciklus #${ciklus.cycleNumber} — Mjerenje #${ciklus.mjerenja.filter(m => m.measurementType !== "initial_cycle_measurement").length + 1}`}
           </p>
-          <h1 className="text-lg font-black leading-tight text-foreground text-balance">
+          <h1 className="text-xl font-black leading-tight tracking-tight text-foreground text-balance">
             {isInitial ? "Referentno mjerenje" : "Unesi mjerenje"}
           </h1>
         </div>
@@ -982,21 +983,22 @@ export function BrziUnosMjerenja({
                 value={phStr}
                 onChange={(e) => setPhStr(e.target.value)}
                 placeholder="npr. 2.5"
-                className={`min-w-0 flex-1 border-2 rounded-xl px-4 py-4 text-2xl font-bold tabular-nums text-center bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${
+                className={`min-w-0 flex-1 border-2 rounded-2xl px-4 py-5 text-3xl font-black tabular-nums text-center bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder:text-muted-foreground/25 ${
                   touched && !phValid ? "border-destructive" : "border-border"
                 }`}
+                style={{ minHeight: 72 }}
               />
-              <MicButton onResult={(v) => setPhStr(v)} fieldName="pH" className="shrink-0 w-16 h-16 rounded-xl border-2 bg-primary/10" />
+              <MicButton onResult={(v) => setPhStr(v)} fieldName="pH" className="shrink-0 w-16 h-16 rounded-2xl border-2 bg-primary/10" />
             </div>
 
             {/* Live interpretation (samo za DS-3 i slične, NE za ScaleBreaker) */}
             {interpretacija && !isScaleBreakerProduct && (
-              <div className={`border rounded-lg px-3 py-2 flex flex-col gap-1 transition-all ${phZoneColor}`}>
+              <div className={`border rounded-2xl px-4 py-3 flex flex-col gap-1.5 transition-all ${phZoneColor}`}>
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-widest opacity-70">Zona</span>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${phZoneBadge}`}>{interpretacija.zona}</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest opacity-60">Zona</span>
+                  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${phZoneBadge}`}>{interpretacija.zona}</span>
                 </div>
-                <p className="text-xs font-medium leading-snug">{interpretacija.tekst}</p>
+                <p className="text-sm font-semibold leading-snug">{interpretacija.tekst}</p>
                 {phChange !== undefined && (
                   <p className="text-[10px] opacity-70 tabular-nums">
                     DeltapH: {phChange > 0 ? "+" : ""}{phChange.toFixed(2)}
@@ -1012,7 +1014,7 @@ export function BrziUnosMjerenja({
             )}
 
             {touched && !phValid && (
-              <p className="text-[10px] text-destructive font-semibold">pH je obavezan (0–14).</p>
+              <p className="text-[11px] text-destructive font-bold">pH je obavezan (0–14).</p>
             )}
           </div>
 
@@ -1021,11 +1023,11 @@ export function BrziUnosMjerenja({
             <SekcijaHeader label="Protok" />
 
             {/* Unit toggle */}
-            <div className="flex rounded-lg border border-border overflow-hidden text-xs font-semibold">
+            <div className="flex rounded-2xl border border-border overflow-hidden text-sm font-semibold" style={{ minHeight: 44 }}>
               <button
                 type="button"
                 onClick={() => setFlowUnit("l_min")}
-                className={`flex-1 py-1.5 transition-colors ${
+                className={`flex-1 py-2.5 transition-colors ${
                   flowUnit === "l_min"
                     ? "bg-primary text-primary-foreground"
                     : "bg-background text-muted-foreground hover:text-foreground"
@@ -1036,7 +1038,7 @@ export function BrziUnosMjerenja({
               <button
                 type="button"
                 onClick={() => setFlowUnit("sec_10l")}
-                className={`flex-1 py-1.5 transition-colors ${
+                className={`flex-1 py-2.5 transition-colors ${
                   flowUnit === "sec_10l"
                     ? "bg-primary text-primary-foreground"
                     : "bg-background text-muted-foreground hover:text-foreground"
@@ -1055,24 +1057,25 @@ export function BrziUnosMjerenja({
                 value={flowValue}
                 onChange={(e) => setFlowValue(e.target.value)}
                 placeholder={flowUnit === "l_min" ? "npr. 20" : "npr. 30"}
-                className="min-w-0 flex-1 border-2 border-border rounded-xl px-4 py-4 text-2xl font-bold tabular-nums text-center bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="min-w-0 flex-1 border-2 border-border rounded-2xl px-4 py-5 text-3xl font-black tabular-nums text-center bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder:text-muted-foreground/25"
+                style={{ minHeight: 72 }}
               />
-              <MicButton onResult={(v) => setFlowValue(v)} fieldName="protok" className="shrink-0 w-16 h-16 rounded-xl border-2 bg-primary/10" />
+              <MicButton onResult={(v) => setFlowValue(v)} fieldName="protok" className="shrink-0 w-16 h-16 rounded-2xl border-2 bg-primary/10" />
             </div>
 
             {/* Conversion display */}
             {flowConvertedDisplay !== null && flowValue !== "" && (
-              <div className="flex items-center justify-between rounded-lg bg-muted/40 border border-border px-3 py-1.5">
-                <span className="text-[10px] text-muted-foreground">Izracunato</span>
+              <div className="flex items-center justify-between rounded-2xl bg-muted/40 border border-border px-4 py-2.5">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Izracunato</span>
                 <span className="text-sm font-bold text-foreground tabular-nums">= {flowConvertedDisplay} L/min</span>
               </div>
             )}
 
             {/* Flow change from initial */}
             {flowChangeFromInitial !== undefined && (
-              <div className="flex items-center justify-between rounded-lg bg-muted/40 border border-border px-3 py-1.5">
-                <span className="text-[10px] text-muted-foreground">Od pocetka</span>
-                <span className={`text-xs font-bold tabular-nums ${flowChangeFromInitial > 0 ? "text-green-600" : "text-destructive"}`}>
+              <div className="flex items-center justify-between rounded-2xl bg-muted/40 border border-border px-4 py-2.5">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Od pocetka</span>
+                <span className={`text-sm font-bold tabular-nums ${flowChangeFromInitial > 0 ? "text-emerald-600 dark:text-emerald-400" : "text-destructive"}`}>
                   {flowChangeFromInitial > 0 ? "+" : ""}{flowChangeFromInitial} L/min
                 </span>
               </div>
@@ -1456,15 +1459,16 @@ export function BrziUnosMjerenja({
       </div>
 
       {/* ── Sticky footer ─────────────────────────────────────────────────── */}
-      <div className="shrink-0 border-t border-border bg-background px-3 py-3 flex flex-col gap-2 max-w-lg mx-auto w-full">
+      <div className="shrink-0 border-t border-border bg-background px-4 py-4 flex flex-col gap-2.5 max-w-lg mx-auto w-full">
         {touched && !phValid && (
-          <p className="text-[10px] text-center font-semibold text-destructive">Unesite pH vrijednost.</p>
+          <p className="text-[11px] text-center font-bold text-destructive">Unesite pH vrijednost.</p>
         )}
 
         <button
           type="button"
           onClick={handleSave}
-          className="w-full bg-primary text-primary-foreground rounded-xl py-3 font-bold text-sm tracking-wide hover:opacity-90 active:scale-[0.98] transition-all"
+          className="w-full bg-primary text-primary-foreground rounded-2xl py-4 font-bold text-base tracking-wide hover:opacity-90 active:scale-[0.98] transition-all shadow-sm"
+          style={{ minHeight: 56 }}
         >
           SPREMI MJERENJE
         </button>
@@ -1472,14 +1476,16 @@ export function BrziUnosMjerenja({
           <button
             type="button"
             onClick={handleReset}
-            className="flex-1 border border-destructive/50 text-destructive rounded-lg py-2 font-medium text-xs hover:bg-destructive/10 active:scale-[0.98] transition-all"
+            className="flex-1 border border-destructive/40 text-destructive rounded-2xl py-3 font-semibold text-sm hover:bg-destructive/10 active:scale-[0.98] transition-all"
+            style={{ minHeight: 44 }}
           >
             Ponisti
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 border border-border text-foreground rounded-lg py-2 font-medium text-xs hover:bg-muted/50 active:scale-[0.98] transition-all"
+            className="flex-1 border border-border text-muted-foreground rounded-2xl py-3 font-semibold text-sm hover:bg-muted/50 active:scale-[0.98] transition-all"
+            style={{ minHeight: 44 }}
           >
             Odustani
           </button>

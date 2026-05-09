@@ -176,7 +176,7 @@ function FieldLabel({ htmlFor, children }: { htmlFor?: string; children: React.R
   return (
     <label
       htmlFor={htmlFor}
-      className="text-xs font-medium text-muted-foreground"
+      className="text-[10px] font-black uppercase tracking-widest text-muted-foreground"
     >
       {children}
     </label>
@@ -240,7 +240,7 @@ function TextInput({
       id={id ?? name} name={name} type={type} value={value} step={step}
       min={min} max={max} readOnly={readOnly} onChange={onChange}
       placeholder={placeholder}
-      className={`w-full border border-input rounded-lg px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring ${readOnly ? "opacity-60 cursor-default" : ""} ${className ?? ""}`}
+      className={`w-full border border-input rounded-2xl px-4 py-3.5 text-base font-semibold bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder:text-muted-foreground/30 ${readOnly ? "opacity-50 cursor-default" : ""} ${className ?? ""}`}
     />
   );
 }
@@ -255,7 +255,7 @@ function SelectField<T extends string>({
     <select
       id={id ?? name} name={name} value={value}
       onChange={(e) => onChange(e.target.value as T | "")}
-      className="w-full border border-input rounded-lg px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+      className="w-full border border-input rounded-2xl px-4 py-3.5 text-base bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
     >
       <option value="">— Odaberi —</option>
       {options.map((opt) => (
@@ -366,19 +366,19 @@ function SharedDataPanel({
   if (rows.length === 0) return null;
 
   return (
-    <div className="bg-muted/30 border border-border rounded-xl overflow-hidden">
-      <div className="px-3 py-2 border-b border-border bg-muted/50">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-          Dijeljeni podaci sesije
+    <div className="bg-card border border-border rounded-2xl overflow-hidden">
+      <div className="px-4 py-2.5 border-b border-border bg-muted/30">
+        <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">
+          Kontekst sesije
         </p>
       </div>
       <div className="divide-y divide-border/50">
         {rows.map((row) => (
-          <div key={row.label} className="flex items-center justify-between px-3 py-2 gap-3">
+          <div key={row.label} className="flex items-center justify-between px-4 py-2.5 gap-3">
             <span className="text-xs text-muted-foreground min-w-0">{row.label}</span>
             <div className="flex items-center gap-1.5 shrink-0">
-              <span className="text-xs font-semibold text-foreground">{row.value}</span>
-              <span className={`text-[9px] font-semibold border rounded-full px-1.5 py-0.5 leading-none ${SOURCE_COLORS[row.source]}`}>
+              <span className="text-sm font-bold text-foreground">{row.value}</span>
+              <span className={`text-[9px] font-bold border rounded-full px-1.5 py-0.5 leading-none ${SOURCE_COLORS[row.source]}`}>
                 {SOURCE_LABELS[row.source]}
               </span>
             </div>
@@ -400,29 +400,29 @@ function InterpretacijaKartica({ ph, phRate, foam }: {
   const res = interpretirajMjerenje(ph, phRate, foam);
 
   const colorMap = {
-    green: "bg-green-50 border-green-200 text-green-800",
-    yellow: "bg-amber-50 border-amber-200 text-amber-800",
-    orange: "bg-orange-50 border-orange-200 text-orange-800",
-    red: "bg-red-50 border-red-200 text-red-800",
+    green: "border-emerald-500/30 bg-emerald-500/8 text-emerald-800 dark:text-emerald-200",
+    yellow: "border-amber-400/30 bg-amber-400/8 text-amber-800 dark:text-amber-200",
+    orange: "border-orange-500/30 bg-orange-500/8 text-orange-800 dark:text-orange-200",
+    red: "border-rose-500/30 bg-rose-500/8 text-rose-800 dark:text-rose-200",
   };
   const badgeMap = {
-    green: "bg-green-100 text-green-700",
-    yellow: "bg-amber-100 text-amber-700",
-    orange: "bg-orange-100 text-orange-700",
-    red: "bg-red-100 text-red-700",
+    green: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+    yellow: "bg-amber-400/15 text-amber-600 dark:text-amber-400",
+    orange: "bg-orange-500/15 text-orange-600 dark:text-orange-400",
+    red: "bg-rose-500/15 text-rose-600 dark:text-rose-400",
   };
 
   return (
-    <div className={`border rounded-xl p-3.5 flex flex-col gap-2 ${colorMap[res.zonaColor]}`}>
+    <div className={`border rounded-2xl p-4 flex flex-col gap-2.5 ${colorMap[res.zonaColor]}`}>
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wide">Interpretacija</span>
-        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeMap[res.zonaColor]}`}>
+        <span className="text-[10px] font-black uppercase tracking-widest opacity-70">Interpretacija</span>
+        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${badgeMap[res.zonaColor]}`}>
           {res.zona}
         </span>
       </div>
-      <p className="text-xs leading-relaxed">{res.tekst}</p>
+      <p className="text-sm font-semibold leading-relaxed">{res.tekst}</p>
       {res.brzina && (
-        <p className="text-xs opacity-80">Brzina: {res.brzina}</p>
+        <p className="text-xs opacity-70">Brzina: {res.brzina}</p>
       )}
     </div>
   );
@@ -957,26 +957,26 @@ export function MjerenjeModal({
         <button
           type="button"
           onClick={onClose}
-          className="p-1 -ml-1 hover:opacity-70 transition-opacity"
+          className="p-2 -ml-1.5 rounded-xl hover:bg-muted transition-colors"
           aria-label="Zatvori"
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
         </button>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
+          <p className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest mb-0.5">
             Ciklus #{ciklus.cycleNumber ?? ciklus.broj}
-            {isInitial ? " — Referentno mjerenje" : ` — Mjerenje #${ciklus.mjerenja.filter(m => m.measurementType !== "initial_cycle_measurement").length + 1}`}
+            {isInitial ? " — Referentno" : ` — Mjerenje #${ciklus.mjerenja.filter(m => m.measurementType !== "initial_cycle_measurement").length + 1}`}
           </p>
-          <h1 className="text-lg font-bold leading-tight text-foreground">
+          <h1 className="text-xl font-black leading-tight tracking-tight text-foreground text-balance">
             {isInitial
-              ? "Referentno mjerenje (nakon ~3 min cirkulacije)"
+              ? "Referentno mjerenje"
               : form.measurementType === "after_top_up"
                 ? "Mjerenje nakon nadopune"
                 : (form.measurementType === "final_cycle" || form.measurementType === "final_subsession" || form.measurementType === "final_session")
                   ? "Završno mjerenje"
-                  : "Novo mjerenje trenutačnog stanja otopine"}
+                  : "Unesi mjerenje"}
           </h1>
         </div>
       </div>
@@ -1004,11 +1004,12 @@ export function MjerenjeModal({
                 <button
                   type="button"
                   onClick={() => setShowVoice((v) => !v)}
-                  className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm border-2 transition-all active:scale-[0.98] ${
+                  className={`w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-sm border-2 transition-all active:scale-[0.98] ${
                     showVoice
-                      ? "bg-primary/10 border-primary/60 text-primary"
+                      ? "bg-primary/10 border-primary/50 text-primary"
                       : "bg-card border-border text-foreground hover:border-primary/40 hover:text-primary"
                   }`}
+                  style={{ minHeight: 52 }}
                 >
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round">
                     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
@@ -1745,15 +1746,16 @@ export function MjerenjeModal({
         <button
           type="submit"
           form="mjerenje-form"
-          className="w-full bg-primary text-primary-foreground rounded-xl py-3 font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
-          style={{ minHeight: 48, maxHeight: 52 }}
+          className="w-full bg-primary text-primary-foreground rounded-2xl py-4 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all shadow-sm"
+          style={{ minHeight: 56 }}
         >
           {isInitial ? "Spremi referentno mjerenje" : "Spremi mjerenje"}
         </button>
         <button
           type="button"
           onClick={onClose}
-          className="w-full border border-border text-foreground rounded-xl py-3 font-medium text-sm hover:bg-muted/50 active:scale-[0.98] transition-all"
+          className="w-full border border-border text-muted-foreground rounded-2xl py-3.5 font-semibold text-sm hover:bg-muted/50 active:scale-[0.98] transition-all"
+          style={{ minHeight: 48 }}
         >
           Odustani
         </button>
