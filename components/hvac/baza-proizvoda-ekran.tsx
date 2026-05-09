@@ -1082,15 +1082,20 @@ function TabIndikatorBoje({ product }: { product: Product }) {
           </div>
 
           {/* 8. Nije za */}
-          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex flex-col gap-1">
-            <p className="text-xs font-bold text-red-900 uppercase tracking-wide">Nije za</p>
-            <ul className="flex flex-col gap-1 mt-0.5">
+          <div className="bg-rose-500/8 border-2 border-rose-500/30 rounded-2xl px-4 py-3 flex flex-col gap-1">
+            <div className="flex items-center gap-2 mb-1">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-rose-500 shrink-0">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <p className="text-[9px] font-black uppercase tracking-widest text-rose-800 dark:text-rose-200">Nije za</p>
+            </div>
+            <ul className="flex flex-col gap-1">
               {[
                 "Single feed indirect cylinders",
                 "Primatic ili slične sustave",
               ].map((item) => (
-                <li key={item} className="flex items-center gap-2 text-xs text-red-800">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                <li key={item} className="flex items-center gap-2 text-xs font-medium text-rose-800 dark:text-rose-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500/50 shrink-0" />
                   {item}
                 </li>
               ))}

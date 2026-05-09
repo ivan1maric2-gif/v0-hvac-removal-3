@@ -336,7 +336,7 @@ function interpretDS3(
       status: "reakcija_zavrsena",
       message: "Reakcija je završena. Otopina je neutralizirana mineralima.",
       action: "ZAMIJENITI OTOPINU",
-      actionColor: "bg-purple-900/50 text-purple-300 border-purple-700",
+      actionColor: "bg-slate-800 text-slate-200 border-slate-600",
     };
   }
   // 5) Plava + nema pjene → Kemija potrošena
@@ -2497,7 +2497,7 @@ function calculateStabilizacija(sesija: Sesija, aktivanCiklus: Ciklus | null): S
   // pH nizak = jaka kiselina još prisutna
   const phNizak = zadnjiPHVal != null && zadnjiPHVal < 2.0;
 
-  // ── Razina kamenca (bodovni sustav) ────────────────���─────────────────────────
+  // ── Razina kamenca (bodovni sustav) ─���──────────────���─────────────────────────
   const totalNadopune = sviCiklusi.reduce((s, c) => s + (c.nadopune?.length ?? 0), 0);
   const phUkupno = sPHs.length >= 2
     ? Math.abs((getMjerenjePH(sPHs[sPHs.length - 1]) ?? 7) - (getMjerenjePH(sPHs[0]) ?? 7)) : 0;
