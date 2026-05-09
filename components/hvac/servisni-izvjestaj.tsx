@@ -140,11 +140,6 @@ function MjerenjaTable({ mjerenja }: { mjerenja: Mjerenje[] }) {
       </table>
     </div>
   );
-          })}
-        </tbody>
-      </table>
-    </div>
-  );
 }
 
 // ─── Top-up table ─────────────────────────────────────────────────────────────
