@@ -37,15 +37,15 @@ function fPct(val: number | null | undefined) {
 // ─── Result badge ─────────────────────────────────────────────────────────────
 
 const RESULT_BADGE_COLORS: Record<ResultBadge, string> = {
-  "Uspješno očišćeno":      "bg-green-100 text-green-800 border-green-300",
-  "Djelomično očišćeno":    "bg-blue-100 text-blue-800 border-blue-300",
-  "Potreban dodatni ciklus":"bg-amber-100 text-amber-800 border-amber-300",
-  "Potreban mehanički zahvat": "bg-red-100 text-red-800 border-red-300",
+  "Uspješno očišćeno":         "bg-emerald-500/10 text-emerald-800 dark:text-emerald-200 border-emerald-500/30",
+  "Djelomično očišćeno":       "bg-blue-500/10   text-blue-800    dark:text-blue-200    border-blue-500/30",
+  "Potreban dodatni ciklus":   "bg-amber-400/10  text-amber-800   dark:text-amber-200   border-amber-400/30",
+  "Potreban mehanički zahvat": "bg-rose-500/10   text-rose-800    dark:text-rose-200    border-rose-500/30",
 };
 
 function ResultBadgeChip({ badge }: { badge: ResultBadge }) {
   return (
-    <span className={`inline-block text-xs font-bold border rounded-xl px-3 py-1 ${RESULT_BADGE_COLORS[badge]}`}>
+    <span className={`inline-block text-sm font-bold border-2 rounded-2xl px-4 py-1.5 ${RESULT_BADGE_COLORS[badge]}`}>
       {badge}
     </span>
   );
@@ -56,13 +56,13 @@ function ResultBadgeChip({ badge }: { badge: ResultBadge }) {
 function EffBadge({ status }: { status: string | null }) {
   if (!status) return <span className="text-muted-foreground text-[11px]">—</span>;
   const colors: Record<string, string> = {
-    "Vrlo dobar učinak": "bg-green-100 text-green-800",
-    "Dobar učinak":      "bg-blue-100 text-blue-800",
-    "Umjeren učinak":    "bg-amber-100 text-amber-800",
-    "Slab učinak":       "bg-red-100 text-red-800",
+    "Vrlo dobar učinak": "bg-emerald-500/10 text-emerald-800 dark:text-emerald-200",
+    "Dobar učinak":      "bg-blue-500/10   text-blue-800    dark:text-blue-200",
+    "Umjeren učinak":    "bg-amber-400/10  text-amber-800   dark:text-amber-200",
+    "Slab učinak":       "bg-rose-500/10   text-rose-800    dark:text-rose-200",
   };
   return (
-    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${colors[status] ?? "bg-muted text-foreground"}`}>
+    <span className={`text-xs font-bold px-2 py-0.5 rounded-lg ${colors[status] ?? "bg-muted text-foreground"}`}>
       {status}
     </span>
   );
@@ -72,7 +72,7 @@ function EffBadge({ status }: { status: string | null }) {
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground border-b border-border pb-1 mb-3 mt-6 first:mt-0">
+    <h2 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 border-b border-border pb-2 mb-4 mt-8 first:mt-0">
       {children}
     </h2>
   );
@@ -82,9 +82,9 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 
 function StatCard({ label, value, color }: { label: string; value: string; color?: string }) {
   return (
-    <div className="border border-border rounded-xl p-3 flex flex-col gap-0.5">
-      <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
-      <p className={`text-xl font-bold ${color ?? "text-foreground"}`}>{value}</p>
+    <div className="border border-border rounded-2xl p-4 flex flex-col gap-1 bg-card">
+      <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">{label}</p>
+      <p className={`text-2xl font-black tabular-nums ${color ?? "text-foreground"}`}>{value}</p>
     </div>
   );
 }
@@ -93,7 +93,7 @@ function StatCard({ label, value, color }: { label: string; value: string; color
 
 function Th({ children }: { children: React.ReactNode }) {
   return (
-    <th className="text-left text-[9px] font-bold uppercase tracking-widest text-muted-foreground px-2 py-1.5 border-b border-border whitespace-nowrap">
+    <th className="text-left text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 px-3 py-2 border-b border-border whitespace-nowrap bg-muted/30">
       {children}
     </th>
   );
@@ -101,7 +101,7 @@ function Th({ children }: { children: React.ReactNode }) {
 
 function Td({ children, mono }: { children: React.ReactNode; mono?: boolean }) {
   return (
-    <td className={`px-2 py-1.5 text-[11px] border-b border-border/50 ${mono ? "font-mono" : ""}`}>
+    <td className={`px-3 py-2.5 text-xs border-b border-border/40 ${mono ? "font-mono tabular-nums" : ""}`}>
       {children}
     </td>
   );
@@ -121,46 +121,25 @@ function MjerenjaTable({ mjerenja }: { mjerenja: Mjerenje[] }) {
   });
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto rounded-2xl border border-border">
       <table className="w-full text-left border-collapse">
         <thead>
-          <tr className="bg-muted/40">
-            <Th>#</Th>
-            <Th>Vrsta</Th>
-            <Th>Vrij. uzorka</Th>
-            <Th>Od ulij. (min)</Th>
-            <Th>pH</Th>
-            <Th>Temp °C</Th>
-            <Th>Protok L/min</Th>
-            <Th>pH rate/min</Th>
-            <Th>Napomena</Th>
+          <tr className="bg-muted/30">
+            <th className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 px-3 py-2 border-b border-border w-1/2">Parametar</th>
+            <th className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 px-3 py-2 border-b border-border">Vrijednost</th>
           </tr>
         </thead>
         <tbody>
-          {rows.map(({ m, isInit, seq }, i) => {
-            const ph = m.ph ?? m.pH;
-            const ts = m.measuredAt ?? m.timestamp;
-            return (
-              <tr key={m.id} className={`${i % 2 === 0 ? "bg-background" : "bg-muted/20"} ${isInit ? "border-l-2 border-violet-400" : ""}`}>
-                <Td mono>
-                  {isInit
-                    ? <span className="text-[9px] font-bold text-violet-700 uppercase tracking-wide">Poc.</span>
-                    : `#${seq}`}
-                </Td>
-                <Td>
-                  {isInit
-                    ? <span className="text-[10px] text-violet-700 font-semibold">Poc. mjerenje</span>
-                    : <span className="text-[10px] text-muted-foreground">Mjerenje</span>}
-                </Td>
-                <Td mono>{fTime(ts)}</Td>
-                <Td mono>{m.minutesFromCycleStart != null ? `${m.minutesFromCycleStart} min` : "—"}</Td>
-                <Td mono>{ph != null ? ph.toFixed(2) : "—"}</Td>
-                <Td mono>{m.temperatureC != null ? `${m.temperatureC}°` : "—"}</Td>
-                <Td mono>{m.flowLMin != null ? fNum(m.flowLMin) : "—"}</Td>
-                <Td mono>{!isInit && m.phRatePerMinute != null ? fNum(m.phRatePerMinute, 4) : "—"}</Td>
-                <Td>{m.note ?? m.napomena ?? "—"}</Td>
-              </tr>
-            );
+          {rows.map(([label, val], i) => (
+            <tr key={i} className={i % 2 === 0 ? "bg-background" : "bg-muted/20"}>
+              <td className="px-3 py-2.5 text-xs text-muted-foreground border-b border-border/40">{label}</td>
+              <td className="px-3 py-2.5 text-sm font-bold text-foreground border-b border-border/40 font-mono tabular-nums">{val}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
           })}
         </tbody>
       </table>
@@ -215,22 +194,23 @@ function CiklusBlok({ ciklus, idx }: { ciklus: Ciklus; idx: number }) {
   const delta = lastMjer ? izracunajDeltaCiklusa(ciklus, lastMjer) : null;
 
   return (
-    <div className="border border-border rounded-xl p-3 flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-2">
-        <h4 className="text-xs font-bold text-foreground">
+    <div className="border border-border rounded-2xl overflow-hidden">
+      <div className="flex items-center justify-between gap-2 px-4 py-3 bg-muted/30 border-b border-border">
+        <h4 className="text-sm font-black text-foreground">
           Ciklus #{ciklus.cycleNumber ?? ciklus.broj ?? idx + 1}
           {ciklus.name ? ` — ${ciklus.name}` : ""}
         </h4>
-        <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
-          ciklus.status === "zavrsen" ? "bg-green-100 text-green-800" :
-          ciklus.status === "prekinut" ? "bg-red-100 text-red-800" :
-          "bg-amber-100 text-amber-800"
+        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
+          ciklus.status === "zavrsen" ? "bg-emerald-500/10 text-emerald-800 dark:text-emerald-200" :
+          ciklus.status === "prekinut" ? "bg-rose-500/10 text-rose-800 dark:text-rose-200" :
+          "bg-amber-400/10 text-amber-800 dark:text-amber-200"
         }`}>
           {ciklus.status}
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-[11px] text-muted-foreground">
+      <div className="px-4 py-3 flex flex-col gap-3">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-muted-foreground">
         <span>Proizvod: <strong className="text-foreground">{ciklus.chemicalProductName ?? ciklus.kemikalija ?? "—"}</strong></span>
         <span>Vol. otopine: <strong className="text-foreground">{fNum(ciklus.totalSolutionVolumeL ?? ciklus.waterVolumeL)} L</strong></span>
         <span>Kemikalija: <strong className="text-foreground">{ciklus.chemicalAmount} {ciklus.chemicalUnit}</strong></span>
@@ -299,16 +279,17 @@ function CiklusBlok({ ciklus, idx }: { ciklus: Ciklus; idx: number }) {
       )}
 
       <div>
-        <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Mjerenja</p>
+        <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-2">Mjerenja</p>
         <MjerenjaTable mjerenja={ciklus.mjerenja} />
       </div>
 
       {ciklus.nadopune.length > 0 && (
         <div>
-          <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Nadopune</p>
+          <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-2">Nadopune kemikalije</p>
           <NadopuneTable nadopune={ciklus.nadopune} />
         </div>
       )}
+      </div>
     </div>
   );
 }
@@ -322,7 +303,7 @@ function MeasurementStatsGrid({ stats }: { stats: FinalReport["measurement_stats
     ["Min pH",      stats.min_pH      != null ? stats.min_pH.toFixed(2)      : "—"],
     ["Maks pH",     stats.max_pH      != null ? stats.max_pH.toFixed(2)      : "—"],
     ["Prosjek pH",  stats.average_pH  != null ? stats.average_pH.toFixed(3)  : "—"],
-    ["Maks rate/min", stats.max_rate_ph_per_min  != null ? stats.max_rate_ph_per_min.toFixed(4)  : "—"],
+    ["Maks rate/min", stats.max_rate_ph_per_min  != null ? stats.max_rate_ph_per_min.toFixed(4)  : "���"],
     ["Avg rate/min",  stats.average_rate_ph_per_min != null ? stats.average_rate_ph_per_min.toFixed(4) : "—"],
   ];
   return (
@@ -421,16 +402,18 @@ export function ServisniIzvjestaj({ sesija, onClose }: ServisniIzvjestajProps) {
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background overflow-hidden">
       {/* Top bar */}
-      <div className="shrink-0 flex items-center justify-between px-4 py-3 border-b border-border bg-card gap-2 flex-wrap">
-        <div>
-          <h1 className="text-sm font-bold text-foreground">Servisni izvještaj</h1>
-          <p className="text-xs text-muted-foreground">{sesija.naziv_objekta} · {fDate(sesija.datum)}</p>
+      <div className="shrink-0 flex items-center justify-between px-4 py-3.5 border-b border-border bg-card gap-2 flex-wrap">
+        <div className="flex flex-col gap-0.5 min-w-0">
+          <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">Servisni izvještaj</p>
+          <h1 className="text-base font-black text-foreground leading-tight truncate">{sesija.naziv_objekta}</h1>
+          <p className="text-xs text-muted-foreground">{fDate(sesija.datum)}</p>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap shrink-0">
           <CopyButton report={report} />
           <button
             onClick={handlePrint}
-            className="flex items-center gap-1.5 text-xs font-semibold border border-border rounded-lg px-3 py-2 hover:bg-muted/50 transition-colors"
+            className="flex items-center gap-1.5 text-xs font-semibold border border-border rounded-xl px-3 py-2.5 hover:bg-muted/50 transition-colors"
+            style={{ minHeight: 40 }}
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M6 9V2h12v7" /><rect x="6" y="14" width="12" height="8" /><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
@@ -439,7 +422,8 @@ export function ServisniIzvjestaj({ sesija, onClose }: ServisniIzvjestajProps) {
           </button>
           <button
             onClick={onClose}
-            className="flex items-center gap-1.5 text-xs font-semibold border border-border rounded-lg px-3 py-2 hover:bg-muted/50 transition-colors"
+            className="flex items-center gap-1.5 text-xs font-semibold border border-border rounded-xl px-3 py-2.5 hover:bg-muted/50 transition-colors"
+            style={{ minHeight: 40 }}
           >
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M18 6 6 18M6 6l12 12" />
@@ -454,73 +438,72 @@ export function ServisniIzvjestaj({ sesija, onClose }: ServisniIzvjestajProps) {
         <div ref={printRef} className="max-w-3xl mx-auto px-4 py-6 flex flex-col gap-0 print:px-0 print:py-0">
 
           {/* ── 1. Header ── */}
-          <div className="border border-border rounded-2xl p-5 bg-card mb-6">
-            <div className="flex items-start justify-between gap-4 mb-4">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Servisni izvještaj</p>
-                <h2 className="text-xl font-bold text-foreground leading-tight">{sesija.naziv_objekta}</h2>
-                <p className="text-sm text-muted-foreground mt-0.5">{sesija.lokacija}</p>
-              </div>
-              <div className="text-right shrink-0">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Datum</p>
-                <p className="text-sm font-semibold text-foreground">{fDate(sesija.datum)}</p>
-              </div>
+          <div className="border-2 border-primary/20 rounded-2xl overflow-hidden bg-card mb-6">
+            <div className="bg-primary/5 px-5 py-4 border-b border-primary/15">
+              <p className="text-[9px] font-black uppercase tracking-widest text-primary/60 mb-1">Servisni izvještaj</p>
+              <h2 className="text-2xl font-black text-foreground leading-tight text-balance">{sesija.naziv_objekta}</h2>
+              {sesija.lokacija && <p className="text-sm text-muted-foreground mt-1">{sesija.lokacija}</p>}
             </div>
-            <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-[11px]">
+            <div className="px-5 py-4 grid grid-cols-2 gap-x-8 gap-y-3 text-xs">
               <div>
-                <span className="text-muted-foreground">Operater: </span>
-                <strong className="text-foreground">{sesija.serviser}</strong>
+                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-0.5">Datum servisa</p>
+                <p className="font-semibold text-foreground">{fDate(sesija.datum)}</p>
+              </div>
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-0.5">Operater</p>
+                <p className="font-semibold text-foreground">{sesija.serviser}</p>
               </div>
               {sesija.kontakt_osoba && (
                 <div>
-                  <span className="text-muted-foreground">Kontakt osoba: </span>
-                  <strong className="text-foreground">{sesija.kontakt_osoba}</strong>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-0.5">Kontakt osoba</p>
+                  <p className="font-semibold text-foreground">{sesija.kontakt_osoba}</p>
                 </div>
               )}
               <div>
-                <span className="text-muted-foreground">Vrsta čišćenja: </span>
-                <strong className="text-foreground">Uklanjanje kamenca</strong>
+                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-0.5">Vrsta čišćenja</p>
+                <p className="font-semibold text-foreground">Uklanjanje kamenca</p>
               </div>
               <div>
-                <span className="text-muted-foreground">Broj sesije: </span>
-                <strong className="text-foreground font-mono">{sesija.id.slice(0, 8).toUpperCase()}</strong>
+                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-0.5">Broj sesije</p>
+                <p className="font-mono font-bold text-foreground">{sesija.id.slice(0, 8).toUpperCase()}</p>
               </div>
               {report.chemical_products.length > 0 && (
                 <div className="col-span-2">
-                  <span className="text-muted-foreground">Sredstvo: </span>
-                  <strong className="text-foreground">{report.chemical_products.join(", ")}</strong>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-0.5">Kemijsko sredstvo</p>
+                  <p className="font-semibold text-foreground">{report.chemical_products.join(", ")}</p>
                 </div>
               )}
             </div>
             {sesija.opis_problema && (
-              <div className="mt-3 pt-3 border-t border-border">
-                <p className="text-[11px] text-muted-foreground">{sesija.opis_problema}</p>
+              <div className="px-5 pb-4 pt-0 border-t border-border">
+                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1 mt-3">Opis problema</p>
+                <p className="text-xs text-foreground leading-relaxed">{sesija.opis_problema}</p>
               </div>
             )}
           </div>
 
           {/* ── 2. Result badge ── */}
           <SectionHeading>Rezultat čišćenja</SectionHeading>
-          <div className="border border-border rounded-2xl p-4 bg-card mb-4 flex flex-col gap-3">
-            <div className="flex items-center gap-3 flex-wrap">
+          <div className="border border-border rounded-2xl bg-card mb-4 overflow-hidden">
+            <div className="px-5 py-4 flex flex-col gap-3">
               <ResultBadgeChip badge={report.result_badge} />
+              {report.result_notes.length > 0 && (
+                <ul className="flex flex-col gap-2 mt-1">
+                  {report.result_notes.map((note, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-xs text-foreground leading-relaxed">
+                      <span className="mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full bg-primary/50 inline-block" />
+                      {note}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-            {report.result_notes.length > 0 && (
-              <ul className="flex flex-col gap-1">
-                {report.result_notes.map((note, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[11px] text-foreground">
-                    <span className="mt-0.5 shrink-0 w-1.5 h-1.5 rounded-full bg-foreground/40 inline-block" />
-                    {note}
-                  </li>
-                ))}
-              </ul>
-            )}
             {report.final_scale_status && (
-              <div className="pt-2 border-t border-border">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Stanje kamenca</p>
-                <p className="text-xs font-semibold text-foreground">{report.final_scale_status}</p>
+              <div className="px-5 py-4 border-t border-border bg-muted/20">
+                <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Stanje kamenca</p>
+                <p className="text-sm font-bold text-foreground">{report.final_scale_status}</p>
                 {report.final_recommendation && (
-                  <p className="text-xs text-muted-foreground mt-0.5">{report.final_recommendation}</p>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{report.final_recommendation}</p>
                 )}
               </div>
             )}
@@ -575,7 +558,7 @@ export function ServisniIzvjestaj({ sesija, onClose }: ServisniIzvjestajProps) {
                   <StatCard
                     label="Poboljšanje"
                     value={fPct(report.flow.flow_improvement_percent)}
-                    color={report.flow.flow_improvement_percent > 0 ? "text-green-700" : "text-red-700"}
+                    color={report.flow.flow_improvement_percent > 0 ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"}
                   />
                 )}
               </div>
@@ -638,7 +621,7 @@ export function ServisniIzvjestaj({ sesija, onClose }: ServisniIzvjestajProps) {
 
           {/* ── 8. Final conclusion ── */}
           <SectionHeading>Zaključak</SectionHeading>
-          <div className="border border-border rounded-xl p-4 bg-muted/30 mb-6">
+          <div className="border border-border rounded-2xl p-5 bg-card mb-6">
             <p className="text-sm text-foreground leading-relaxed">
               {report.result_notes.length > 0
                 ? report.result_notes.join(" ")
