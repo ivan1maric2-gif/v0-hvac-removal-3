@@ -70,17 +70,20 @@ export function BazaProizvodaEkran() {
     <div className="flex flex-col flex-1 bg-background">
       {/* Header */}
       <header className="bg-primary text-primary-foreground px-4 py-5">
-        <div className="flex items-center gap-3 mb-1">
+        <div className="flex items-center gap-3">
           <button
             onClick={nazad}
-            className="p-1 rounded-lg hover:bg-primary-foreground/10 transition-colors"
+            className="p-2 rounded-xl hover:bg-primary-foreground/10 transition-colors shrink-0"
             aria-label="Natrag"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M19 12H5M12 5l-7 7 7 7" />
             </svg>
           </button>
-          <h1 className="text-xl font-bold leading-tight">Baza proizvoda</h1>
+          <div>
+            <p className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-0.5">Katalog</p>
+            <h1 className="text-xl font-black leading-tight">Baza proizvoda</h1>
+          </div>
         </div>
       </header>
 
@@ -98,7 +101,7 @@ export function BazaProizvodaEkran() {
             placeholder="Pretraži proizvode..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 text-sm border border-input rounded-xl bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="w-full pl-9 pr-4 py-3.5 text-base border border-border rounded-2xl bg-background text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
           />
         </div>
 
@@ -108,10 +111,10 @@ export function BazaProizvodaEkran() {
             <button
               key={f}
               onClick={() => setFilterStatus(f)}
-              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+              className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-colors ${
                 filterStatus === f
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary text-secondary-foreground hover:bg-secondary/70"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "bg-muted text-muted-foreground hover:bg-muted/70"
               }`}
             >
               {f === "sve" ? "Svi" : STATUS_PROIZVODA_LABELS[f]}
@@ -151,26 +154,26 @@ function ProizvodKartica({ product, onClick }: { product: Product; onClick: () =
   return (
     <button
       onClick={onClick}
-      className="w-full text-left bg-card border border-border rounded-2xl p-4 hover:border-primary/40 active:scale-[0.99] transition-all"
+      className="w-full text-left bg-card border-2 border-border rounded-2xl overflow-hidden hover:border-primary/40 active:scale-[0.99] transition-all"
     >
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-bold text-foreground text-base">{product.name}</span>
+      {/* Card header */}
+      <div className="px-4 pt-4 pb-3 flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap mb-1">
+            <span className="font-black text-foreground text-base leading-snug">{product.name}</span>
             {product.isDemo && (
-              <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded px-1.5 py-0.5">
+              <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded-lg px-2 py-0.5">
                 DEMO
               </span>
             )}
-            {product.brand !== "—" && (
-              <span className="text-xs text-muted-foreground">{product.brand}</span>
-            )}
           </div>
-          <div className="flex items-center gap-2 mt-1 flex-wrap">
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          {product.brand !== "—" && (
+            <p className="text-xs text-muted-foreground">{product.brand}</p>
+          )}
+          <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+            <span className="text-[9px] font-black uppercase tracking-widest bg-primary/10 text-primary rounded-full px-2.5 py-0.5">
               {TIP_PROIZVODA_LABELS[product.productType]}
             </span>
-            <span className="text-[10px] text-muted-foreground">·</span>
             <span className="text-[10px] text-muted-foreground">{OBLIK_PROIZVODA_LABELS[product.form]}</span>
           </div>
         </div>
@@ -179,34 +182,46 @@ function ProizvodKartica({ product, onClick }: { product: Product; onClick: () =
           <StatusPodatakaBadge statusPodataka={product.statusPodataka} />
         </div>
       </div>
+
+      {/* Warnings */}
       {product.isDemo && (
-        <p className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2 py-1 mb-2 leading-snug">
-          Demo vrijednosti — provjeriti prema tehničkom listu proizvođača.
-        </p>
+        <div className="mx-4 mb-2 rounded-xl border border-amber-400/30 bg-amber-400/8 px-3 py-2">
+          <p className="text-[10px] font-bold text-amber-800 dark:text-amber-200 leading-snug">
+            Demo vrijednosti — provjeriti prema tehničkom listu proizvođača.
+          </p>
+        </div>
       )}
       {!product.isDemo && product.statusPodataka === "potrebna_dopuna" && (
-        <p className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-2 py-1 mb-2 leading-snug">
-          Neki podaci još nisu uneseni iz tehničkog lista proizvođača.
-        </p>
+        <div className="mx-4 mb-2 rounded-xl border border-amber-400/30 bg-amber-400/8 px-3 py-2">
+          <p className="text-[10px] font-bold text-amber-800 dark:text-amber-200 leading-snug">
+            Neki podaci još nisu uneseni iz tehničkog lista proizvođača.
+          </p>
+        </div>
+      )}
+      {mainWarning && (
+        <div className="mx-4 mb-2 rounded-xl border border-rose-500/30 bg-rose-500/8 px-3 py-2 flex items-center gap-2">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-rose-500 shrink-0">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <p className="text-[10px] font-bold text-rose-800 dark:text-rose-200 leading-snug">
+            Upozorenje: nije kompatibilno s — {mainWarning.material}
+          </p>
+        </div>
       )}
 
-      <p className="text-xs text-muted-foreground leading-relaxed mb-3 line-clamp-2">{product.purpose}</p>
+      <p className="px-4 text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-3">{product.purpose}</p>
 
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-        <span>
-          Doziranje: <strong className="text-foreground">{product.dosageMin}–{product.dosageMax} {JEDINICA_DOZIRANJA_LABELS[product.dosageUnit]}</strong>
+      {/* Footer info bar */}
+      <div className="px-4 py-3 bg-muted/20 border-t border-border flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
+        <span className="text-muted-foreground">
+          Doziranje: <strong className="text-foreground font-bold tabular-nums">{product.dosageMin}–{product.dosageMax} {JEDINICA_DOZIRANJA_LABELS[product.dosageUnit]}</strong>
         </span>
         {product.hasColorIndicator && (
-          <span className="text-blue-600 font-medium">Indikator boje</span>
+          <span className="font-bold text-primary">Indikator boje</span>
         )}
-        {product.topUpAllowed ? (
-          <span className="text-green-600 font-medium">Nadopuna: DA</span>
-        ) : (
-          <span className="text-red-600 font-medium">Nadopuna: NE</span>
-        )}
-        {mainWarning && (
-          <span className="text-amber-600 font-medium">Upoz: {mainWarning.material}</span>
-        )}
+        <span className={`font-bold ${product.topUpAllowed ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"}`}>
+          Nadopuna: {product.topUpAllowed ? "DA" : "NE"}
+        </span>
       </div>
     </button>
   );
@@ -232,37 +247,37 @@ function ProizvodDetalj({
     <div className="flex flex-col flex-1 bg-background">
       {/* Header */}
       <header className="bg-primary text-primary-foreground px-4 py-4">
-        <div className="flex items-center justify-between gap-2 mb-1">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={onBack}
-              className="p-1 rounded-lg hover:bg-primary-foreground/10 transition-colors"
+              className="p-2 rounded-xl hover:bg-primary-foreground/10 transition-colors shrink-0"
               aria-label="Natrag"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M19 12H5M12 5l-7 7 7 7" />
               </svg>
             </button>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-lg font-bold leading-tight">{product.name}</h1>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 flex-wrap mb-0.5">
                 {product.isDemo && (
-                  <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded px-1.5 py-0.5">
-                    TESTNI / DEMO
+                  <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded-lg px-2 py-0.5">
+                    DEMO
                   </span>
                 )}
                 {product.indicatorType === "color+foam+sludge" && (
-                  <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-red-700 text-white rounded px-1.5 py-0.5">
+                  <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-red-700 text-white rounded-lg px-2 py-0.5">
                     DESCALER / SLUDGE CLEANER
                   </span>
                 )}
                 {product.indicatorType === "color+bubbles+pH" && (
-                  <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-yellow-600 text-white rounded px-1.5 py-0.5">
+                  <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-yellow-600 text-white rounded-lg px-2 py-0.5">
                     DESCALER / GEL S.p.A.
                   </span>
                 )}
               </div>
-              <p className="text-xs text-primary-foreground/60">{product.brand}</p>
+              <h1 className="text-lg font-black leading-tight truncate">{product.name}</h1>
+              <p className="text-xs text-primary-foreground/60 mt-0.5">{product.brand}</p>
               {product.indicatorType === "color+foam+sludge" && (
                 <p className="text-[11px] text-primary-foreground/50 mt-0.5">
                   Citric acid based descaler &amp; cleaner
@@ -275,7 +290,7 @@ function ProizvodDetalj({
               )}
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <div className="flex flex-col items-end gap-1">
               <StatusBadgeP status={product.status} />
               <StatusPodatakaBadge statusPodataka={product.statusPodataka} />
@@ -283,7 +298,7 @@ function ProizvodDetalj({
             <div className="relative">
               <button
                 onClick={() => setShowActions(!showActions)}
-                className="p-2 rounded-lg hover:bg-primary-foreground/10 transition-colors"
+                className="p-2 rounded-xl hover:bg-primary-foreground/10 transition-colors"
                 aria-label="Akcije"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -326,12 +341,12 @@ function ProizvodDetalj({
       )}
 
       {/* Tab bar */}
-      <div className="flex overflow-x-auto border-b border-border bg-background shrink-0">
+      <div className="flex overflow-x-auto border-b border-border bg-card shrink-0">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`shrink-0 px-4 py-3 text-xs font-semibold transition-colors border-b-2 ${
+            className={`shrink-0 px-4 py-3 text-xs font-bold transition-colors border-b-2 whitespace-nowrap ${
               tab === t.id
                 ? "border-primary text-primary"
                 : "border-transparent text-muted-foreground hover:text-foreground"
@@ -361,9 +376,9 @@ function TabOsnovno({ product }: { product: Product }) {
   const sp: StatusPodataka = product.statusPodataka ?? "potrebna_dopuna";
 
   const statusPodatakaStyle: Record<string, string> = {
-    iz_tds:            "bg-green-50 border-green-200 text-green-800",
-    djelomicno_iz_tds: "bg-amber-50 border-amber-200 text-amber-800",
-    potrebna_dopuna:   "bg-red-50 border-red-200 text-red-800",
+    iz_tds:            "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-200",
+    djelomicno_iz_tds: "bg-amber-400/10  border-amber-400/30  text-amber-800   dark:text-amber-200",
+    potrebna_dopuna:   "bg-rose-500/10   border-rose-500/30   text-rose-800    dark:text-rose-200",
   };
 
   // Determine which "important" fields are entered vs. missing for the TDS section
@@ -397,16 +412,13 @@ function TabOsnovno({ product }: { product: Product }) {
 
       {/* Status row */}
       <div className="flex gap-3">
-        <div className="flex-1 flex flex-col gap-0.5">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Status proizvoda</p>
-          <p className="text-sm font-medium text-foreground">{STATUS_PROIZVODA_LABELS[product.status]}</p>
+        <div className="flex-1 border border-border rounded-2xl px-4 py-3 bg-muted/20">
+          <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Status proizvoda</p>
+          <p className="text-sm font-bold text-foreground">{STATUS_PROIZVODA_LABELS[product.status]}</p>
         </div>
-        <div className="flex-1 flex flex-col gap-0.5">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Status podataka</p>
-          <p className={`text-sm font-medium ${
-            sp === "iz_tds" ? "text-green-700" :
-            sp === "djelomicno_iz_tds" ? "text-amber-700" : "text-red-700"
-          }`}>
+        <div className={`flex-1 border rounded-2xl px-4 py-3 ${statusPodatakaStyle[sp]}`}>
+          <p className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-1">Status podataka</p>
+          <p className="text-sm font-bold">
             {STATUS_PODATAKA_LABELS[sp]}
           </p>
         </div>
@@ -416,17 +428,17 @@ function TabOsnovno({ product }: { product: Product }) {
       {product.note && <InfoGroup label="Napomena" value={product.note} multiline />}
 
       <div className="flex gap-3 text-xs">
-        <div className={`flex-1 rounded-xl px-3 py-3 text-center font-semibold border ${
+        <div className={`flex-1 rounded-2xl px-3 py-3.5 text-center font-bold border-2 ${
           product.topUpAllowed
-            ? "bg-green-50 border-green-200 text-green-800"
-            : "bg-red-50 border-red-200 text-red-800"
+            ? "bg-emerald-500/8 border-emerald-500/25 text-emerald-800 dark:text-emerald-200"
+            : "bg-rose-500/8   border-rose-500/25   text-rose-800    dark:text-rose-200"
         }`}>
           Nadopuna {product.topUpAllowed ? "dozvoljena" : "nije preporučena"}
         </div>
-        <div className={`flex-1 rounded-xl px-3 py-3 text-center font-semibold border ${
+        <div className={`flex-1 rounded-2xl px-3 py-3.5 text-center font-bold border-2 ${
           product.hasColorIndicator
-            ? "bg-blue-50 border-blue-200 text-blue-800"
-            : "bg-secondary border-border text-secondary-foreground"
+            ? "bg-primary/8 border-primary/25 text-primary"
+            : "bg-muted/50 border-border text-muted-foreground"
         }`}>
           {product.hasColorIndicator ? "Ima indikator boje" : "Bez indikatora boje"}
         </div>
@@ -1313,13 +1325,13 @@ function TabMaterijali({ product }: { product: Product }) {
     <div className="flex flex-col gap-4">
       {/* Sigurno za */}
       {compatible.length > 0 && (
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border bg-green-50">
-            <p className="text-xs font-bold uppercase tracking-widest text-green-800">Sigurno za</p>
+        <div className="bg-card border border-emerald-500/25 rounded-2xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-emerald-500/20 bg-emerald-500/8">
+            <p className="text-[9px] font-black uppercase tracking-widest text-emerald-800 dark:text-emerald-200">Sigurno za</p>
           </div>
           <div className="px-4 py-3 flex flex-wrap gap-2">
             {compatible.map((m) => (
-              <span key={m.id} className="text-xs font-semibold bg-green-50 border border-green-200 text-green-800 rounded-full px-3 py-1">
+              <span key={m.id} className="text-xs font-bold bg-emerald-500/10 border border-emerald-500/25 text-emerald-800 dark:text-emerald-200 rounded-full px-3 py-1">
                 {m.material}
               </span>
             ))}
@@ -1329,30 +1341,33 @@ function TabMaterijali({ product }: { product: Product }) {
 
       {/* Oprez */}
       {caution.length > 0 && (
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border bg-yellow-50">
-            <p className="text-xs font-bold uppercase tracking-widest text-yellow-800">Oprez</p>
+        <div className="bg-card border border-amber-400/25 rounded-2xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-amber-400/20 bg-amber-400/8">
+            <p className="text-[9px] font-black uppercase tracking-widest text-amber-800 dark:text-amber-200">Oprez</p>
           </div>
           <div className="flex flex-col divide-y divide-border">
             {caution.map((m) => (
-              <div key={m.id} className="px-4 py-3 flex flex-col gap-0.5">
-                <span className="text-sm font-semibold text-foreground">{m.material}</span>
-                {m.warning && <span className="text-xs text-muted-foreground">{m.warning}</span>}
+              <div key={m.id} className="px-4 py-3 flex flex-col gap-1">
+                <span className="text-sm font-bold text-foreground">{m.material}</span>
+                {m.warning && <span className="text-xs text-muted-foreground leading-relaxed">{m.warning}</span>}
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Nije za */}
+      {/* Nije za — always visible, never collapsed */}
       {notRecommended.length > 0 && (
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border bg-red-50">
-            <p className="text-xs font-bold uppercase tracking-widest text-red-800">Nije za</p>
+        <div className="bg-card border-2 border-rose-500/30 rounded-2xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-rose-500/20 bg-rose-500/8 flex items-center gap-2">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-rose-500 shrink-0">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <p className="text-[9px] font-black uppercase tracking-widest text-rose-800 dark:text-rose-200">Nije preporučeno za</p>
           </div>
           <div className="px-4 py-3 flex flex-wrap gap-2">
             {notRecommended.map((m) => (
-              <span key={m.id} className="text-xs font-semibold bg-red-50 border border-red-200 text-red-800 rounded-full px-3 py-1">
+              <span key={m.id} className="text-xs font-bold bg-rose-500/10 border border-rose-500/30 text-rose-800 dark:text-rose-200 rounded-full px-3 py-1">
                 {m.material}
               </span>
             ))}
@@ -1369,23 +1384,28 @@ function TabSigurnost({ product }: { product: Product }) {
   const s = product.safetyNotes;
   return (
     <div className="flex flex-col gap-4">
-      <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
-        <p className="text-xs font-bold text-red-800 uppercase tracking-widest mb-1">Uvijek</p>
-        <p className="text-sm text-red-900 font-medium leading-relaxed">{s.generalNote}</p>
+      <div className="bg-rose-500/8 border-2 border-rose-500/30 rounded-2xl p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-rose-500 shrink-0">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <p className="text-[9px] font-black uppercase tracking-widest text-rose-800 dark:text-rose-200">Uvijek</p>
+        </div>
+        <p className="text-sm font-semibold text-rose-900 dark:text-rose-100 leading-relaxed">{s.generalNote}</p>
       </div>
       <InfoGroup label="Osobna zaštita" value={s.personalProtection} multiline />
       <InfoGroup label="Ventilacija" value={s.ventilation} multiline />
       <div className="flex gap-3">
         {s.maxTemperatureC !== undefined && (
-          <div className="flex-1 bg-card border border-border rounded-xl px-3 py-3">
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-0.5">Max temp</p>
-            <p className="text-lg font-bold text-foreground">{s.maxTemperatureC} °C</p>
+          <div className="flex-1 bg-card border border-border rounded-2xl px-4 py-3">
+            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Max temp</p>
+            <p className="text-2xl font-black tabular-nums text-foreground">{s.maxTemperatureC} °C</p>
           </div>
         )}
         {s.minTemperatureC !== undefined && (
-          <div className="flex-1 bg-card border border-border rounded-xl px-3 py-3">
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-0.5">Min temp</p>
-            <p className="text-lg font-bold text-foreground">{s.minTemperatureC} °C</p>
+          <div className="flex-1 bg-card border border-border rounded-2xl px-4 py-3">
+            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Min temp</p>
+            <p className="text-2xl font-black tabular-nums text-foreground">{s.minTemperatureC} °C</p>
           </div>
         )}
       </div>
@@ -1402,35 +1422,38 @@ function TabSigurnost({ product }: { product: Product }) {
 
 function InfoGroup({ label, value, multiline }: { label: string; value: string; multiline?: boolean }) {
   return (
-    <div className="flex flex-col gap-0.5">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
-      <p className={`text-sm text-foreground ${multiline ? "leading-relaxed" : "font-medium"}`}>{value}</p>
+    <div className="flex flex-col gap-1">
+      <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">{label}</p>
+      {multiline
+        ? <p className="text-sm text-foreground leading-relaxed">{value}</p>
+        : <p className="text-sm font-semibold text-foreground">{value}</p>
+      }
     </div>
   );
 }
 
 function StatusBadgeP({ status }: { status: Product["status"] }) {
   const styles: Record<string, string> = {
-    aktivan: "bg-green-100 text-green-700 border-green-200",
-    arhiviran: "bg-secondary text-muted-foreground border-border",
+    aktivan:   "bg-emerald-500/10 text-emerald-800 dark:text-emerald-200 border-emerald-500/30",
+    arhiviran: "bg-muted          text-muted-foreground                  border-border",
+    testni:    "bg-amber-400/10   text-amber-800    dark:text-amber-200  border-amber-400/30",
   };
   return (
-    <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border shrink-0 ${styles[status] ?? "bg-secondary text-muted-foreground border-border"}`}>
+    <span className={`text-[9px] font-bold uppercase tracking-widest border rounded-full px-2.5 py-0.5 ${styles[status] ?? "bg-muted text-muted-foreground border-border"}`}>
       {STATUS_PROIZVODA_LABELS[status]}
     </span>
   );
 }
 
 function StatusPodatakaBadge({ statusPodataka }: { statusPodataka: StatusPodataka | undefined }) {
-  const sp: StatusPodataka = statusPodataka ?? "potrebna_dopuna";
-  const styles: Record<StatusPodataka, string> = {
-    iz_tds:            "bg-green-100 text-green-700 border-green-200",
-    djelomicno_iz_tds: "bg-amber-100 text-amber-700 border-amber-200",
-    potrebna_dopuna:   "bg-red-100 text-red-700 border-red-200",
+  if (!statusPodataka || statusPodataka === "iz_tds") return null;
+  const styles: Record<string, string> = {
+    djelomicno_iz_tds: "bg-amber-400/10 text-amber-800 dark:text-amber-200 border-amber-400/30",
+    potrebna_dopuna:   "bg-rose-500/10  text-rose-800  dark:text-rose-200  border-rose-500/30",
   };
   return (
-    <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full border shrink-0 ${styles[sp]}`}>
-      {STATUS_PODATAKA_SHORT[sp]}
+    <span className={`text-[8px] font-bold uppercase tracking-widest border rounded-full px-2 py-0.5 ${styles[statusPodataka] ?? "bg-muted text-muted-foreground border-border"}`}>
+      {STATUS_PODATAKA_SHORT[statusPodataka]}
     </span>
   );
 }
