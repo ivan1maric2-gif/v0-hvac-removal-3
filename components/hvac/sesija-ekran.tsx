@@ -511,16 +511,19 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
             {aktivanCiklus && aktivanCiklus.mjerenja.length > 0 && (
               <div className="flex flex-col gap-3">
                 {/* 4-tab pill bar */}
-                <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-xl">
+                <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-2xl">
                   {(["live", "detalji", "preporuka", "pregled"] as const).map((tab) => {
-                    const labels = { live: "Live", detalji: "Detalji", preporuka: "Preporuka", pregled: "LIVE pregled" };
+                    const labels = { live: "Live", detalji: "Detalji", preporuka: "Preporuka", pregled: "Pregled" };
+                    const isActive = workTab === tab;
                     return (
                       <button
                         key={tab}
                         type="button"
                         onClick={() => setWorkTab(tab)}
-                        className={`flex-1 py-2 rounded-lg text-xs font-bold tracking-wide transition-all ${
-                          workTab === tab
+                        className={`flex-1 py-2.5 rounded-xl text-xs font-bold tracking-wide transition-all ${
+                          isActive && tab === "live"
+                            ? "bg-teal-600 text-white shadow-sm"
+                            : isActive
                             ? "bg-background text-foreground shadow-sm"
                             : "text-muted-foreground hover:text-foreground"
                         }`}
@@ -571,10 +574,11 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
                     {/* Mjerenja ciklusa — unified chronological timeline */}
                     <CiklusVremenskiSlijed ciklus={aktivanCiklus} sesija={sesija} />
                     {/* Delta data grid */}
-                    <div className="bg-card border border-border rounded-xl px-4 py-4">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">
-                        Napredni podaci
-                      </p>
+                    <div className="bg-card border border-border rounded-2xl px-4 py-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Napredni podaci</span>
+                        <span className="text-[9px] text-muted-foreground/40 font-semibold">— delta od referentnog mjerenja</span>
+                      </div>
                       {(() => {
                         const allMj = [...aktivanCiklus.mjerenja].sort(
                           (a, b) => new Date(getMjerenjeTimestamp(a)).getTime() - new Date(getMjerenjeTimestamp(b)).getTime()
@@ -585,66 +589,51 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
                         const basePh = baseline ? getMjerenjePH(baseline) : null;
                         const baseFlow = baseline?.flowLMin;
                         const currFlow = lastMj?.flowLMin;
+
+                        type DeltaCell = { label: string; value: string; positive: boolean | null };
+                        const cells: DeltaCell[] = [];
+
+                        if (basePh !== null && ph !== null) {
+                          const d = ph - basePh;
+                          cells.push({ label: "ΔpH od ref.", value: `${d >= 0 ? "+" : ""}${d.toFixed(3)}`, positive: d <= 0 });
+                        }
+                        if (lastMj?.phChange != null) {
+                          const d = lastMj.phChange;
+                          cells.push({ label: "ΔpH od zad.", value: `${d >= 0 ? "+" : ""}${d.toFixed(3)}`, positive: d <= 0 });
+                        }
+                        if (lastMj?.phRatePerMinute != null) {
+                          const d = lastMj.phRatePerMinute;
+                          cells.push({ label: "pH/min", value: `${d >= 0 ? "+" : ""}${d.toFixed(4)}`, positive: d <= 0 });
+                        }
+                        if (baseFlow != null && currFlow != null) {
+                          const d = currFlow - baseFlow;
+                          cells.push({ label: "Δprotok od ref.", value: `${d >= 0 ? "+" : ""}${d.toFixed(1)} L/min`, positive: d >= 0 });
+                        }
+                        if (lastMj?.flowChange != null) {
+                          const d = lastMj.flowChange;
+                          cells.push({ label: "Δprotok od zad.", value: `${d >= 0 ? "+" : ""}${d.toFixed(1)} L/min`, positive: d >= 0 });
+                        }
+
+                        if (cells.length === 0) return (
+                          <p className="text-xs text-muted-foreground/50">Nema podataka</p>
+                        );
+
                         return (
-                          <div className="flex flex-col gap-3 text-xs w-full">
-                            {basePh !== null && ph !== null && (
-                              <div className="flex flex-col gap-0.5">
-                                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">ΔpH od poc.</span>
-                                <span className="font-bold text-foreground text-base">
-                                  {ph - basePh >= 0 ? "+" : ""}{(ph - basePh).toFixed(3)}
+                          <div className="grid grid-cols-2 gap-2">
+                            {cells.map((cell, i) => (
+                              <div key={i} className="bg-secondary/50 rounded-xl px-3 py-2.5 flex flex-col gap-1">
+                                <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">{cell.label}</span>
+                                <span className={`text-base font-black tabular-nums leading-none ${
+                                  cell.positive === null
+                                    ? "text-foreground"
+                                    : cell.positive
+                                    ? "text-emerald-500"
+                                    : "text-rose-500"
+                                }`}>
+                                  {cell.value}
                                 </span>
                               </div>
-                            )}
-                            {lastMj?.phChange != null && (
-                              <div className="flex flex-col gap-0.5">
-                                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">ΔpH od zad.</span>
-                                <span className="font-bold text-foreground text-base">
-                                  {lastMj.phChange >= 0 ? "+" : ""}{lastMj.phChange.toFixed(3)}
-                                </span>
-                              </div>
-                            )}
-                            {lastMj?.phRatePerMinute != null && (
-                              <div className="flex flex-col gap-0.5">
-                                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">pH/min</span>
-                                <span className="font-bold text-foreground text-base">
-                                  {lastMj.phRatePerMinute >= 0 ? "+" : ""}{lastMj.phRatePerMinute.toFixed(4)}
-                                </span>
-                              </div>
-                            )}
-                            {baseFlow != null && currFlow != null && (
-                              <div className="flex flex-col gap-0.5">
-                                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Δprotok od poc.</span>
-                                <span className="font-bold text-foreground text-base">
-                                  {currFlow - baseFlow >= 0 ? "+" : ""}{(currFlow - baseFlow).toFixed(1)} L/min
-                                </span>
-                              </div>
-                            )}
-                            {lastMj?.flowChangeFromPrevious != null && (
-                              <div className="flex flex-col gap-0.5">
-                                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Δprotok od zad.</span>
-                                <span className="font-bold text-foreground text-base">
-                                  {lastMj.flowChangeFromPrevious >= 0 ? "+" : ""}{lastMj.flowChangeFromPrevious.toFixed(1)} L/min
-                                </span>
-                              </div>
-                            )}
-                            {lastMj?.temperatureC != null && (
-                              <div className="flex flex-col gap-0.5">
-                                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Temperatura</span>
-                                <span className="font-bold text-foreground text-base">{lastMj.temperatureC} °C</span>
-                              </div>
-                            )}
-                            {lastMj?.turbidity && (
-                              <div className="flex flex-col gap-0.5">
-                                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Zamucenje</span>
-                                <span className="font-bold text-foreground text-base capitalize">{lastMj.turbidity}</span>
-                              </div>
-                            )}
-                            {lastMj?.sediment && (
-                              <div className="flex flex-col gap-0.5">
-                                <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Talog</span>
-                                <span className="font-bold text-foreground text-base capitalize">{lastMj.sediment}</span>
-                              </div>
-                            )}
+                            ))}
                           </div>
                         );
                       })()}

@@ -166,7 +166,7 @@ function ocijeniStatus(mjerenje: Mjerenje, baseline?: Mjerenje | null, prevMjere
       return ` ${flowStatus} — čišćenje napreduje${deltaFlowPercent != null ? ` (${deltaFlowPercent > 0 ? "+" : ""}${deltaFlowPercent.toFixed(1)}%)` : ""}.`;
     }
     if (flowStatus === "Protok pada") {
-      return ` ${flowStatus} ��� provjeri cirkulaciju.`;
+      return ` ${flowStatus} — provjeri cirkulaciju.`;
     }
     if (flowStatus === "Protok stabilan") {
       return ` ${flowStatus} — nema daljnjeg poboljšanja.`;
@@ -472,7 +472,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
   const flowArrowCurr = currFlow != null && prevMj?.flowLMin != null
     ? (currFlow - prevMj.flowLMin > 1 ? "↑" : currFlow - prevMj.flowLMin < -1 ? "↓" : "→")
     : (currFlow != null && baseFlow != null
-        ? (currFlow - baseFlow > 1 ? "���" : currFlow - baseFlow < -1 ? "↓" : "���")
+        ? (currFlow - baseFlow > 1 ? "↑" : currFlow - baseFlow < -1 ? "↓" : "→")
         : null);
 
   const lastTs = getMjerenjeTimestamp(lastMj);
@@ -720,34 +720,36 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
   return (
     <div className="flex flex-col gap-4">
 
-      {/* ── 1. HEADER — kompaktan ───────────────────────────────────────────── */}
-      <div className="flex items-center justify-between px-1">
-        <div className="flex flex-col gap-0.5">
+      {/* ── 1. HEADER — info strip ──────────────────────────────────────────── */}
+      <div className="flex items-center justify-between gap-2 bg-card border border-border rounded-2xl px-4 py-3">
+        <div className="flex flex-col gap-0.5 min-w-0">
           {(ciklus.chemicalProductName ?? ciklus.kemikalija) && (
-            <span className="text-xs text-muted-foreground">
-              Sredstvo: <strong className="text-foreground">{ciklus.chemicalProductName ?? ciklus.kemikalija}</strong>
+            <span className="text-[11px] text-muted-foreground truncate">
+              <span className="text-muted-foreground/50">Sredstvo:</span>{" "}
+              <strong className="text-foreground">{ciklus.chemicalProductName ?? ciklus.kemikalija}</strong>
             </span>
           )}
-          <span className="text-xs text-muted-foreground">
-            Zadnje mjerenje: <strong className="text-foreground">{fTime(lastTs)}</strong>
+          <span className="text-[11px] text-muted-foreground">
+            <span className="text-muted-foreground/50">Zadnje:</span>{" "}
+            <strong className="text-foreground font-bold">{fTime(lastTs)}</strong>
           </span>
         </div>
         {callbacks?.onEditReferentno && baseline && (
           <button
             type="button"
             onClick={callbacks.onEditReferentno}
-            className="flex items-center gap-1.5 py-1.5 px-2.5 rounded-lg border border-border text-muted-foreground text-xs font-medium hover:bg-muted active:scale-[0.98] transition-all"
+            className="shrink-0 flex items-center gap-1.5 py-1.5 px-2.5 rounded-xl border border-border bg-secondary text-muted-foreground text-[11px] font-semibold hover:bg-muted active:scale-[0.98] transition-all"
           >
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+              <path d="M11 4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
             </svg>
-            Ref.
+            Referentno
           </button>
         )}
       </div>
 
-      {/* ── 2. GLAVNI STATUS REAKCIJE ───────────────────────────────────────── */}
+      {/* 2. GLAVNI STATUS REAKCIJE */}
       <div className={`rounded-2xl overflow-hidden border-2 shadow-lg ${uputa.border} ${
         rs.severity === "critical" || rs.severity === "warning" ? "animate-pulse-border" : ""
       }`}>
@@ -867,45 +869,67 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
       {/* ── 4. GLAVNI PARAMETRI ─────────────────────────────────────────────── */}
       <div className="flex flex-col gap-2">
 
-        {/* pH */}
-        <div className="rounded-xl border border-border bg-card px-4 py-3">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">pH</span>
-            <span className="text-[10px] font-semibold text-muted-foreground/70">{zone.label}</span>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-black tabular-nums text-foreground leading-none">{ph.toFixed(2)}</span>
-              <span className={`text-lg font-black leading-none ${
-                phTrendChar === "↑" ? "text-red-500" :
-                phTrendChar === "↓" ? "text-green-500" :
-                "text-muted-foreground/30"
-              }`}>{phTrendChar}</span>
+        {/* ── pH card ── */}
+        <div className="rounded-2xl border border-border bg-card overflow-hidden">
+          {/* Zone accent bar */}
+          <div className={`h-1 w-full ${
+            ph < 3.0 ? "bg-emerald-500" :
+            ph < 4.0 ? "bg-amber-400" :
+            "bg-rose-500"
+          }`} />
+          <div className="px-4 pt-3 pb-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">pH</span>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                ph < 3.0
+                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                  : ph < 4.0
+                  ? "bg-amber-400/15 text-amber-600 dark:text-amber-400"
+                  : "bg-rose-500/15 text-rose-600 dark:text-rose-400"
+              }`}>
+                {zone.label}
+              </span>
             </div>
-            {dPh !== null && (
-              <div className="flex flex-col items-end gap-0">
-                <span className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/50">od ref.</span>
-                <span className={`text-base font-black tabular-nums leading-tight ${dPh > 0.05 ? "text-red-500" : dPh < -0.05 ? "text-green-500" : "text-muted-foreground/40"}`}>
-                  {dPh > 0 ? "+" : ""}{dPh.toFixed(2)}
-                </span>
+            <div className="flex items-end justify-between gap-3">
+              <div className="flex items-baseline gap-2">
+                <span className="text-5xl font-black tabular-nums text-foreground leading-none">{ph.toFixed(2)}</span>
+                <span className={`text-xl font-black leading-none ${
+                  phTrendChar === "↑" ? "text-rose-500" :
+                  phTrendChar === "↓" ? "text-emerald-500" :
+                  "text-muted-foreground/25"
+                }`}>{phTrendChar}</span>
               </div>
-            )}
+              {dPh !== null && (
+                <div className="flex flex-col items-end gap-0.5 pb-0.5">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/40">Δ od ref.</span>
+                  <span className={`text-lg font-black tabular-nums leading-none ${
+                    dPh > 0.05 ? "text-rose-500" :
+                    dPh < -0.05 ? "text-emerald-500" :
+                    "text-muted-foreground/30"
+                  }`}>
+                    {dPh > 0 ? "+" : ""}{dPh.toFixed(2)}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Protok */}
-        <div className="rounded-xl border border-border bg-card px-4 py-3">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Protok</span>
-            <span className={`text-[10px] font-semibold ${
-              rs.flowTrend === "raste" ? "text-green-600" :
-              rs.flowTrend === "pada" ? "text-red-500" :
-              "text-muted-foreground/60"
+        {/* ── Protok card ── */}
+        <div className="rounded-2xl border border-border bg-card px-4 py-3.5">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Protok</span>
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+              rs.flowTrend === "raste"
+                ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                : rs.flowTrend === "pada"
+                ? "bg-rose-500/15 text-rose-500"
+                : "bg-muted text-muted-foreground"
             }`}>
               {rs.flowTrend === "raste" ? "Raste" : rs.flowTrend === "pada" ? "Pada" : "Stabilan"}
             </span>
           </div>
-          <div className="flex items-end justify-between gap-2">
+          <div className="flex items-end justify-between gap-3">
             <div className="flex items-baseline gap-1.5">
               {currFlow != null ? (
                 <>
@@ -913,23 +937,25 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
                   <span className="text-base font-bold text-muted-foreground">L/min</span>
                 </>
               ) : (
-                <span className="text-4xl font-black text-muted-foreground/30 leading-none">—</span>
+                <span className="text-4xl font-black text-muted-foreground/20 leading-none">—</span>
               )}
             </div>
             {deltaFlowAbs !== null && (
-              <div className="flex flex-col items-end gap-0.5">
-                <span className={`text-sm font-black tabular-nums leading-none ${
-                  deltaFlowAbs > 0.1 ? "text-green-600" :
-                  deltaFlowAbs < -0.1 ? "text-red-500" :
-                  "text-muted-foreground/40"
+              <div className="flex flex-col items-end gap-0.5 pb-0.5">
+                <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/40">Δ od ref.</span>
+                <span className={`text-lg font-black tabular-nums leading-none ${
+                  deltaFlowAbs > 0.1 ? "text-emerald-500" :
+                  deltaFlowAbs < -0.1 ? "text-rose-500" :
+                  "text-muted-foreground/30"
                 }`}>
-                  Δ {deltaFlowAbs > 0 ? "+" : ""}{deltaFlowAbs.toFixed(1)} L/min
+                  {deltaFlowAbs > 0 ? "+" : ""}{deltaFlowAbs.toFixed(1)}{" "}
+                  <span className="text-sm font-bold">L/min</span>
                 </span>
                 {deltaFlowPct !== null && (
-                  <span className={`text-[10px] font-semibold tabular-nums ${
-                    deltaFlowPct > 0 ? "text-green-600" :
-                    deltaFlowPct < 0 ? "text-red-500" :
-                    "text-muted-foreground/40"
+                  <span className={`text-[10px] font-bold tabular-nums ${
+                    deltaFlowPct > 0 ? "text-emerald-500" :
+                    deltaFlowPct < 0 ? "text-rose-500" :
+                    "text-muted-foreground/30"
                   }`}>
                     {deltaFlowPct > 0 ? "+" : ""}{deltaFlowPct.toFixed(1)}%
                   </span>
@@ -939,24 +965,26 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
           </div>
         </div>
 
-        {/* Temp OUT — primarni temperaturni indikator */}
+        {/* ── Temp OUT card ── */}
         {(tOut !== null || refTOut !== null) && (
-          <div className="rounded-xl border border-border bg-card px-4 py-3">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Temp OUT</span>
+          <div className="rounded-2xl border border-border bg-card px-4 py-3.5">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Temp OUT</span>
               {tOut !== null && tOutTrend !== null ? (
-                <span className={`text-[10px] font-semibold ${
-                  tOutTrend === "raste" ? "text-green-600" :
-                  tOutTrend === "pada" ? "text-red-500" :
-                  "text-muted-foreground/60"
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  tOutTrend === "raste"
+                    ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                    : tOutTrend === "pada"
+                    ? "bg-rose-500/15 text-rose-500"
+                    : "bg-muted text-muted-foreground"
                 }`}>
                   {tOutTrend === "raste" ? "Raste" : tOutTrend === "pada" ? "Pada" : "Stabilna"}
                 </span>
               ) : refTOut !== null ? (
-                <span className="text-[10px] text-muted-foreground/60">ref. {refTOut.toFixed(1)} °C</span>
+                <span className="text-[10px] text-muted-foreground/50">ref. {refTOut.toFixed(1)} °C</span>
               ) : null}
             </div>
-            <div className="flex items-end justify-between gap-2">
+            <div className="flex items-end justify-between gap-3">
               <div className="flex items-baseline gap-1.5">
                 {tOut !== null ? (
                   <>
@@ -964,22 +992,22 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
                     <span className="text-base font-bold text-muted-foreground">°C</span>
                   </>
                 ) : refTOut !== null ? (
-                  <span className="text-sm text-muted-foreground/60 italic">ref. {refTOut.toFixed(1)} °C</span>
+                  <span className="text-sm text-muted-foreground/50 italic">ref. {refTOut.toFixed(1)} °C</span>
                 ) : null}
               </div>
               {dTout !== null && (
-                <div className="flex flex-col items-end gap-0.5">
-                  <span className={`text-sm font-black tabular-nums leading-none ${
-                    dTout > 0.5 ? "text-green-600" :
-                    dTout < -0.5 ? "text-red-500" :
-                    "text-muted-foreground/40"
+                <div className="flex flex-col items-end gap-0.5 pb-0.5">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/40">Δ od ref.</span>
+                  <span className={`text-lg font-black tabular-nums leading-none ${
+                    dTout > 0.5 ? "text-emerald-500" :
+                    dTout < -0.5 ? "text-rose-500" :
+                    "text-muted-foreground/30"
                   }`}>
-                    Δ {dTout > 0 ? "+" : ""}{dTout.toFixed(1)} °C
+                    {dTout > 0 ? "+" : ""}{dTout.toFixed(1)}{" "}
+                    <span className="text-sm font-bold">°C</span>
                   </span>
                   {refTOut !== null && (
-                    <span className="text-[10px] text-muted-foreground/50">
-                      ref. {refTOut.toFixed(1)} °C
-                    </span>
+                    <span className="text-[10px] text-muted-foreground/40">ref. {refTOut.toFixed(1)} °C</span>
                   )}
                 </div>
               )}
@@ -987,13 +1015,31 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
           </div>
         )}
 
-
-
-        {/* Pjena */}
-        {foamLabel && (
-          <div className="rounded-xl border border-border bg-card px-4 py-3 flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Pjena</span>
-            <span className="text-base font-black text-foreground">{foamLabel}</span>
+        {/* ── Pjena + Boja row ── */}
+        {(lastMj.foamLevel || (colorLabel && colorDot)) && (
+          <div className="grid grid-cols-2 gap-2">
+            {lastMj.foamLevel && (
+              <div className="rounded-2xl border border-border bg-card px-3.5 py-3 flex flex-col gap-1.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Pjena</span>
+                <div className="flex items-center gap-2">
+                  <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${FOAM_DOT[lastMj.foamLevel]}`} />
+                  <span className="text-sm font-bold text-foreground">{FOAM_LABELS[lastMj.foamLevel]}</span>
+                </div>
+                <span className="text-[11px] text-muted-foreground">{FOAM_SUBLABEL[lastMj.foamLevel]}</span>
+              </div>
+            )}
+            {colorLabel && colorDot && (
+              <div className="rounded-2xl border border-border bg-card px-3.5 py-3 flex flex-col gap-1.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Boja</span>
+                <div className="flex items-center gap-2">
+                  <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${colorDot}`} />
+                  <span className="text-sm font-bold text-foreground">{colorLabel}</span>
+                </div>
+                {colorSubLabel && (
+                  <span className="text-[11px] text-muted-foreground">{colorSubLabel}</span>
+                )}
+              </div>
+            )}
           </div>
         )}
 
@@ -1012,54 +1058,78 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         )}
       </div>
 
-      {/* ── 6. GLAVNA AKCIJA ────────────────────────────────────────────────── */}
-      <div className="flex flex-col gap-2">
+      {/* ── 6. AKCIJE ───────────────────────────────────────────────────────── */}
+      <div className="flex flex-col gap-2.5">
         {/* Primary CTA */}
         {primaryActionFn && (
           <button
             type="button"
             onClick={primaryActionFn}
             className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-base bg-primary text-primary-foreground active:scale-[0.98] transition-all hover:opacity-90 shadow-sm"
+            style={{ minHeight: 56 }}
           >
             {rs.primaryAction === "mjerenje" && (
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                 <path d="M12 5v14M5 12h14" />
               </svg>
             )}
+            {rs.primaryAction === "nadopuna" && (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            )}
+            {rs.primaryAction === "novi_ciklus" && (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                <polyline points="17 1 21 5 17 9" /><path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                <polyline points="7 23 3 19 7 15" /><path d="M21 13v2a4 4 0 0 1-4 4H3" />
+              </svg>
+            )}
             {primaryActionLabel}
           </button>
         )}
 
-        {/* Secondary actions */}
-        <div className="flex gap-2">
+        {/* Secondary actions — 3-column row */}
+        <div className="grid grid-cols-3 gap-2">
           <button
             type="button"
             onClick={callbacks?.onNadopuna}
             disabled={!callbacks?.onNadopuna}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-border bg-card text-foreground font-semibold text-sm active:scale-[0.98] transition-all disabled:opacity-30 hover:border-primary/40"
+            className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl border border-border bg-card text-foreground font-semibold text-xs active:scale-[0.98] transition-all disabled:opacity-30 hover:border-primary/40"
+            style={{ minHeight: 52 }}
           >
-            + Nadopuna
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            Nadopuna
           </button>
           <button
             type="button"
             onClick={callbacks?.onNoviCiklus}
             disabled={!callbacks?.onNoviCiklus}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-border bg-card text-foreground font-semibold text-sm active:scale-[0.98] transition-all disabled:opacity-30 hover:border-primary/40"
+            className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl border border-border bg-card text-foreground font-semibold text-xs active:scale-[0.98] transition-all disabled:opacity-30 hover:border-primary/40"
+            style={{ minHeight: 52 }}
           >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+              <polyline points="17 1 21 5 17 9" /><path d="M3 11V9a4 4 0 0 1 4-4h14" />
+            </svg>
             Novi ciklus
           </button>
           <button
             type="button"
             onClick={callbacks?.onZavrsiCiklus}
             disabled={!callbacks?.onZavrsiCiklus}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-border bg-card text-muted-foreground font-semibold text-sm active:scale-[0.98] transition-all disabled:opacity-30"
+            className="flex flex-col items-center justify-center gap-1 py-3 rounded-2xl border border-border bg-card text-muted-foreground font-semibold text-xs active:scale-[0.98] transition-all disabled:opacity-30 hover:border-rose-400/30"
+            style={{ minHeight: 52 }}
           >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
             Završi
           </button>
         </div>
 
         {brzoMjerenjeNote && (
-          <p className="text-[11px] text-muted-foreground text-center leading-relaxed">{brzoMjerenjeNote}</p>
+          <p className="text-[11px] text-muted-foreground/60 text-center leading-relaxed px-2">{brzoMjerenjeNote}</p>
         )}
       </div>
 
