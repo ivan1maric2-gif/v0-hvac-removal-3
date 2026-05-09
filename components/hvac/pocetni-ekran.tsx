@@ -65,7 +65,7 @@ const STATUS_COLOR: Record<string, string> = {
 interface BrzoMjerenjeProps {
   sesija: Sesija;
   ciklus: Ciklus;
-  isModeA: boolean;         // no podsesije → dodajMjerenjeSesije
+  isModeA: boolean;
   podsesijaId?: string;
   onClose: () => void;
 }
@@ -118,19 +118,27 @@ function BrzoMjerenjeModal({ sesija, ciklus, isModeA, podsesijaId, onClose }: Br
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="bg-card border border-border rounded-t-2xl w-full max-w-lg p-5 pb-8 flex flex-col gap-4"
+        className="bg-card border border-border rounded-t-3xl w-full max-w-lg p-6 pb-10 flex flex-col gap-5 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Handle bar */}
+        <div className="w-10 h-1 rounded-full bg-border mx-auto -mt-1" />
+
         <div className="flex items-center justify-between">
           <h2 className="text-base font-bold text-foreground">Brzo mjerenje</h2>
-          <button onClick={onClose} className="text-muted-foreground text-sm px-2 py-1">Odustani</button>
+          <button
+            onClick={onClose}
+            className="text-muted-foreground text-sm px-3 py-1.5 rounded-lg hover:bg-muted transition-colors"
+          >
+            Odustani
+          </button>
         </div>
 
         {/* pH — required */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">pH *</label>
+        <div className="flex flex-col gap-2">
+          <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">pH *</label>
           <input
             type="number"
             step="0.1"
@@ -140,13 +148,13 @@ function BrzoMjerenjeModal({ sesija, ciklus, isModeA, podsesijaId, onClose }: Br
             onChange={(e) => setPh(e.target.value)}
             placeholder="npr. 4.2"
             autoFocus
-            className="bg-secondary border border-border rounded-xl px-4 py-3 text-lg font-bold text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="bg-muted border border-border rounded-2xl px-4 py-3.5 text-2xl font-bold text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
           />
         </div>
 
         {/* Protok — optional */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Protok (l/min)</label>
+        <div className="flex flex-col gap-2">
+          <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Protok (l/min)</label>
           <input
             type="number"
             step="0.1"
@@ -154,18 +162,18 @@ function BrzoMjerenjeModal({ sesija, ciklus, isModeA, podsesijaId, onClose }: Br
             value={protok}
             onChange={(e) => setProtok(e.target.value)}
             placeholder="npr. 12.5"
-            className="bg-secondary border border-border rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="bg-muted border border-border rounded-2xl px-4 py-3 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
           />
         </div>
 
-        {/* Boja + Pjena — optional row */}
+        {/* Boja + Pjena */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Boja sredstva</label>
+          <div className="flex flex-col gap-2">
+            <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Boja sredstva</label>
             <select
               value={boja}
               onChange={(e) => setBoja(e.target.value as typeof boja)}
-              className="bg-secondary border border-border rounded-xl px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              className="bg-muted border border-border rounded-2xl px-3 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
             >
               <option value="">— nije uneseno</option>
               <option value="bezbojna">Bezbojna</option>
@@ -173,12 +181,12 @@ function BrzoMjerenjeModal({ sesija, ciklus, isModeA, podsesijaId, onClose }: Br
               <option value="narandzasta">Narancasta</option>
             </select>
           </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Pjena</label>
+          <div className="flex flex-col gap-2">
+            <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Pjena</label>
             <select
               value={pjena}
               onChange={(e) => setPjena(e.target.value as typeof pjena)}
-              className="bg-secondary border border-border rounded-xl px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              className="bg-muted border border-border rounded-2xl px-3 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all"
             >
               <option value="">— nije uneseno</option>
               <option value="nema">Nema</option>
@@ -192,7 +200,7 @@ function BrzoMjerenjeModal({ sesija, ciklus, isModeA, podsesijaId, onClose }: Br
         <button
           onClick={handleSave}
           disabled={!canSave || saving}
-          className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-bold text-sm hover:bg-primary/90 active:scale-[0.98] transition-all disabled:opacity-40"
+          className="w-full bg-primary text-primary-foreground rounded-2xl py-4 font-bold text-base hover:bg-primary/90 active:scale-[0.98] transition-all disabled:opacity-40 shadow-sm"
         >
           {saving ? "Sprema..." : "Spremi mjerenje"}
         </button>
@@ -218,8 +226,6 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
   const aktivanPodsesijaId = aktivanCiklusB?.podsesijaId;
   const isModeA = !!aktivanCiklusA;
 
-  // Referentno (nulto) mjerenje aktivnog ciklusa = initial_cycle_measurement
-  // Fallback: ako nema initial_cycle_measurement, uzmi prvo mjerenje ciklusa
   const refMjerenje = aktivanCiklus
     ? (pocetnoMjerenjeCiklusa(aktivanCiklus) ?? aktivanCiklus.mjerenja?.[0] ?? null)
     : null;
@@ -227,7 +233,6 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
   const refProtok = refMjerenje?.flowLMin ?? refMjerenje?.flowInputValue ?? null;
   const refTempOut = refMjerenje?.tempOutC ?? null;
 
-  // Zadnje mjerenje — SAMO iz aktivnog ciklusa (ne iz svih ciklusa sesije)
   const mjerenjaAktivnogCiklusa = aktivanCiklus?.mjerenja ?? [];
   const zadnjeMjerenje = mjerenjaAktivnogCiklusa.length > 0
     ? [...mjerenjaAktivnogCiklusa].sort(
@@ -240,10 +245,8 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
   const zadnjiTempOut = zadnjeMjerenje?.tempOutC ?? null;
   const zadnjiTS = zadnjeMjerenje ? getMjerenjeTimestamp(zadnjeMjerenje) : null;
 
-  // Reaction status
   const reactionStatus = aktivanCiklus ? izracunajStatus(aktivanCiklus) : null;
 
-  // Conditions
   const hasAktivniCiklus = !!aktivanCiklus;
   const sviCiklusiSesije = [
     ...(sesija.ciklusi ?? []),
@@ -255,7 +258,6 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
   const hasPocetnoMjerenje = aktivanCiklus ? aktivanCiklus.hasInitialMeasurement === true || aktivanCiklus.mjerenja.length > 0 : false;
   const canBrzoMjerenje = hasAktivniCiklus && hasPocetnoMjerenje;
 
-  // Cycle state message when no initial measurement yet
   let cycleStateMsg: string | null = null;
   if (!hasAktivniCiklus) {
     cycleStateMsg = "Pokrenite ciklus";
@@ -265,27 +267,27 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
 
   return (
     <>
-      <div className="bg-card border border-primary/30 rounded-2xl overflow-hidden flex flex-col">
-        {/* Primary accent bar */}
-        <div className="h-0.5 bg-primary w-full" />
+      <div className="bg-card border border-primary/40 rounded-3xl overflow-hidden flex flex-col shadow-sm">
+        {/* Primary accent bar — thicker for prominence */}
+        <div className="h-1 bg-primary w-full" />
 
-        <div className="p-4 flex flex-col gap-3">
-          {/* Top row — name + status + demo indicator */}
-          <div className="flex items-start justify-between gap-2">
+        <div className="p-5 flex flex-col gap-4">
+          {/* Top row — name + status */}
+          <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-0.5">
-                <p className="font-bold text-foreground text-base leading-snug">{sesija.naziv_objekta}</p>
+              <div className="flex items-center gap-2 mb-1">
+                <p className="font-bold text-foreground text-lg leading-snug truncate">{sesija.naziv_objekta}</p>
                 {sesija.isDemo && (
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700/50 uppercase tracking-widest">
+                  <span className="shrink-0 text-[9px] font-black px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700/50 uppercase tracking-widest">
                     DEMO
                   </span>
                 )}
               </div>
               {sesija.lokacija && (
-                <p className="text-xs text-muted-foreground mt-0.5">{sesija.lokacija}</p>
+                <p className="text-sm text-muted-foreground">{sesija.lokacija}</p>
               )}
             </div>
-            <div className="flex flex-col items-end gap-0.5">
+            <div className="flex flex-col items-end gap-1 shrink-0">
               <StatusBadge
                 status={
                   sesija.status === "zavrseno" || sesija.status === "uz_upozorenje" || sesija.status === "nedovrseno"
@@ -303,22 +305,23 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
 
           {/* Reaction status pill */}
           {reactionStatus && (
-            <div className={`inline-flex items-center gap-1.5 self-start text-xs font-semibold px-2.5 py-1 rounded-full border ${STATUS_COLOR[reactionStatus.color]}`}>
-              <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
+            <div className={`inline-flex items-center gap-2 self-start text-xs font-bold px-3 py-1.5 rounded-full border ${STATUS_COLOR[reactionStatus.color]}`}>
+              <span className="w-1.5 h-1.5 rounded-full bg-current" />
               {reactionStatus.label}
             </div>
           )}
 
           {/* Cycle state hint */}
           {cycleStateMsg && (
-            <p className="text-xs text-amber-400 font-medium">{cycleStateMsg}</p>
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl px-4 py-2.5">
+              <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold leading-relaxed">{cycleStateMsg}</p>
+            </div>
           )}
 
-          {/* Mjerenja — referentno (baseline) + zadnje (dominantno) + Δ */}
+          {/* Mjerenja — referentno + zadnje + Δ */}
           {(() => {
             const hasZadnje = zadnjeMjerenje && zadnjeMjerenje.id !== refMjerenje?.id;
 
-            // Δ izračun — zadnje vs referentno
             const dPH =
               zadnjiPH !== null && refPH !== null ? zadnjiPH - refPH : null;
             const dProtok =
@@ -334,29 +337,29 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
               v === null ? "" : Math.abs(v) < 0.05 ? "text-muted-foreground/50" : v > 0 ? "text-emerald-400" : "text-rose-400";
 
             return (
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2.5">
 
-                {/* REFERENTNO — vizualno sekundarno / baseline */}
+                {/* REFERENTNO — sekundarno, subdued */}
                 {refMjerenje ? (
-                  <div className="rounded-xl border border-border/60 bg-muted/20 px-3 py-2.5">
-                    <span className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/50 block mb-1.5">
-                      Referentno mjerenje — početak ciklusa
+                  <div className="rounded-2xl border border-border/50 bg-muted/30 px-4 py-3">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 block mb-2">
+                      Referentno — početak ciklusa
                     </span>
                     <div className="flex items-center gap-5">
                       {refPH !== null && refPH !== 0 && (
-                        <div className="flex flex-col gap-0">
+                        <div className="flex flex-col gap-0.5">
                           <span className="text-[9px] text-muted-foreground/50 uppercase tracking-widest">pH</span>
                           <span className="text-sm font-bold tabular-nums text-muted-foreground">{refPH.toFixed(2)}</span>
                         </div>
                       )}
                       {refProtok !== null && (
-                        <div className="flex flex-col gap-0">
+                        <div className="flex flex-col gap-0.5">
                           <span className="text-[9px] text-muted-foreground/50 uppercase tracking-widest">Protok</span>
                           <span className="text-sm font-bold tabular-nums text-muted-foreground">{refProtok.toFixed(1)} L/min</span>
                         </div>
                       )}
                       {refTempOut !== null && (
-                        <div className="flex flex-col gap-0">
+                        <div className="flex flex-col gap-0.5">
                           <span className="text-[9px] text-muted-foreground/50 uppercase tracking-widest">Temp OUT</span>
                           <span className="text-sm font-bold tabular-nums text-muted-foreground">{refTempOut.toFixed(1)} °C</span>
                         </div>
@@ -367,28 +370,28 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
                     </div>
                   </div>
                 ) : (
-                  <div className="rounded-xl border border-border/40 bg-muted/10 px-3 py-2 text-xs text-muted-foreground/40 italic">
+                  <div className="rounded-2xl border border-dashed border-border/50 bg-muted/10 px-4 py-3 text-xs text-muted-foreground/40 italic">
                     Referentno mjerenje nije uneseno
                   </div>
                 )}
 
-                {/* ZADNJE MJERENJE — vizualno dominantno + Δ */}
+                {/* ZADNJE MJERENJE — dominantno */}
                 {hasZadnje && (
-                  <div className="rounded-xl border border-primary/25 bg-card px-3 py-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[9px] font-black uppercase tracking-widest text-foreground/70">
-                        Trenutno mjerenje (aktivni ciklus)
+                  <div className="rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3.5">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-foreground/60">
+                        Trenutno mjerenje
                       </span>
                       {zadnjiTS && (
-                        <span className="text-[10px] font-semibold text-muted-foreground tabular-nums">{formatTime(zadnjiTS)}</span>
+                        <span className="text-[10px] font-semibold text-muted-foreground tabular-nums bg-muted/50 px-2 py-0.5 rounded-full">{formatTime(zadnjiTS)}</span>
                       )}
                     </div>
-                    <div className="flex items-start gap-4">
+                    <div className="flex items-start gap-5">
                       {/* pH */}
                       {zadnjiPH !== null && zadnjiPH !== 0 && (
-                        <div className="flex flex-col gap-0">
+                        <div className="flex flex-col gap-0.5">
                           <span className="text-[9px] text-muted-foreground/60 uppercase tracking-widest">pH</span>
-                          <span className={`text-xl font-black tabular-nums leading-tight ${
+                          <span className={`text-2xl font-black tabular-nums leading-tight ${
                             zadnjiPH < 2 ? "text-green-400" : zadnjiPH < 4 ? "text-amber-400" : "text-rose-400"
                           }`}>{zadnjiPH.toFixed(2)}</span>
                           {dPH !== null && (
@@ -400,9 +403,12 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
                       )}
                       {/* Protok */}
                       {zadnjiProtok !== null && (
-                        <div className="flex flex-col gap-0">
+                        <div className="flex flex-col gap-0.5">
                           <span className="text-[9px] text-muted-foreground/60 uppercase tracking-widest">Protok</span>
-                          <span className="text-xl font-black tabular-nums leading-tight text-foreground">{zadnjiProtok.toFixed(1)}<span className="text-xs font-semibold text-muted-foreground ml-0.5">L/min</span></span>
+                          <span className="text-2xl font-black tabular-nums leading-tight text-foreground">
+                            {zadnjiProtok.toFixed(1)}
+                            <span className="text-xs font-semibold text-muted-foreground ml-0.5">L/min</span>
+                          </span>
                           {dProtok !== null && (
                             <span className={`text-[10px] font-bold tabular-nums ${deltaColor(dProtok)}`}>
                               {fmtDelta(dProtok, 1, "L/min")}
@@ -412,9 +418,12 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
                       )}
                       {/* Temp OUT */}
                       {zadnjiTempOut !== null && (
-                        <div className="flex flex-col gap-0">
+                        <div className="flex flex-col gap-0.5">
                           <span className="text-[9px] text-muted-foreground/60 uppercase tracking-widest">Temp OUT</span>
-                          <span className="text-xl font-black tabular-nums leading-tight text-orange-300">{zadnjiTempOut.toFixed(1)}<span className="text-xs font-semibold text-muted-foreground ml-0.5">°C</span></span>
+                          <span className="text-2xl font-black tabular-nums leading-tight text-orange-400">
+                            {zadnjiTempOut.toFixed(1)}
+                            <span className="text-xs font-semibold text-muted-foreground ml-0.5">°C</span>
+                          </span>
                           {dTemp !== null && (
                             <span className={`text-[10px] font-bold tabular-nums ${deltaColor(dTemp)}`}>
                               {fmtDelta(dTemp, 1, "°C")}
@@ -441,8 +450,8 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
 
           {/* CTAs */}
           {sviZavrseniKartica ? (
-            <div className="flex flex-col gap-2 pt-1">
-              <p className="text-[11px] text-muted-foreground text-center font-semibold uppercase tracking-widest">
+            <div className="flex flex-col gap-2.5 pt-1">
+              <p className="text-[11px] text-muted-foreground text-center font-bold uppercase tracking-widest">
                 Sesija nema aktivnih ciklusa
               </p>
               {/* PRIMARY — uspješan završetak */}
@@ -457,47 +466,47 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
                     toast.success("Sesija završena", { description: "Servis uspješno dokumentiran.", duration: 4000 });
                   }
                 }}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white rounded-xl py-3 text-sm font-bold transition-all"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white rounded-2xl py-4 text-sm font-bold transition-all shadow-sm"
               >
                 Završi sesiju
               </button>
               {/* SECONDARY — nedovršena */}
               <button
                 onClick={() => zatvoriSesijuNedovrsenu(sesija.id)}
-                className="w-full rounded-xl bg-amber-500/10 hover:bg-amber-500/20 active:scale-[0.98] border border-amber-500/40 text-amber-600 dark:text-amber-400 py-2.5 text-sm font-semibold transition-all"
+                className="w-full rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 active:scale-[0.98] border border-amber-500/40 text-amber-600 dark:text-amber-400 py-3 text-sm font-semibold transition-all"
               >
                 Zatvori bez završetka
               </button>
               <button
                 onClick={() => navigiraj({ ime: "sesija", sesijaId: sesija.id })}
-                className="w-full bg-secondary border border-border text-foreground rounded-xl py-2.5 text-sm font-semibold hover:bg-muted active:scale-[0.98] transition-all"
+                className="w-full bg-secondary border border-border text-foreground rounded-2xl py-3 text-sm font-semibold hover:bg-muted active:scale-[0.98] transition-all"
               >
                 Pokreni novi ciklus
               </button>
             </div>
           ) : (
-            <div className="flex flex-col gap-2 pt-1">
+            <div className="flex flex-col gap-2.5 pt-1">
               {/* Red 1: Nastavi rad + Brzo mjerenje */}
-              <div className="flex gap-2">
+              <div className="flex gap-2.5">
                 <button
                   onClick={() => navigiraj({ ime: "sesija", sesijaId: sesija.id })}
-                  className="flex-1 bg-secondary border border-border text-foreground rounded-xl py-2.5 text-sm font-semibold hover:bg-muted active:scale-[0.98] transition-all"
+                  className="flex-1 bg-secondary border border-border text-foreground rounded-2xl py-3.5 text-sm font-semibold hover:bg-muted active:scale-[0.98] transition-all"
                 >
                   Nastavi rad
                 </button>
                 {canBrzoMjerenje && (
                   <button
                     onClick={() => setShowBrzoMjerenje(true)}
-                    className="flex-1 bg-primary text-primary-foreground rounded-xl py-2.5 text-sm font-bold hover:opacity-90 active:scale-[0.98] transition-all"
+                    className="flex-1 bg-primary text-primary-foreground rounded-2xl py-3.5 text-sm font-bold hover:bg-primary/90 active:scale-[0.98] transition-all shadow-sm"
                   >
                     Brzo mjerenje
                   </button>
                 )}
               </div>
 
-              {/* Red 2: Završi ciklus + Završi sesiju — prikazuje se samo ako ima aktivni ciklus */}
+              {/* Red 2: Završi ciklus + Završi sesiju */}
               {hasAktivniCiklus && aktivanCiklus && (
-                <div className="flex gap-2">
+                <div className="flex gap-2.5">
                   <button
                     onClick={() => {
                       if (isModeA) {
@@ -506,13 +515,13 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
                         zavrsiCiklus(sesija.id, aktivanPodsesijaId, aktivanCiklus.id);
                       }
                     }}
-                    className="flex-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 active:scale-[0.98] border border-amber-500/40 text-amber-600 dark:text-amber-400 py-2 text-xs font-semibold transition-all"
+                    className="flex-1 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 active:scale-[0.98] border border-amber-500/40 text-amber-600 dark:text-amber-400 py-2.5 text-xs font-bold transition-all"
                   >
                     Završi ciklus
                   </button>
                   <button
                     onClick={() => zatvoriSesijuNedovrsenu(sesija.id)}
-                    className="flex-1 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 active:scale-[0.98] border border-rose-500/40 text-rose-600 dark:text-rose-400 py-2 text-xs font-semibold transition-all"
+                    className="flex-1 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 active:scale-[0.98] border border-rose-500/40 text-rose-600 dark:text-rose-400 py-2.5 text-xs font-bold transition-all"
                   >
                     Zatvori sesiju
                   </button>
@@ -536,7 +545,7 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
   );
 }
 
-// ─����������������������������─ SesijaKartica ─────��─���───────────────────────────────────────────────────
+// ─── SesijaKartica ─────────────────────────────────────────────────────────
 
 /** Sva mjerenja sesije — iz sesija.ciklusi i podsesija.ciklusi, sortirana po vremenu */
 function svaMjerenjaSesije(sesija: Sesija): Mjerenje[] {
@@ -568,7 +577,6 @@ function SesijaKartica({ sesija }: { sesija: Sesija }) {
   ];
   const svaMj = svaCiklusi.flatMap((c) => c.mjerenja ?? []);
 
-  // Sva mjerenja sortirana po vremenu
   const sortedMj = [...svaMj].sort(
     (a, b) => new Date(getMjerenjeTimestamp(a)).getTime() - new Date(getMjerenjeTimestamp(b)).getTime()
   );
@@ -576,7 +584,6 @@ function SesijaKartica({ sesija }: { sesija: Sesija }) {
   const zadnjiMj = sortedMj[sortedMj.length - 1] ?? null;
   const zadnjiPH = zadnjiMj ? getMjerenjePH(zadnjiMj) : null;
 
-  // Δ protok od ref. do zadnjeg (samo za završene sesije)
   const refFlow  = prvoMj?.flowLMin ?? null;
   const lastFlow = zadnjiMj?.flowLMin ?? null;
   const deltaFlowPct =
@@ -584,7 +591,6 @@ function SesijaKartica({ sesija }: { sesija: Sesija }) {
       ? Math.round(((lastFlow - refFlow) / refFlow) * 100)
       : null;
 
-  // Kvalitativni rezultat čišćenja za završenu sesiju
   const rezultatLabel =
     deltaFlowPct !== null && deltaFlowPct >= 30 ? "Izvrsno čišćenje"
     : deltaFlowPct !== null && deltaFlowPct >= 15 ? "Dobro čišćenje"
@@ -601,8 +607,12 @@ function SesijaKartica({ sesija }: { sesija: Sesija }) {
   return (
     <button
       onClick={() => navigiraj({ ime: "sesija", sesijaId: sesija.id })}
-      className={`w-full text-left bg-card border rounded-2xl overflow-hidden hover:border-primary/50 active:scale-[0.99] transition-all ${
-        sesija.isDemo ? "border-amber-400/30" : "border-border"
+      className={`w-full text-left bg-card border rounded-2xl overflow-hidden hover:border-primary/50 hover:shadow-sm active:scale-[0.99] transition-all ${
+        sesija.status === "u_radu"
+          ? "border-primary/30"
+          : sesija.isDemo
+          ? "border-amber-400/30"
+          : "border-border"
       }`}
     >
       {/* Top accent line for active sessions */}
@@ -610,7 +620,7 @@ function SesijaKartica({ sesija }: { sesija: Sesija }) {
         <div className="h-0.5 w-full bg-primary" />
       )}
 
-      <div className="p-4">
+      <div className="px-4 py-3.5">
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-0.5">
@@ -640,21 +650,21 @@ function SesijaKartica({ sesija }: { sesija: Sesija }) {
                 </p>
               )}
             </div>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground/40">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground/40 shrink-0">
               <path d="M9 18l6-6-6-6" />
             </svg>
           </div>
         </div>
 
         <div className="flex items-center justify-between">
-          <div className="flex gap-3 text-xs text-muted-foreground">
+          <div className="flex gap-2 text-xs text-muted-foreground">
             <span>{sesija.datum}</span>
-            {sesija.serviser && <span className="text-muted-foreground/60">·</span>}
+            {sesija.serviser && <span className="text-muted-foreground/40">·</span>}
             {sesija.serviser && <span>{sesija.serviser}</span>}
           </div>
           <div className="flex items-center gap-3 text-xs">
             {svaCiklusi.length > 0 && (
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground/70">
                 {svaCiklusi.length} {svaCiklusi.length === 1 ? "ciklus" : "ciklusa"}
                 {svaMj.length > 0 && ` · ${svaMj.length} mj.`}
               </span>
@@ -691,7 +701,7 @@ function SesijaKartica({ sesija }: { sesija: Sesija }) {
   );
 }
 
-// ���── SecondaryButton ──────────────────────────────────────���──────────────────
+// ─── SecondaryButton ────────────────────────────────────────────────────────
 
 interface SecondaryButtonProps {
   label: string;
@@ -702,16 +712,16 @@ interface SecondaryButtonProps {
 
 function SecondaryButton({ label, onClick, disabled, variant = "default", icon }: SecondaryButtonProps & { icon?: React.ReactNode }) {
   const cls = variant === "primary"
-    ? "bg-primary text-primary-foreground hover:bg-primary/90 border-transparent"
+    ? "bg-primary text-primary-foreground hover:bg-primary/90 border-transparent shadow-sm"
     : "bg-card text-foreground hover:bg-muted border-border hover:border-primary/30";
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`${cls} border rounded-2xl px-3 py-3.5 text-center flex flex-col items-center gap-1.5 active:scale-[0.97] transition-all disabled:opacity-35 disabled:cursor-not-allowed`}
+      className={`${cls} border rounded-2xl px-3 py-4 text-center flex flex-col items-center gap-2 active:scale-[0.97] transition-all disabled:opacity-35 disabled:cursor-not-allowed`}
     >
-      {icon && <span className="text-muted-foreground">{icon}</span>}
-      <span className="text-[11px] font-semibold leading-tight">{label}</span>
+      {icon && <span className="text-current opacity-70">{icon}</span>}
+      <span className="text-[11px] font-bold leading-tight">{label}</span>
     </button>
   );
 }
@@ -733,7 +743,7 @@ export function PocetniEkran() {
     .filter((s) => !s.isDeleted && s.isDemo)
     .sort((a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime());
 
-  const sveSesije = realneSesije; // za brojac i aktivnu sesiju
+  const sveSesije = realneSesije;
 
   const istaknuta = sesije
     .filter((s) => !s.isDeleted && !s.isDemo && s.status === "u_radu")
@@ -743,8 +753,8 @@ export function PocetniEkran() {
     <div className="flex flex-col flex-1 bg-background">
 
       {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <header className="bg-card border-b border-border px-4 py-4 flex items-center justify-between gap-2 overflow-hidden">
-        {/* Lijevo: logo + naslov */}
+      <header className="bg-card border-b border-border px-5 py-4 flex items-center justify-between gap-2">
+        {/* Lijevo: logo + tagline */}
         <div className="flex flex-col gap-1 min-w-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -777,7 +787,7 @@ export function PocetniEkran() {
         {/* ── Nova sesija — primary CTA ────────────────────────────────────── */}
         <button
           onClick={() => navigiraj({ ime: "nova_sesija" })}
-          className="w-full bg-primary text-primary-foreground rounded-2xl px-5 py-4 flex items-center justify-center gap-2 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all shadow-sm"
+          className="w-full bg-primary text-primary-foreground rounded-2xl px-5 py-4 flex items-center justify-center gap-2.5 font-bold text-base hover:bg-primary/90 active:scale-[0.98] transition-all shadow-sm"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -790,27 +800,43 @@ export function PocetniEkran() {
           <SecondaryButton
             label="Sesije"
             onClick={() => navigiraj({ ime: "povijest" })}
-            icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>}
+            icon={
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            }
           />
           <SecondaryButton
             label="Proizvodi"
             onClick={() => navigiraj({ ime: "baza_proizvoda" })}
-            icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>}
+            icon={
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              </svg>
+            }
           />
           <SecondaryButton
             label="Postavke"
             onClick={() => navigiraj({ ime: "postavke" })}
-            icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>}
+            icon={
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+            }
           />
         </div>
 
-        {/* ── Divider ────────────────────────────────��─────────────────────── */}
-        <div className="border-t border-border" />
+        {/* ── Divider ──────────────────────────────────────────────────────── */}
+        <div className="border-t border-border/60" />
 
         {/* ── Aktivna sesija ───────────────────────────────────────────────── */}
         {istaknuta && (
           <section>
-            <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2.5">
+            <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3">
               Aktivna sesija
             </h2>
             <AktivnaSesijaKartica sesija={istaknuta} />
@@ -819,14 +845,14 @@ export function PocetniEkran() {
 
         {/* ── Sve sesije ───────────────────────────────────────────────────── */}
         <section>
-          <div className="flex items-center justify-between mb-2.5">
-            <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Sesije {realneSesije.length > 0 && <span className="text-muted-foreground/50">({realneSesije.length})</span>}
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+              Sesije {realneSesije.length > 0 && <span className="font-normal text-muted-foreground/50">({realneSesije.length})</span>}
             </h2>
             {realneSesije.length > 3 && (
               <button
                 onClick={() => navigiraj({ ime: "povijest" })}
-                className="text-[10px] font-semibold text-primary hover:underline"
+                className="text-[11px] font-bold text-primary hover:underline"
               >
                 Sve
               </button>
@@ -840,7 +866,7 @@ export function PocetniEkran() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-10 text-center bg-card border border-dashed border-border rounded-2xl">
+            <div className="flex flex-col items-center justify-center py-12 text-center bg-card border border-dashed border-border rounded-2xl">
               <p className="text-sm font-semibold text-muted-foreground">Nema sesija</p>
               <p className="text-xs text-muted-foreground/60 mt-1">Kreiraj prvu sesiju za pocetak rada</p>
             </div>
@@ -850,8 +876,8 @@ export function PocetniEkran() {
         {/* ── Demo sesije ──────────────────────────────────────────────────── */}
         {demoSesije.length > 0 && (
           <section>
-            <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2.5">
-              Demo <span className="text-muted-foreground/50">({demoSesije.length})</span>
+            <h2 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3">
+              Demo <span className="font-normal text-muted-foreground/50">({demoSesije.length})</span>
             </h2>
             <div className="flex flex-col gap-2">
               {demoSesije.map((s) => (
@@ -862,7 +888,7 @@ export function PocetniEkran() {
         )}
 
         {/* Bottom spacing */}
-        <div className="h-2" />
+        <div className="h-4" />
       </main>
     </div>
   );
