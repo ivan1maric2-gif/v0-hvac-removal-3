@@ -54,7 +54,7 @@ const UNIT_OPTIONS: { value: JedinicaKemikalije; label: string }[] = [
 
 function SectionHeader({ label }: { label: string }) {
   return (
-    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70 mt-1">
+    <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mt-1 border-b border-border pb-2">
       {label}
     </p>
   );
@@ -62,16 +62,16 @@ function SectionHeader({ label }: { label: string }) {
 
 function InfoRow({ label, value, accent }: { label: string; value: React.ReactNode; accent?: boolean }) {
   return (
-    <div className="flex items-center justify-between py-1">
+    <div className="flex items-center justify-between py-1.5">
       <span className="text-xs text-muted-foreground">{label}</span>
-      <span className={`text-xs font-semibold ${accent ? "text-primary" : "text-foreground"}`}>{value}</span>
+      <span className={`text-sm font-bold ${accent ? "text-primary" : "text-foreground"}`}>{value}</span>
     </div>
   );
 }
 
 function FieldLabel({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (
-    <label className="text-xs font-medium text-muted-foreground">
+    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
       {children}{required && <span className="text-destructive ml-0.5">*</span>}
     </label>
   );
@@ -88,7 +88,7 @@ function TextInput({
       type={type} value={value} step={step} min={min}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full border border-input rounded-xl px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+      className="w-full border border-input rounded-2xl px-4 py-3.5 text-base bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
     />
   );
 }
@@ -402,24 +402,22 @@ export function NadopunaModal({
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 pt-5 pb-3 border-b border-border shrink-0">
-        <button onClick={() => setConfirmed(false)} className="text-muted-foreground p-1">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+      <div className="flex items-center gap-3 px-4 pt-5 pb-3 border-b border-border shrink-0">
+        <button onClick={() => setConfirmed(false)} className="p-2 -ml-1.5 rounded-xl hover:bg-muted transition-colors" aria-label="Natrag">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
         </button>
-        <div className="flex flex-col items-center">
-          <h1 className="text-base font-semibold text-foreground">Nadopuna #{topUpNumber}</h1>
-          {prefilledAmountL != null ? (
-            <p className="text-[11px] text-green-700 font-semibold">
-              Preporucena kolicina: {prefilledAmountL} L
-            </p>
-          ) : (
-            <p className="text-[11px] text-amber-600 font-medium">Sredstvo u postojecu otopinu</p>
-          )}
+        <div className="flex-1 min-w-0">
+          <p className="text-[9px] font-black uppercase tracking-widest text-amber-500/70 mb-0.5">
+            {prefilledAmountL != null ? `Preporucena kolicina: ${prefilledAmountL} L` : "Nadopuna kemikalije"}
+          </p>
+          <h1 className="text-xl font-black leading-tight tracking-tight text-foreground">
+            Nadopuna #{topUpNumber}
+          </h1>
         </div>
-        <button onClick={onClose} className="text-muted-foreground p-1">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <button onClick={onClose} className="p-2 rounded-xl hover:bg-muted transition-colors" aria-label="Zatvori">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M18 6 6 18M6 6l12 12" />
           </svg>
         </button>
@@ -447,9 +445,10 @@ export function NadopunaModal({
                   key={key}
                   type="button"
                   onClick={() => set("reason", key)}
-                  className={`px-3 py-2.5 rounded-xl border text-xs font-medium text-left transition-all ${
+                  style={{ minHeight: 48 }}
+                  className={`px-3 py-3 rounded-2xl border text-sm font-semibold text-left transition-all active:scale-95 ${
                     form.reason === key
-                      ? "bg-amber-500 border-amber-500 text-white"
+                      ? "bg-amber-500 border-amber-500 text-white shadow-sm"
                       : "bg-card border-border text-foreground hover:border-amber-400"
                   }`}
                 >
@@ -718,7 +717,7 @@ export function NadopunaModal({
               onChange={(e) => set("note", e.target.value)}
               rows={2}
               placeholder="Opcionalna napomena..."
-              className="w-full border border-input rounded-xl px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+              className="w-full border border-input rounded-2xl px-4 py-3.5 text-base bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all resize-none"
             />
           </div>
         </div>
@@ -824,29 +823,29 @@ export function NadopunaModal({
 
         {/* Incompatibility warning + confirmation checkbox — shown ONLY for real incompatibility */}
         {productIsSystemIncompatible && selectedProduct && (
-          <div className="rounded-2xl border-2 border-red-400 bg-red-50 p-4 flex flex-col gap-3">
+          <div className="rounded-2xl border-2 border-rose-500/50 bg-rose-500/8 p-4 flex flex-col gap-3">
             <div className="flex items-start gap-3">
-              <svg className="shrink-0 mt-0.5 text-red-600" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg className="shrink-0 mt-0.5 text-rose-600 dark:text-rose-400" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                 <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
               </svg>
               <div className="flex flex-col gap-1.5">
-                <p className="text-sm font-bold text-red-900">
+                <p className="text-sm font-bold text-foreground">
                   Odabrano sredstvo nije prikladno za ovaj tip sustava.
                 </p>
-                <p className="text-xs text-red-800 leading-relaxed">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   Provjeriti tehnički list proizvođača prije primjene. Konačnu odluku donosi serviser.
                 </p>
               </div>
             </div>
-            <label className="flex items-start gap-3 cursor-pointer">
+            <label className="flex items-start gap-3.5 cursor-pointer p-3 rounded-xl bg-background/60 border border-rose-500/20">
               <input
                 type="checkbox"
                 checked={systemWarningConfirmed}
                 onChange={(e) => setSystemWarningConfirmed(e.target.checked)}
                 className="mt-0.5 accent-primary shrink-0"
               />
-              <span className="text-xs font-semibold leading-relaxed text-red-800">
+              <span className="text-sm font-semibold leading-relaxed text-foreground">
                 Razumijem i potvrđujem servisnu odluku.
               </span>
             </label>
@@ -854,12 +853,12 @@ export function NadopunaModal({
         )}
         {/* Unverified caution — shown without checkbox, does not block action */}
         {!productIsSystemIncompatible && productNeedsVerification && selectedProduct && (
-          <div className="rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 flex items-start gap-3">
-            <svg className="shrink-0 mt-0.5 text-amber-600" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <div className="rounded-2xl border border-amber-400/40 bg-amber-400/8 px-4 py-3.5 flex items-start gap-3">
+            <svg className="shrink-0 mt-0.5 text-amber-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
               <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
             </svg>
-            <p className="text-xs text-amber-800 leading-relaxed">
+            <p className="text-sm text-foreground leading-relaxed">
               Primjena ovog sredstva nije potvrđena prema tehničkom listu proizvođača. Provjeriti TDS/SDS dokumentaciju.
             </p>
           </div>
@@ -868,7 +867,8 @@ export function NadopunaModal({
         <button
           onClick={handleSave}
           disabled={!canSave}
-          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-sm hover:bg-amber-600 active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none"
+          className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-base hover:bg-amber-600 active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none shadow-sm"
+          style={{ minHeight: 56 }}
         >
           Spremi nadopunu
         </button>

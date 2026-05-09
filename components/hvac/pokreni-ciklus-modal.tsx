@@ -619,22 +619,22 @@ export function PokreniCiklusModal({
         <button
           type="button"
           onClick={goBack}
-          className="p-1 -ml-1 hover:opacity-70 transition-opacity"
+          className="p-2 -ml-1.5 rounded-xl hover:bg-muted transition-colors"
           aria-label="Natrag"
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
         </button>
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">
+          <p className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest mb-0.5">
             {isFirst ? `Ciklus #${cycleNumber}` : `Ciklus #${cycleNumber} — Nova otopina`}
           </p>
-          <h1 className="text-lg font-bold leading-tight text-foreground text-balance">
+          <h1 className="text-xl font-black leading-tight tracking-tight text-foreground text-balance">
             {currentMeta.title}
           </h1>
         </div>
-        <span className="shrink-0 text-xs font-bold text-muted-foreground tabular-nums">
+        <span className="shrink-0 text-xs font-black text-muted-foreground/50 tabular-nums bg-muted px-2 py-1 rounded-lg">
           {stepIndex + 1}/{WIZARD_STEPS.length}
         </span>
       </div>
@@ -655,7 +655,7 @@ export function PokreniCiklusModal({
           className="max-w-lg mx-auto w-full px-4 py-5 flex flex-col gap-6"
         >
           {/* Step subtitle */}
-          <p className="text-sm text-muted-foreground -mb-2">{currentMeta.subtitle}</p>
+          <p className="text-sm font-medium text-muted-foreground -mb-2 leading-relaxed">{currentMeta.subtitle}</p>
           {/* ════════════════════════════════════════════════════════ */}
           {/* STEP: STANJE — Identifikacija, Drain, Rinse, Stanje sustava */}
           {/* ════════════════════════════════════════════════════════ */}
@@ -1351,11 +1351,11 @@ export function PokreniCiklusModal({
           </div>
         )}
         {step === "voda" && touched && form.cleanWaterAdded && waterL === 0 && (
-          <div className="flex items-center gap-2 bg-destructive/10 border border-destructive/30 rounded-xl px-4 py-3">
-            <svg className="shrink-0 text-destructive" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className="flex items-center gap-2.5 bg-destructive/8 border border-destructive/25 rounded-2xl px-4 py-3.5">
+            <svg className="shrink-0 text-destructive" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
-            <p className="text-xs text-destructive font-medium">
+            <p className="text-sm font-bold text-destructive">
               Unesite količinu čiste vode (L).
             </p>
           </div>
@@ -1363,11 +1363,11 @@ export function PokreniCiklusModal({
 
         {/* Stanje step: block if drain not confirmed on non-first cycle */}
         {step === "stanje" && touched && !isFirst && !form.previousSolutionDrained && (
-          <div className="flex items-center gap-2 bg-destructive/10 border border-destructive/30 rounded-xl px-4 py-3">
-            <svg className="shrink-0 text-destructive" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className="flex items-center gap-2.5 bg-destructive/8 border border-destructive/25 rounded-2xl px-4 py-3.5">
+            <svg className="shrink-0 text-destructive" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
-            <p className="text-xs text-destructive font-medium">
+            <p className="text-sm font-bold text-destructive">
               Potvrdite ispustanje prethodne otopine.
             </p>
           </div>
@@ -1387,11 +1387,11 @@ export function PokreniCiklusModal({
 
         {/* Pregled: next-step hint */}
         {step === "pregled" && (
-          <div className="bg-muted/60 border border-border rounded-xl px-4 py-3 flex flex-col gap-0.5">
-            <p className="text-xs font-semibold text-foreground">
+          <div className="bg-primary/5 border border-primary/20 rounded-2xl px-4 py-3.5 flex flex-col gap-1">
+            <p className="text-sm font-bold text-foreground">
               Sljedeci korak: Referentno mjerenje otopine (~3 min cirkulacije)
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               Pokrenite cirkulaciju i nakon oko 3 minute unesite referentno mjerenje.
             </p>
           </div>
@@ -1402,7 +1402,8 @@ export function PokreniCiklusModal({
           <button
             type="button"
             onClick={handleNext}
-            className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
+            className="w-full bg-primary text-primary-foreground rounded-2xl py-4 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all shadow-sm"
+            style={{ minHeight: 56 }}
           >
             {step === "stanje" ? "Nastavi na punjenje vodom" :
              step === "voda"   ? "Nastavi na kemijsko sredstvo" :
@@ -1417,7 +1418,8 @@ export function PokreniCiklusModal({
             form="ciklus-form"
             disabled={!formValid}
             onClick={() => setTouched(true)}
-            className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none"
+            className="w-full bg-primary text-primary-foreground rounded-2xl py-4 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none shadow-sm"
+            style={{ minHeight: 56 }}
           >
             Pokreni ciklus #{cycleNumber}
           </button>
@@ -1426,7 +1428,8 @@ export function PokreniCiklusModal({
         <button
           type="button"
           onClick={onClose}
-          className="w-full border border-border text-foreground rounded-xl py-3 font-medium text-sm hover:bg-muted/50 active:scale-[0.98] transition-all"
+          className="w-full border border-border text-muted-foreground rounded-2xl py-3.5 font-semibold text-sm hover:bg-muted/50 active:scale-[0.98] transition-all"
+          style={{ minHeight: 48 }}
         >
           Odustani
         </button>
@@ -1474,19 +1477,106 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
 // ─── Shared styling constants ─────────────────────────────────────────────────
 
 const inputCls =
-  "w-full border border-input rounded-lg px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring";
+  "w-full border border-input rounded-2xl px-4 py-3.5 text-base bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all";
 const textareaCls =
-  "w-full border border-input rounded-lg px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none leading-relaxed";
+  "w-full border border-input rounded-2xl px-4 py-3.5 text-base bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all resize-none leading-relaxed";
 
-// ─── Section wrapper ───────────────────────��──────────────────────────────────
+// ─── Section wrapper ───────────────────────────────────────────────────────────
 
 function CSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground border-b border-border pb-1.5">
+      <h2 className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 border-b border-border pb-2">
         {title}
       </h2>
       {children}
+    </div>
+  );
+}
+
+// ─── Field wrapper ────────────────────────────────────────────────────────────
+
+function CField({
+  label,
+  children,
+  error,
+  hint,
+}: {
+  label: string;
+  children: React.ReactNode;
+  error?: string;
+  hint?: string;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{label}</label>
+      {children}
+      {hint && <p className="text-[11px] text-muted-foreground/60 leading-snug">{hint}</p>}
+      {error && <p className="text-[11px] font-bold text-destructive">{error}</p>}
+    </div>
+  );
+}
+
+// ─── Checkbox ─────────────────────────────────────────────────────────────────
+
+function CCheckbox({
+  name,
+  checked,
+  onChange,
+  label,
+  required,
+  error,
+}: {
+  name: string;
+  checked: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  label: string;
+  required?: boolean;
+  error?: boolean;
+}) {
+  return (
+    <label
+      style={{ minHeight: 52 }}
+      className={`flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer transition-colors ${
+        error
+          ? "border-destructive bg-destructive/5"
+          : checked
+          ? "border-primary/40 bg-primary/5"
+          : "border-border hover:bg-muted/40"
+      }`}
+    >
+      <input
+        type="checkbox"
+        name={name}
+        checked={checked}
+        onChange={onChange}
+        className="mt-0.5 w-4 h-4 accent-primary shrink-0"
+      />
+      <span className="text-sm font-medium text-foreground leading-snug">
+        {label}
+        {required && <span className="text-destructive ml-0.5">*</span>}
+      </span>
+    </label>
+  );
+}
+
+// ─── Calc display box ────────────────────────────────────────────────────────
+
+function CalcBox({
+  label,
+  value,
+  highlight,
+}: {
+  label: string;
+  value: string;
+  highlight?: boolean;
+}) {
+  return (
+    <div className="bg-card border border-border rounded-2xl p-4 flex flex-col gap-1.5 text-center">
+      <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 leading-tight">{label}</span>
+      <span className={`text-lg font-black ${highlight ? "text-primary" : "text-foreground"}`}>
+        {value}
+      </span>
     </div>
   );
 }

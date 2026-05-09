@@ -297,7 +297,7 @@ export function CiklusVremenskiSlijed({ ciklus, sesija, showTitle = true }: Prop
   return (
     <div className="flex flex-col gap-3">
       {showTitle && (
-        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+        <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">
           Mjerenja ciklusa #{ciklus.cycleNumber ?? (ciklus as any).broj}
         </p>
       )}
@@ -558,13 +558,13 @@ function GroupHeader({
   const phDelta = firstPh !== null && lastPh !== null && allInGroup.length > 1 ? lastPh - firstPh : null;
 
   return (
-    <div className={`flex items-center justify-between px-1 py-1 ${isFirst ? "" : "mt-1"}`}>
-      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+    <div className={`flex items-center justify-between px-1 py-1.5 ${isFirst ? "" : "mt-1"}`}>
+      <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">
         {label}
       </span>
       {phDelta !== null && (
-        <span className={`text-[9px] font-bold tabular-nums ${phDelta > 0.05 ? "text-rose-500" : phDelta < -0.05 ? "text-green-500" : "text-muted-foreground"}`}>
-          ΔpH grupe: {sign(phDelta)}{phDelta.toFixed(2)}
+        <span className={`text-[9px] font-bold tabular-nums px-2 py-0.5 rounded-full ${phDelta > 0.05 ? "text-rose-600 bg-rose-500/10" : phDelta < -0.05 ? "text-emerald-600 bg-emerald-500/10" : "text-muted-foreground bg-muted"}`}>
+          ΔpH: {sign(phDelta)}{phDelta.toFixed(2)}
         </span>
       )}
     </div>
@@ -576,27 +576,30 @@ function GroupHeader({
 function NadopunaSeparator({ nadopuna }: { nadopuna: NadopunaKemikalije }) {
   const ts = nadopuna.addedAt ?? (nadopuna as any).timestamp ?? "";
   return (
-    <div className="relative flex items-center gap-2 my-1">
-      <div className="flex-1 border-t-2 border-dashed border-primary/40" />
-      <div className="shrink-0 rounded-xl bg-primary/10 border-2 border-primary/40 px-3 py-2 flex flex-col gap-0.5">
+    <div className="relative flex items-center gap-2 my-2">
+      <div className="flex-1 border-t-2 border-dashed border-amber-400/40" />
+      <div className="shrink-0 rounded-2xl bg-amber-400/10 border-2 border-amber-400/30 px-4 py-2.5 flex flex-col gap-0.5">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-black text-primary uppercase tracking-widest">
-            Naknadno dodano sredstvo
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-amber-500 shrink-0">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          <span className="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest">
+            Naknadno dodano
           </span>
           {ts && (
             <span className="text-[9px] text-muted-foreground tabular-nums">{fTime(ts)}</span>
           )}
         </div>
-        <div className="flex items-center gap-2 text-[9px] text-muted-foreground">
-          <span>{nadopuna.chemicalProductName ?? (nadopuna as any).kemikalija ?? "—"}</span>
+        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+          <span className="font-medium">{nadopuna.chemicalProductName ?? (nadopuna as any).kemikalija ?? "—"}</span>
           {(nadopuna.amount ?? (nadopuna as any).kolicina) && (
-            <span className="font-bold text-foreground">
+            <span className="font-black text-foreground">
               {nadopuna.amount ?? (nadopuna as any).kolicina} {nadopuna.unit ?? "L"}
             </span>
           )}
         </div>
       </div>
-      <div className="flex-1 border-t-2 border-dashed border-primary/40" />
+      <div className="flex-1 border-t-2 border-dashed border-amber-400/40" />
     </div>
   );
 }
@@ -816,13 +819,13 @@ function MjerenjeRow({
   return (
     <div className="rounded-2xl border border-border bg-card overflow-hidden">
       {/* Header red: broj + status + vrijeme */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-border">
+      <div className="flex items-center justify-between px-3 py-2.5 border-b border-border bg-muted/20">
         <div className="flex items-center gap-2">
-          <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${dotColor}`} />
-          <span className="text-[11px] font-black text-foreground">Mjerenje {num}</span>
-          <span className="text-[9px] text-muted-foreground leading-tight">{phStatusLabel(ph)}</span>
+          <span className={`w-2 h-2 rounded-full shrink-0 ${dotColor}`} />
+          <span className="text-xs font-black text-foreground">Mjerenje {num}</span>
+          <span className="text-[9px] text-muted-foreground/70 leading-tight">{phStatusLabel(ph)}</span>
         </div>
-        <span className="text-[10px] text-muted-foreground tabular-nums">{fTime(ts)}</span>
+        <span className="text-[10px] font-medium text-muted-foreground tabular-nums">{fTime(ts)}</span>
       </div>
 
       {/* Data: 2×2 kartica grid */}

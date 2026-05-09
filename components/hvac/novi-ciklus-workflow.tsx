@@ -258,8 +258,11 @@ export function NoviCiklusWorkflow({
 
   if (!sesija) {
     return (
-      <div className="flex items-center justify-center flex-1 h-full">
-        <p className="text-muted-foreground text-sm">Sesija nije pronađena.</p>
+      <div className="flex items-center justify-center flex-1 h-full px-6">
+        <div className="rounded-2xl border border-border bg-card px-6 py-8 flex flex-col items-center gap-2 text-center max-w-xs w-full">
+          <p className="text-sm font-bold text-foreground">Sesija nije pronađena</p>
+          <p className="text-xs text-muted-foreground">Pokušajte ponovo ili se vratite na početak.</p>
+        </div>
       </div>
     );
   }
