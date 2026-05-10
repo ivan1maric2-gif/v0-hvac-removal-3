@@ -854,24 +854,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
               </div>
             </div>
 
-            {/* ── pH kartica s detaljima ─────────────────────────────────── */}
-            {lastMj && (
-              <div className="mx-6 mb-6 rounded-2xl bg-slate-900/70 border border-slate-700/50 px-4 py-3 flex items-start gap-4">
-                <div className="flex-1">
-                  <span className="text-xs font-black uppercase tracking-widest text-slate-400">pH</span>
-                  <p className="text-2xl font-black text-white mt-1">{ph.toFixed(2)}</p>
-                </div>
-                <div className="flex-1 text-right">
-                  <span className="text-xs text-slate-500 uppercase tracking-widest">
-                    {snagaSredstva === "jako" ? "Aktivna kisela zona — intenzivna"
-                     : snagaSredstva === "aktivno" ? "Aktivna zona — normalna"
-                     : snagaSredstva === "slabi" ? "Blaga kisela zona"
-                     : "Kisela zona — niska"}
-                  </span>
-                  <p className="text-sm text-slate-400 mt-1">Δ OD REF. <span className="text-emerald-400 font-bold">{deltaPhFormatted}</span></p>
-                </div>
-              </div>
-            )}
+
 
             {/* ── Uputa serviseru ────────────────────────────────────────── */}
             <div className="px-6 py-4 border-t border-indigo-700/40 bg-indigo-950/50 rounded-b-2xl">
