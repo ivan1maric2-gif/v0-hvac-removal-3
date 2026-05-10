@@ -859,7 +859,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         const stagnacija = protokStagnira && tempOutStagnira && (snagaSredstva === "jako" || snagaSredstva === "aktivno");
 
         return (
-          <div className="rounded-2xl overflow-hidden border-2 border-emerald-500/50 bg-gradient-to-br from-emerald-600 to-emerald-700">
+          <div className="rounded-2xl overflow-hidden border-2 border-emerald-500/50 bg-gradient-to-br from-emerald-700 to-emerald-800">
 
             {/* ── Header naslov s ikona ──────────────────────────────────── */}
             <div className="px-4 pt-4 pb-3 flex items-start gap-3">
@@ -1178,7 +1178,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         )}
       </div>
 
-      {/* ── 8. COLLAPSIBLE: Podsjetnik za mjerenje ───────────────────��──────── */}
+      {/* ── 8. COLLAPSIBLE: Podsjetnik za mjerenje ───────────────────�����─────── */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         <button
           type="button"
