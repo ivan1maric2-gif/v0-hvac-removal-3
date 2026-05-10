@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useApp } from "@/lib/app-state";
 import type { Sesija, SystemCategory } from "@/lib/types";
 import { genId, nowISO } from "@/lib/utils";
+import { readDraft, writeDraft, clearDraft } from "@/lib/draft-state";
 
 // ─── Konstante ────────────────────────────────────────────────────────────────
 
@@ -181,40 +182,70 @@ function Check() {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
+const DRAFT_KEY = "nova_sesija_forma";
+
+interface NovaSesijaForma {
+  nazivObjekta: string;
+  lokacija: string;
+  tehniker: string;
+  tipSustava: SystemCategory | null;
+  cilj: string | null;
+  ciljOpis: string;
+  procijenjeniVolumen: string;
+  materijali: string[];
+  protokPrije: string;
+  tempPrije: string;
+  phPrije: string;
+}
+
 export function NovaSesijaEkran() {
   const { navigiraj, dodajSesiju, sesije } = useApp();
+
+  // Učitaj draft iz localStorage pri montiranju (za natrag navigaciju)
+  const draft = readDraft<NovaSesijaForma>(DRAFT_KEY);
 
   // ───────────────────────────────────────────────────────────────────────────
   // SEKCIJA 1 — BASIC INFO
   // ───────────────────────────────────────────────────────────────────────────
-  const [nazivObjekta, setNazivObjekta] = useState("");
-  const [lokacija, setLokacija] = useState("");
-  const [tehniker, setTehniker] = useState("");
+  const [nazivObjekta, setNazivObjekta] = useState(draft?.nazivObjekta ?? "");
+  const [lokacija, setLokacija] = useState(draft?.lokacija ?? "");
+  const [tehniker, setTehniker] = useState(draft?.tehniker ?? "");
 
   // ───────────────────────────────────────────────────────────────────────────
   // SEKCIJA 2 — SYSTEM TYPE
   // ───────────────────────────────────────────────────────────────────────────
-  const [tipSustava, setTipSustava] = useState<SystemCategory | null>(null);
-  const [cilj, setCilj] = useState<string | null>(null);
-  const [ciljOpis, setCiljOpis] = useState("");
+  const [tipSustava, setTipSustava] = useState<SystemCategory | null>(draft?.tipSustava ?? null);
+  const [cilj, setCilj] = useState<string | null>(draft?.cilj ?? null);
+  const [ciljOpis, setCiljOpis] = useState(draft?.ciljOpis ?? "");
 
   // ───────────────────────────────────────────────────────────────────────────
   // SEKCIJA 3 — TECHNICAL DATA
   // ───────────────────────────────────────────────────────────────────────────
-  const [procijenjeniVolumen, setProcijenjeniVolumen] = useState("");
-  const [materijali, setMaterijali] = useState<string[]>([]);
+  const [procijenjeniVolumen, setProcijenjeniVolumen] = useState(draft?.procijenjeniVolumen ?? "");
+  const [materijali, setMaterijali] = useState<string[]>(draft?.materijali ?? []);
 
   // ───────────────────────────────────────────────────────────────────────────
   // SEKCIJA 4 — INITIAL SYSTEM STATE (optional)
   // ───────────────────────────────────────────────────────────────────────────
-  const [protokPrije, setProtokPrije] = useState("");
-  const [tempPrije, setTempPrije] = useState("");
-  const [phPrije, setPhPrije] = useState("");
+  const [protokPrije, setProtokPrije] = useState(draft?.protokPrije ?? "");
+  const [tempPrije, setTempPrije] = useState(draft?.tempPrije ?? "");
+  const [phPrije, setPhPrije] = useState(draft?.phPrije ?? "");
 
   // ───────────────────────────────────────────────────────────────────────────
   // AUTO-PREFILL — svi useState zajedno na vrhu, useEffect ispod
   // ───────────────────────────────────────────────────────────────────────────
   const [autoPopunjeno, setAutoPopunjeno] = useState(false);
+
+  // Persistaj formu u localStorage pri svakoj promjeni
+  useEffect(() => {
+    writeDraft<NovaSesijaForma>(DRAFT_KEY, {
+      nazivObjekta, lokacija, tehniker,
+      tipSustava, cilj, ciljOpis,
+      procijenjeniVolumen, materijali,
+      protokPrije, tempPrije, phPrije,
+    });
+  }, [nazivObjekta, lokacija, tehniker, tipSustava, cilj, ciljOpis,
+      procijenjeniVolumen, materijali, protokPrije, tempPrije, phPrije]);
 
   // Auto-prefill — kada serviser upiše naziv objekta i lokaciju, traži prethodnu sesiju
   useEffect(() => {
@@ -324,6 +355,8 @@ export function NovaSesijaEkran() {
     };
 
     dodajSesiju(novaSesija);
+    // Obriši draft — sesija je uspješno kreirana
+    clearDraft(DRAFT_KEY);
     // Single-device workflow: preskočiti setup_ciklus, ići direktno na sesiju
     // Modal za prvi ciklus se otvara automatski putem autoStartCiklus flaga
     navigiraj({ ime: "sesija", sesijaId: novaSesija.id, autoStartCiklus: true });
