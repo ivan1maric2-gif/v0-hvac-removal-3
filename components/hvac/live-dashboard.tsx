@@ -795,22 +795,38 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         const tempOutStagnira = deltaTOut === null || (deltaTOut > -0.3 && deltaTOut < 0.3);
 
         // ── Header status labels ────────────────────────────────────────────
-        const phStatusLabel =
-          snagaSredstva === "jako"      ? `pH ${ph.toFixed(2)} — sredstvo jako aktivno`
+        // pH — naslov + podnaslov
+        const phStatusNaslov =
+          snagaSredstva === "jako"      ? `pH ${ph.toFixed(2)} — izrazito kisela otopina`
           : snagaSredstva === "aktivno" ? `pH ${ph.toFixed(2)} — sredstvo aktivno`
           : snagaSredstva === "slabi"   ? `pH ${ph.toFixed(2)} — sredstvo slabi`
           :                               `pH ${ph.toFixed(2)} — sredstvo iscrpljeno`;
+        const phStatusPodnaslov: string | null =
+          snagaSredstva === "jako"      ? "Paziti na materijal."
+          : snagaSredstva === "aktivno" ? null
+          : snagaSredstva === "slabi"   ? "Razmotri nadopunu kemijskog sredstva."
+          :                               "Pripremi završetak ciklusa.";
 
-        const protokStatusLabel =
-          napreduje                                   ? `Protok raste +${deltaFlowPct!.toFixed(1)}%`
+        // Protok — naslov + podnaslov
+        const protokStatusNaslov =
+          napreduje                                   ? `Protok raste +${deltaFlowPct!.toFixed(1)}% — čišćenje napreduje`
           : deltaFlowPct !== null && deltaFlowPct > 0 ? `Protok blago raste +${deltaFlowPct.toFixed(1)}%`
           : protokStagnira                            ? "Protok stabilan — nema daljnjeg poboljšanja"
           :                                             `Protok pada ${deltaFlowPct!.toFixed(1)}%`;
+        const protokStatusPodnaslov: string | null =
+          napreduje ? null
+          : protokStagnira ? null
+          : "Pratiti stanje sustava.";
 
-        const tempOutStatusLabel =
-          deltaTOut !== null && deltaTOut >= 0.5 ? `Temp OUT +${deltaTOut.toFixed(1)} °C`
-          : tempOutStagnira                       ? "Temp OUT bez promjene"
-          :                                         `Temp OUT ${deltaTOut!.toFixed(1)} °C`;
+        // Temp OUT — naslov + podnaslov
+        const tempOutStatusNaslov =
+          deltaTOut !== null && deltaTOut >= 0.5 ? `Temp OUT +${deltaTOut.toFixed(1)} °C — izmjena topline raste`
+          : tempOutStagnira                       ? "Temp OUT bez promjene — reakcija stagnira"
+          :                                         `Temp OUT ${deltaTOut!.toFixed(1)} °C — pada`;
+        const tempOutStatusPodnaslov: string | null =
+          deltaTOut !== null && deltaTOut >= 0.5 ? null
+          : tempOutStagnira                       ? null
+          : "Pratiti trend.";
 
         // ── Zašto razlozi (kratki) ──────────────────────────────────────────
         const zastoRazlozi: string[] = [];
@@ -844,17 +860,41 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
 
         return (
           <div className="flex flex-col gap-3">
-            {/* CIRKULACIJA AKTIVNA — header s kratkim statusima */}
-            <div className="rounded-2xl border border-border bg-card overflow-hidden">
-              <div className="px-4 py-2.5 border-b border-border bg-emerald-500/10">
-                <span className="text-[11px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+            {/* CIRKULACIJA AKTIVNA — glavni zaključak sustava */}
+            <div className="rounded-2xl border-2 border-emerald-500/40 bg-emerald-500/5 overflow-hidden">
+              {/* Header */}
+              <div className="px-4 py-3 border-b border-emerald-500/20 bg-emerald-500/10 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                <span className="text-xs font-black uppercase tracking-widest text-emerald-700 dark:text-emerald-400">
                   Cirkulacija aktivna
                 </span>
               </div>
-              <div className="px-4 py-3 flex flex-col gap-1.5">
-                <p className="text-sm font-semibold text-foreground">{phStatusLabel}</p>
-                <p className="text-sm text-muted-foreground">{protokStatusLabel}</p>
-                <p className="text-sm text-muted-foreground">{tempOutStatusLabel}</p>
+
+              {/* Status redovi */}
+              <div className="divide-y divide-emerald-500/10">
+                {/* pH */}
+                <div className="px-4 py-4">
+                  <p className="text-base font-bold text-foreground leading-snug">{phStatusNaslov}</p>
+                  {phStatusPodnaslov && (
+                    <p className="text-sm text-muted-foreground mt-1">{phStatusPodnaslov}</p>
+                  )}
+                </div>
+
+                {/* Protok */}
+                <div className="px-4 py-4">
+                  <p className="text-base font-bold text-foreground leading-snug">{protokStatusNaslov}</p>
+                  {protokStatusPodnaslov && (
+                    <p className="text-sm text-muted-foreground mt-1">{protokStatusPodnaslov}</p>
+                  )}
+                </div>
+
+                {/* Temp OUT */}
+                <div className="px-4 py-4">
+                  <p className="text-base font-bold text-foreground leading-snug">{tempOutStatusNaslov}</p>
+                  {tempOutStatusPodnaslov && (
+                    <p className="text-sm text-muted-foreground mt-1">{tempOutStatusPodnaslov}</p>
+                  )}
+                </div>
               </div>
             </div>
 
