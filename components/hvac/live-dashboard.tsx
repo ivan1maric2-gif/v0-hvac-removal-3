@@ -639,50 +639,42 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
     const dFlow_ = currFlow_ != null && baseFlow_ != null ? currFlow_ - baseFlow_ : null;
     const dTout_ = tOut_ != null && refTOut_ != null ? tOut_ - refTOut_ : null;
 
-    // Cirkulacija aktivna — strukturirani glasovni tekst po mjerenju
-    let glasovnaTekst = "Cirkulacija aktivna.";
+    // TTS — tocno prema specifikaciji dokumenta
+    const phTekst = currPh_ != null ? currPh_.toFixed(2) : "nepoznat";
 
-    if (currPh_ != null) {
-      glasovnaTekst += ` pH ${currPh_.toFixed(1).replace(".", " cijela ")}.`;
-    }
+    const flowTekst = dFlow_ != null && dFlow_ > 0.5
+      ? "raste"
+      : dFlow_ != null && dFlow_ < -0.5
+      ? "pada"
+      : "stabilan, nema daljnjeg poboljsanja";
 
-    if (currFlow_ != null) {
-      glasovnaTekst += ` Protok ${currFlow_.toFixed(1)} litara u minuti.`;
-      if (dFlow_ != null && Math.abs(dFlow_) > 0.5) {
-        const smjer = dFlow_ > 0 ? "porastao za" : "pao za";
-        glasovnaTekst += ` ${smjer.charAt(0).toUpperCase() + smjer.slice(1)} ${Math.abs(dFlow_).toFixed(1)}.`;
-      }
-    }
+    const tempOutTekst = dTout_ != null && Math.abs(dTout_) > 0.3
+      ? (dTout_ > 0 ? "raste" : "pada")
+      : "bez promjene, reakcija stagnira";
 
-    if (tOut_ != null) {
-      glasovnaTekst += ` Temperatura izlaza ${tOut_.toFixed(1)} stupnjeva.`;
-      if (dTout_ != null && Math.abs(dTout_) > 0.3) {
-        const smjer = dTout_ > 0 ? "porasla za" : "pala za";
-        glasovnaTekst += ` ${smjer.charAt(0).toUpperCase() + smjer.slice(1)} ${Math.abs(dTout_).toFixed(1)}.`;
-      }
-    }
-
-    // Uputa serviseru
     const uputaTekst = trebaNoviciklus
-      ? "Ciklus je pri kraju. Pripremi završetak."
+      ? "Ciklus je pri kraju. Pripremi zavrsetak, ispusti otopinu, isperi sustav i pokreni novi ciklus."
       : trebaNadopuna
       ? "Dodaj nadopunu kemijskog sredstva."
       : napreduje
-      ? "Nastavi cirkulaciju. Čišćenje aktivno napreduje."
-      : "Nastavi cirkulaciju kratko vrijeme i prati promjene.";
-    
-    glasovnaTekst += ` Uputa serviseru: ${uputaTekst}`;
+      ? "Nastavi cirkulaciju. Ciscenje aktivno napreduje."
+      : "Nastavi cirkulaciju kratko vrijeme i prati promjene. Ako protok i Temp OUT ne mijenjaju vrijednosti, a pH ostaje nizak, reakcija je aktivna, ali napredak stagnira.";
 
-    // Sljedeći korak
     const sljedeciKorakTekst = trebaNoviciklus
-      ? "Pripremi završetak ciklusa."
+      ? "Pripremi zavrsetak ciklusa."
       : trebaNadopuna
       ? "Dodaj nadopunu kemijskog sredstva."
       : napreduje
       ? "Nastavi cirkulaciju, nema intervencije."
-      : "Promijeni smjer cirkulacije, ili pripremi završetak ciklusa.";
-    
-    glasovnaTekst += ` Sljedeći korak: ${sljedeciKorakTekst}`;
+      : "Promijeni smjer cirkulacije, ili pripremi zavrsetak ciklusa.";
+
+    const glasovnaTekst =
+      "Cirkulacija aktivna. Status cirkulacije u tijeku. " +
+      "pH " + phTekst + ". Paziti na materijal. " +
+      "Protok " + flowTekst + ". " +
+      "Temp OUT " + tempOutTekst + ". " +
+      "Uputa serviseru: " + uputaTekst + " " +
+      "Sljedeci korak: " + sljedeciKorakTekst;
 
     govori(glasovnaTekst);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -753,7 +745,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
   return (
     <div className="flex flex-col gap-4">
 
-      {/* ── 1. HEADER — info strip ──────────────────────────────────────────── */}
+      {/* ── 1. HEADER — info strip ──────────────────────────────��───────────── */}
       <div className="flex items-center justify-between gap-2 bg-card border border-border rounded-2xl px-4 py-3">
         <div className="flex flex-col gap-0.5 min-w-0">
           {(ciklus.chemicalProductName ?? ciklus.kemikalija) && (
@@ -1339,7 +1331,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         )}
       </div>
 
-      {/* ── 10. COLLAPSIBLE: Napredne akcije ──���─────────────────────────────── */}
+      {/* ── 10. COLLAPSIBLE: Napredne akcije ──���──���──────────────────────────── */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         <button
           type="button"
