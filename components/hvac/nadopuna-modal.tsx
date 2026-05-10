@@ -336,17 +336,6 @@ export function NadopunaModal({
               Ako je otopina ispuštena i dodana čista voda, koristite <strong className="text-foreground">&quot;Novi ciklus&quot;</strong>.
             </p>
           </div>
-              <div className="flex flex-col gap-1">
-                <p className="text-sm font-bold text-amber-900">Vazno — procitajte prije nastavka</p>
-                <p className="text-sm text-amber-800 leading-relaxed">
-                  Nadopuna znaci da se sredstvo dodaje u <strong>postojecu otopinu</strong>. Stara otopina se ne ispusta.
-                </p>
-                <p className="text-sm text-amber-700 leading-relaxed mt-1">
-                  Ako je otopina ispustena i dodana cista voda, koristite <strong>&quot;Pokreni novi ciklus&quot;</strong>.
-                </p>
-              </div>
-            </div>
-          </div>
 
           {/* Cycle context */}
           <div className="bg-card border border-border rounded-2xl p-4 flex flex-col gap-2">
