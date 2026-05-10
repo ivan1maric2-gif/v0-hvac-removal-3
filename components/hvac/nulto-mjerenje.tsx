@@ -229,15 +229,15 @@ export function NultoMjerenje({
       {/* Workflow Guidance */}
       <div className="shrink-0 border-b border-border px-4 py-3 flex flex-col gap-2">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Glavna uputa</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Status sustava</p>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Referentno mjerenje postavlja nultu točku — sva kasnija mjerenja računaju delta u odnosu na ove vrijednosti.
+            Kemija je dodana. Reakcija još nije izmjerena — ovo mjerenje postaje nulta točka ciklusa.
           </p>
         </div>
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Sljedeća akcija</p>
           <p className="text-sm font-semibold text-foreground leading-snug">
-            Unesite početni pH i protok odmah nakon dodavanja kemije.
+            Izmjerite pH i protok odmah — ove vrijednosti su referentna osnova za cijeli ciklus.
           </p>
         </div>
       </div>
@@ -358,7 +358,7 @@ export function NultoMjerenje({
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-base font-semibold text-muted-foreground">°C</span>
             </div>
             <p className="text-[11px] text-muted-foreground mt-1.5 leading-snug">
-              Ako je dostupno — prati prijenos topline i stanje protočnosti. Bez unosa, delta Temp OUT neće biti dostupna.
+              Ako je dostupno — prati prijenos topline i stanje protočnosti. Bez unosa, delta Temp OUT ne��e biti dostupna.
             </p>
           </div>
 

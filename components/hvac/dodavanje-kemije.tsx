@@ -327,17 +327,17 @@ export function DodavanjeKemije({
         {/* ── Workflow Guidance ────────────────────────────────────────── */}
         <div className="px-4 pt-4 pb-3 border-b border-border flex flex-col gap-2">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Glavna uputa</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Status sustava</p>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {isFirst
-                ? "Odaberite kemijsko sredstvo i pripremite početnu reakciju ciklusa."
-                : "Odaberite kemijsko sredstvo i pripremite reakciju za novi ciklus."}
+                ? "Sustav je napunjen i spreman za kemijsku obradu."
+                : "Prethodna otopina je ispuštena. Sustav čeka novi kemijski tretman."}
             </p>
           </div>
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Sljedeća akcija</p>
             <p className="text-sm font-semibold text-foreground leading-snug">
-              Odaberite proizvod iz baze i unesite količinu kemije.
+              Odaberite kemijsko sredstvo iz baze i unesite količinu.
             </p>
           </div>
         </div>

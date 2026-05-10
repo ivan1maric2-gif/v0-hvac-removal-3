@@ -327,15 +327,38 @@ export function NadopunaModal({
           {/* Workflow Guidance */}
           <div className="rounded-2xl border border-border bg-muted/40 px-4 py-3 flex flex-col gap-2">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Glavna uputa</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Status sustava</p>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Nadopuna dodaje kemiju u postojeću otopinu bez pokretanja novog ciklusa.
+                {zadnjeMjer
+                  ? (() => {
+                      const ph = getMjerenjePH(zadnjeMjer);
+                      const nadopuna = ciklus.nadopune?.length ?? 0;
+                      if (ph !== undefined && ph < 4.5)
+                        return `pH otopine je nizak (${ph.toFixed(1)}). Reakcija slabi — učinkovitost sredstva opada.`;
+                      if (nadopuna >= 2)
+                        return `Ovo je ${topUpNumber}. nadopuna u ovom ciklusu. Otopina je djelomično iscrpljena.`;
+                      if (ph !== undefined && ph >= 6.5)
+                        return `pH otopine je visok (${ph.toFixed(1)}). Reakcija je pri kraju ili kemija nije aktivna.`;
+                      return `Ciklus je aktivan. Otopina je u sustavu i reakcija je u tijeku.`;
+                    })()
+                  : "Ciklus je aktivan. Otopina je u sustavu i reakcija je u tijeku."
+                }
               </p>
             </div>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Sljedeća akcija</p>
               <p className="text-sm font-semibold text-foreground leading-snug">
-                Unesite količinu dodane kemije.
+                {zadnjeMjer
+                  ? (() => {
+                      const ph = getMjerenjePH(zadnjeMjer);
+                      if (ph !== undefined && ph < 4.5)
+                        return "Dodajte kemiju za obnavljanje reakcije ili razmotrite pokretanje novog ciklusa.";
+                      if (ph !== undefined && ph >= 6.5)
+                        return "Razmotrite novi ciklus ili nastavite praćenje pH trenda.";
+                      return "Unesite količinu kemije za nadopunu.";
+                    })()
+                  : "Unesite količinu kemije za nadopunu."
+                }
               </p>
             </div>
             <p className="text-xs text-muted-foreground border-t border-border pt-2 mt-0.5">

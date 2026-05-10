@@ -93,9 +93,9 @@ export function PunjenjeVodom({ referenceData, onContinue, onBack }: Props) {
         {/* ── Workflow Guidance ─────────────────────────────────────────── */}
         <div className="mb-5 pb-4 border-b border-border flex flex-col gap-2">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Glavna uputa</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Status sustava</p>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Volumen otopine određuje točnost izračuna koncentracije kemije za ovaj ciklus.
+              Prethodna otopina je ispuštena. Sustav čeka punjenje čistom vodom.
             </p>
           </div>
           <div>
