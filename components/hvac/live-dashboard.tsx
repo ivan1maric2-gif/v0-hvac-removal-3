@@ -631,25 +631,30 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
     const dFlow_ = currFlow_ != null && baseFlow_ != null ? currFlow_ - baseFlow_ : null;
     const dTout_ = tOut_ != null && refTOut_ != null ? tOut_ - refTOut_ : null;
 
-    // Glavna poruka = statusLabel + why
-    let glasovnaTekst = `${uputa.label}. ${uputa.why}`;
+    // Cirkulacija aktivna — strukturirani glasovni tekst po mjerenju
+    let glasovnaTekst = "Cirkulacija aktivna.";
 
-    // Dodaj pH kontekst
     if (currPh_ != null) {
-      glasovnaTekst += ` pH je ${currPh_.toFixed(1).replace(".", " cijela ")}.`;
+      glasovnaTekst += ` pH ${currPh_.toFixed(1).replace(".", " cijela ")}.`;
     }
 
-    // Dodaj delta protok ako postoji
-    if (dFlow_ != null && Math.abs(dFlow_) > 0.5) {
-      const smjer = dFlow_ > 0 ? "porastao za" : "pao za";
-      glasovnaTekst += ` Protok je ${smjer} ${Math.abs(dFlow_).toFixed(1)} litara u minuti.`;
+    if (currFlow_ != null) {
+      glasovnaTekst += ` Protok ${currFlow_.toFixed(1)} litara u minuti.`;
+      if (dFlow_ != null && Math.abs(dFlow_) > 0.5) {
+        const smjer = dFlow_ > 0 ? "porastao za" : "pao za";
+        glasovnaTekst += ` ${smjer.charAt(0).toUpperCase() + smjer.slice(1)} ${Math.abs(dFlow_).toFixed(1)}.`;
+      }
     }
 
-    // Dodaj delta Temp OUT ako postoji
-    if (dTout_ != null && Math.abs(dTout_) > 0.3) {
-      const smjer = dTout_ > 0 ? "porasla za" : "pala za";
-      glasovnaTekst += ` Izlazna temperatura je ${smjer} ${Math.abs(dTout_).toFixed(1)} stupnjeva.`;
+    if (tOut_ != null) {
+      glasovnaTekst += ` Temperatura izlaza ${tOut_.toFixed(1)} stupnjeva.`;
+      if (dTout_ != null && Math.abs(dTout_) > 0.3) {
+        const smjer = dTout_ > 0 ? "porasla za" : "pala za";
+        glasovnaTekst += ` ${smjer.charAt(0).toUpperCase() + smjer.slice(1)} ${Math.abs(dTout_).toFixed(1)}.`;
+      }
     }
+
+    glasovnaTekst += ` Uputa serviseru: ${uputa.why}`;
 
     govori(glasovnaTekst);
   // eslint-disable-next-line react-hooks/exhaustive-deps
