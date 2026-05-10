@@ -871,40 +871,17 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
               </div>
             </div>
 
-            {/* ── Status redovi s ikonama ────────────────────────────────── */}
-            <div className="px-4 pb-4 pt-1 space-y-2.5">
-              {/* pH s ikona kap */}
-              <div className="flex items-start gap-3">
-                <span className="text-2xl leading-none shrink-0 mt-0.5">💧</span>
-                <div>
-                  <p className="text-sm font-bold text-white leading-snug">{phStatusNaslov}</p>
-                  {phStatusPodnaslov && (
-                    <p className="text-xs text-emerald-50 mt-0.5">{phStatusPodnaslov}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Protok s ikona valova */}
-              <div className="flex items-start gap-3">
-                <span className="text-2xl leading-none shrink-0 mt-0.5">≈≈</span>
-                <div>
-                  <p className="text-sm font-bold text-white leading-snug">{protokStatusNaslov}</p>
-                  {protokStatusPodnaslov && (
-                    <p className="text-xs text-emerald-50 mt-0.5">{protokStatusPodnaslov}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Temp OUT s ikona termometra */}
-              <div className="flex items-start gap-3">
-                <span className="text-2xl leading-none shrink-0 mt-0.5">🌡</span>
-                <div>
-                  <p className="text-sm font-bold text-white leading-snug">{tempOutStatusNaslov}</p>
-                  {tempOutStatusPodnaslov && (
-                    <p className="text-xs text-emerald-50 mt-0.5">{tempOutStatusPodnaslov}</p>
-                  )}
-                </div>
-              </div>
+            {/* ── Status redovi ─────────────────────────────────────────── */}
+            <div className="px-4 pb-4 pt-1 flex flex-col gap-3">
+              <p className="text-[15px] font-semibold text-white leading-snug">
+                {phStatusNaslov}{phStatusPodnaslov ? ` ${phStatusPodnaslov}` : ""}
+              </p>
+              <p className="text-[15px] font-semibold text-white leading-snug">
+                {protokStatusNaslov}{protokStatusPodnaslov ? ` ${protokStatusPodnaslov}` : ""}
+              </p>
+              <p className="text-[15px] font-semibold text-white leading-snug">
+                {tempOutStatusNaslov}{tempOutStatusPodnaslov ? ` ${tempOutStatusPodnaslov}` : ""}
+              </p>
             </div>
 
             {/* ── Uputa serviseru ────────────────────────────────────────── */}
