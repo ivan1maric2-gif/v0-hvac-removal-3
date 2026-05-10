@@ -425,6 +425,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
   useEffect(() => setMounted(true), []);
   const isDark = mounted ? resolvedTheme !== "light" : false;
   const lastSpokenRef = useRef<string>("");
+  const isFirstLoadRef = useRef(true);
 
   // Listen for mic button press from nav-bar
   useEffect(() => {
@@ -615,10 +616,17 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     if (!lastMj) return;
-    // Key = mjerenje ID — osigurava da se govori za SVAKO mjerenje, čak i isti status
-    const key = getMjerenjeTimestamp(lastMj) + "_" + (lastMj.id ?? "");
-    if (lastSpokenRef.current === key) return;
-    lastSpokenRef.current = key;
+    
+    // Pri prvom učitavanju, uvijek čitaj status (ignoriraj key check)
+    const isFirstLoad = isFirstLoadRef.current;
+    if (isFirstLoad) {
+      isFirstLoadRef.current = false;
+    } else {
+      // Na sljedećim renderiranjima, provjeri je li već govorljeno za ovo mjerenje
+      const key = getMjerenjeTimestamp(lastMj) + "_" + (lastMj.id ?? "");
+      if (lastSpokenRef.current === key) return;
+      lastSpokenRef.current = key;
+    }
 
     // Gradi bogatiju glasovnu poruku s kontekstom
     const basePh_ = baseline ? getMjerenjePH(baseline) : null;
@@ -1168,7 +1176,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         )}
       </div>
 
-      {/* ── 8. COLLAPSIBLE: Podsjetnik za mjerenje ───────────────────�������─────── */}
+      {/* ── 8. COLLAPSIBLE: Podsjetnik za mjerenje ───────────────────�������─────��─ */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         <button
           type="button"
