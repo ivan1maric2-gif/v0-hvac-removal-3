@@ -828,36 +828,6 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
           : tempOutStagnira                       ? null
           : "Pratiti trend.";
 
-        // ── Zašto razlozi (kratki) ──────────────────────────────────────────
-        const zastoRazlozi: string[] = [];
-        if (snagaSredstva === "jako" || snagaSredstva === "aktivno") {
-          zastoRazlozi.push("pH nizak → kemija još aktivna");
-        } else if (snagaSredstva === "slabi") {
-          zastoRazlozi.push("pH raste → kemija slabi");
-        } else {
-          zastoRazlozi.push("pH visok → kemija iscrpljena");
-        }
-
-        if (napreduje) {
-          zastoRazlozi.push("Protok raste → kamenac se otapa");
-        } else if (protokStagnira) {
-          zastoRazlozi.push("Protok stagnira → kamenac se više ne otapa značajno");
-        } else {
-          zastoRazlozi.push("Protok pada → pratiti stanje");
-        }
-
-        if (deltaTOut !== null && deltaTOut >= 0.5) {
-          zastoRazlozi.push("Temp OUT raste → izmjena topline se poboljšava");
-        } else if (tempOutStagnira) {
-          zastoRazlozi.push("Temp OUT stabilan → reakcija usporena");
-        } else {
-          zastoRazlozi.push("Temp OUT pada → pratiti sustav");
-        }
-
-        // ── Preporuka serviseru ─────────────────────────────────────────────
-        // Stagnacija = protok i tempOut stagniraju, ali pH nizak
-        const stagnacija = protokStagnira && tempOutStagnira && (snagaSredstva === "jako" || snagaSredstva === "aktivno");
-
         return (
           <div className="rounded-2xl overflow-hidden border-2 border-emerald-500/50 bg-gradient-to-br from-emerald-700 to-emerald-800">
 
