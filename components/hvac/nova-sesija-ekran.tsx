@@ -260,7 +260,7 @@ export function NovaSesijaEkran() {
     // Traži najnoviju sesiju koja odgovara nazivu objekta ili lokaciji
     const prethodna = sesije
       .filter((s) => !s.isDemo)
-      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""))
       .find((s) => {
         const sNaziv = (s.naziv_objekta ?? "").toLowerCase();
         const sLok = (s.lokacija ?? "").toLowerCase();
@@ -377,7 +377,7 @@ export function NovaSesijaEkran() {
 
           {/* ───────────────────────────────────────────────────────────────────
               SEKCIJA 1 — BASIC INFO
-          ─────────────────────────────────────────────────────────────────── */}
+          ���────────────────────────────────────────────────────────────────── */}
           <SekcijaHeader label="Osnovni podaci" />
           <div className="flex flex-col gap-4 pb-6">
             <Field label="Naziv objekta" required>

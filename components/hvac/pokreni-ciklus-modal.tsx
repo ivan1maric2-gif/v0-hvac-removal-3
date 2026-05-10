@@ -208,7 +208,7 @@ function defaultForm(defaultWater?: number, defaultChem?: string, isFirst?: bool
   };
 }
 
-// ─── Main component ─────────────────────────────────────���─────────────���───────
+// ─── Main component ───────────────────────────���─────────���─────────────���───────
 
 export function PokreniCiklusModal({
   sessionId,
@@ -1252,7 +1252,7 @@ export function PokreniCiklusModal({
 
           {/* Korekcija volumena — samo za ciklus #1, opcionalno */}
           {isFirst && (
-            <CSection label="Korekcija volumena">
+            <CSection title="Korekcija volumena">
               <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
                 Procijenjeni volumen iz sesije:{" "}
                 <strong className="text-foreground">
@@ -1260,7 +1260,7 @@ export function PokreniCiklusModal({
                 </strong>.
                 Ako je stvarni volumen drugačiji, unesite korekciju.
               </p>
-              <CField label="Stvarni volumen sustava (L)" optional>
+              <CField label="Stvarni volumen sustava (L) — neobavezno">
                 <input
                   type="number"
                   name="volumeCorrection"
