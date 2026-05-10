@@ -164,6 +164,8 @@ interface FormState {
   chemicalAddedAt: string;
   chemicalNote: string;
   chemicalDensityKgL: string;
+  // Korekcija volumena — opcionalno, samo ciklus #1
+  volumeCorrection: string;
 }
 
 function defaultForm(defaultWater?: number, defaultChem?: string, isFirst?: boolean): FormState {
@@ -202,6 +204,7 @@ function defaultForm(defaultWater?: number, defaultChem?: string, isFirst?: bool
     chemicalAddedAt: nowIso(),
     chemicalNote: "",
     chemicalDensityKgL: "",
+    volumeCorrection: "",
   };
 }
 
@@ -228,7 +231,9 @@ export function PokreniCiklusModal({
 }: Props) {
   const { getProizvod } = useProducts();
   const isFirst = cycleNumber === 1;
-  const [step, setStep] = useState<Step>(hasActiveCycle ? "confirm" : "stanje");
+  // Ciklus #1: sustav je već napunjen — počinjemo s kemijom, ne vodom
+  const initialStep: Step = hasActiveCycle ? "confirm" : (isFirst ? "sredstvo" : "stanje");
+  const [step, setStep] = useState<Step>(initialStep);
 
   // Pre-resolve product from defaultProductId so the picker shows it immediately
   const initialProduct = React.useMemo(
@@ -304,22 +309,33 @@ export function PokreniCiklusModal({
 
   // ── Validation ───────────────────────────────────────────────────────────
   const drainOk = isFirst
-    ? form.cleanWaterAdded
+    ? true  // Ciklus #1: sustav je već napunjen iz session setup-a
     : form.previousSolutionDrained && form.cleanWaterAdded;
 
-  const formValid =
-    selectedProduct !== null &&
-    form.waterVolumeL !== "" &&
-    waterL > 0 &&
-    form.chemicalProductName.trim() !== "" &&
-    form.chemicalAmount !== "" &&
-    chemAmt > 0 &&
-    form.chemicalAddedAt !== "" &&
-    drainOk &&
-    (!productIsSystemIncompatible || systemWarningConfirmed);
+  const formValid = isFirst
+    // Ciklus #1: samo kemija je obavezna — voda dolazi iz session setup-a
+    ? selectedProduct !== null &&
+      form.chemicalProductName.trim() !== "" &&
+      form.chemicalAmount !== "" &&
+      chemAmt > 0 &&
+      form.chemicalAddedAt !== "" &&
+      (!productIsSystemIncompatible || systemWarningConfirmed)
+    // Ciklus #2+: standardna validacija s vodom i ispuštanjem
+    : selectedProduct !== null &&
+      form.waterVolumeL !== "" &&
+      waterL > 0 &&
+      form.chemicalProductName.trim() !== "" &&
+      form.chemicalAmount !== "" &&
+      chemAmt > 0 &&
+      form.chemicalAddedAt !== "" &&
+      drainOk &&
+      (!productIsSystemIncompatible || systemWarningConfirmed);
 
   // ── Wizard step order ────────────────────────────────────────────────────
-  const WIZARD_STEPS: Step[] = ["stanje", "voda", "sredstvo", "pregled"];
+  // Ciklus #1: sustav je već pripremljen iz session setup-a — preskačemo stanje+voda
+  const WIZARD_STEPS: Step[] = isFirst
+    ? ["sredstvo", "pregled"]
+    : ["stanje", "voda", "sredstvo", "pregled"];
   const stepIndex = WIZARD_STEPS.indexOf(step as Exclude<Step, "confirm">);
 
   // Per-step forward validation — what must be true to advance
@@ -432,9 +448,15 @@ export function PokreniCiklusModal({
       rinsePhAfter: form.rinsePhAfter ? parseFloat(form.rinsePhAfter) : undefined,
       rinseTdsAfter: form.rinseTdsAfter.trim() || undefined,
       rinseNote: form.rinseNote.trim() || undefined,
-      cleanWaterAdded: form.cleanWaterAdded,
-      waterVolumeL: waterL,
-      volumen_vode: waterL,
+      cleanWaterAdded: isFirst ? true : form.cleanWaterAdded,
+      // Ciklus #1: volumen iz session setup-a + opcionalna korekcija servisera
+      // Ciklus #2+: volumen koji serviser unosi u "Punjenje vodom" koraku
+      waterVolumeL: isFirst
+        ? (form.volumeCorrection ? parseFloat(form.volumeCorrection) : (defaultWaterVolumeL ?? waterL))
+        : waterL,
+      volumen_vode: isFirst
+        ? (form.volumeCorrection ? parseFloat(form.volumeCorrection) : (defaultWaterVolumeL ?? waterL))
+        : waterL,
       waterTempC: form.waterTempC ? parseFloat(form.waterTempC) : undefined,
       waterPh: form.waterPh ? parseFloat(form.waterPh) : undefined,
       waterTds: form.waterTds.trim() || undefined,
@@ -598,8 +620,10 @@ export function PokreniCiklusModal({
       subtitle: "Unesite količinu čiste vode za novi ciklus.",
     },
     sredstvo: {
-      title: "Kemijsko sredstvo",
-      subtitle: "Odaberite sredstvo i unesite količinu.",
+      title: isFirst ? "Kemija — Ciklus #1" : "Kemijsko sredstvo",
+      subtitle: isFirst
+        ? "Sustav je spreman. Odaberite kemijsko sredstvo i dozu."
+        : "Odaberite sredstvo i unesite količinu.",
     },
     pregled: {
       title: "Pregled i pokretanje",
@@ -1226,6 +1250,31 @@ export function PokreniCiklusModal({
             </CSection>
           )}
 
+          {/* Korekcija volumena — samo za ciklus #1, opcionalno */}
+          {isFirst && (
+            <CSection label="Korekcija volumena">
+              <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+                Procijenjeni volumen iz sesije:{" "}
+                <strong className="text-foreground">
+                  {defaultWaterVolumeL ? `${defaultWaterVolumeL} L` : "nije unesen"}
+                </strong>.
+                Ako je stvarni volumen drugačiji, unesite korekciju.
+              </p>
+              <CField label="Stvarni volumen sustava (L)" optional>
+                <input
+                  type="number"
+                  name="volumeCorrection"
+                  value={form.volumeCorrection}
+                  onChange={handle}
+                  min="0"
+                  step="0.5"
+                  placeholder={defaultWaterVolumeL ? String(defaultWaterVolumeL) : "npr. 62"}
+                  className={inputCls}
+                />
+              </CField>
+            </CSection>
+          )}
+
           </>} {/* end step === "sredstvo" */}
 
           {/* ════════════════════════════════════════════════════════ */}
@@ -1235,8 +1284,8 @@ export function PokreniCiklusModal({
 
           <CSection title="Pregled unesenih podataka">
             <div className="flex flex-col gap-2">
-              {/* Stanje row */}
-              <div className="rounded-xl border border-border bg-card px-4 py-3 flex flex-col gap-1.5">
+              {/* Stanje row — samo za ciklus #2+ */}
+              {!isFirst && <div className="rounded-xl border border-border bg-card px-4 py-3 flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Stanje sustava</span>
                   <button
@@ -1259,8 +1308,9 @@ export function PokreniCiklusModal({
                 {!initialFlowLMin && !form.initialPhSustava && form.vizualnoStanje === "nije_provjereno" && (
                   <p className="text-xs text-muted-foreground italic">Stanje nije zabilježeno</p>
                 )}
-              </div>
-              {/* Voda row */}
+              </div>}
+              {/* Voda row — za ciklus #2+ */}
+              {!isFirst && (
               <div className="rounded-xl border border-border bg-card px-4 py-3 flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Voda</span>
@@ -1272,10 +1322,27 @@ export function PokreniCiklusModal({
                     Uredi
                   </button>
                 </div>
-                <SummaryRow label="Kolicina vode" value={waterL > 0 ? `${waterL} L` : "—"} />
+                <SummaryRow label="Količina vode" value={waterL > 0 ? `${waterL} L` : "—"} />
                 {form.waterTempC && <SummaryRow label="Temperatura" value={`${form.waterTempC} °C`} />}
                 {form.waterPh && <SummaryRow label="pH vode" value={form.waterPh} />}
               </div>
+              )}
+              {/* Volumen iz sesije — samo za ciklus #1 */}
+              {isFirst && (
+              <div className="rounded-xl border border-border bg-card px-4 py-3 flex flex-col gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Volumen sustava</span>
+                <SummaryRow
+                  label="Volumen"
+                  value={
+                    form.volumeCorrection
+                      ? `${form.volumeCorrection} L (korigiran)`
+                      : defaultWaterVolumeL
+                      ? `${defaultWaterVolumeL} L (iz sesije)`
+                      : "—"
+                  }
+                />
+              </div>
+              )}
               {/* Sredstvo row */}
               <div className="rounded-xl border border-border bg-card px-4 py-3 flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
