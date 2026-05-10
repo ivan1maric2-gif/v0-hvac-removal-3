@@ -199,11 +199,6 @@ export function NovaSesijaEkran() {
   const [ciljOpis, setCiljOpis] = useState("");
 
   // ───────────────────────────────────────────────────────────────────────────
-  // AUTO-PREFILL — traži prethodnu sesiju prema nazivu objekta + lokaciji
-  // ───────────────────────────────────────────────────────────────────────────
-  const [autoPopunjeno, setAutoPopunjeno] = useState(false);
-
-  // ───────────────────────────────────────────────────────────────────────────
   // SEKCIJA 3 — TECHNICAL DATA
   // ───────────────────────────────────────────────────────────────────────────
   const [procijenjeniVolumen, setProcijenjeniVolumen] = useState("");
@@ -215,6 +210,11 @@ export function NovaSesijaEkran() {
   const [protokPrije, setProtokPrije] = useState("");
   const [tempPrije, setTempPrije] = useState("");
   const [phPrije, setPhPrije] = useState("");
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // AUTO-PREFILL — svi useState zajedno na vrhu, useEffect ispod
+  // ───────────────────────────────────────────────────────────────────────────
+  const [autoPopunjeno, setAutoPopunjeno] = useState(false);
 
   // Auto-prefill — kada serviser upiše naziv objekta i lokaciju, traži prethodnu sesiju
   useEffect(() => {
