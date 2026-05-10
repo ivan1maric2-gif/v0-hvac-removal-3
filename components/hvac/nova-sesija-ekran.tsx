@@ -193,7 +193,7 @@ export function NovaSesijaEkran() {
 
   // ───────────────────────────────────────────────────────────────────────────
   // SEKCIJA 2 — SYSTEM TYPE
-  // ────────────────────────────────────────────────────�������──────────────────────
+  // ────────────────────────────────────────────────────���������──────────────────────
   const [tipSustava, setTipSustava] = useState<SystemCategory | null>(null);
   const [cilj, setCilj] = useState<string | null>(null);
   const [ciljOpis, setCiljOpis] = useState("");
@@ -212,17 +212,20 @@ export function NovaSesijaEkran() {
   const [phPrije, setPhPrije] = useState("");
 
   // Validacija
+  // cilj je validan ako je odabran iz liste ILI ako je serviser upisao vlastiti opis
+  const ciljValidan = cilj !== null || ciljOpis.trim().length > 0;
+
   const canSubmit =
     nazivObjekta.trim().length > 0 &&
     lokacija.trim().length > 0 &&
     tipSustava !== null &&
-    cilj !== null &&
+    ciljValidan &&
     procijenjeniVolumen.trim().length > 0 &&
     materijali.length > 0;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!canSubmit || !tipSustava) return;
+    if (!canSubmit || !tipSustava || !ciljValidan) return;
 
     const now = nowISO();
 
