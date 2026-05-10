@@ -190,14 +190,6 @@ export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
     );
   }
 
-  // Guard: Mode A sessions with no cycles must go through setup first
-  const isModeAGuard = sesija.workMode === "no_subsessions";
-  const nemaCiklusaGuard = isModeAGuard && (sesija.ciklusi ?? []).length === 0;
-  if (nemaCiklusaGuard) {
-    navigiraj({ ime: "setup_ciklus", sesijaId });
-    return null;
-  }
-
   const stat = izracunajStatistiku(sesija);
   const isModeA = sesija.workMode === "no_subsessions";
   const isModeB = sesija.workMode === "with_subsessions";
@@ -1806,7 +1798,7 @@ function PodsesijaKartica({
             onClick={onZavrsi}
             className="flex-1 py-2.5 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
           >
-            Završi
+            Zavr��i
           </button>
         )}
       </div>
