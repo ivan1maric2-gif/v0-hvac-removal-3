@@ -783,84 +783,131 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         )}
       </div>
 
-      {/* ── 3. PREGLED STANJA — kompaktni 3-redni strip ─────────────────────── */}
+      {/* ── 3. ZAŠTO JE OVO STANJE? + UPUTA SERVISERU ──────────────────────── */}
       {lastMj && (() => {
         const snagaSredstva: "jako" | "aktivno" | "slabi" | "iscrpljeno" =
           ph < 2.0 ? "jako" : ph < 3.0 ? "aktivno" : ph < 4.0 ? "slabi" : "iscrpljeno";
         const napreduje     = deltaFlowPct !== null && deltaFlowPct >= 3;
         const trebaNadopuna = rs.primaryAction === "nadopuna";
         const trebaNoviciklus = rs.primaryAction === "novi_ciklus";
-
-        // ── Red 1: Čišćenje napreduje? ──────────────────────────────────────
-        const r1Sig: "da" | "pazi" | "ne" =
-          napreduje ? "da"
-          : deltaFlowPct !== null && deltaFlowPct > 0 ? "pazi"
-          : deltaFlowPct !== null ? "ne" : "pazi";
-
-        const r1Parts: string[] = [];
-        if (napreduje)                              r1Parts.push(`protok +${deltaFlowPct!.toFixed(1)}%`);
-        else if (deltaFlowPct !== null && deltaFlowPct > 0) r1Parts.push(`protok +${deltaFlowPct.toFixed(1)}%`);
-        else if (deltaFlowPct !== null)             r1Parts.push("protok ne raste");
         const deltaTOut = tOut !== null && refTOut !== null ? parseFloat((tOut - refTOut).toFixed(1)) : null;
-        if (deltaTOut !== null && deltaTOut > 0.5) r1Parts.push(`Temp OUT +${deltaTOut.toFixed(1)} °C`);
 
-        const r1Label = napreduje
-          ? `Čišćenje napreduje — ${r1Parts.join(", ")}`
-          : deltaFlowPct !== null && deltaFlowPct > 0
-          ? `Napredak blag — ${r1Parts.join(", ")}`
-          : "Napredak stagnira — protok i Temp OUT bez promjene";
+        // ── 3 razloga ───────────────────────────────────────────────────────
+        // pH
+        const phLabel =
+          snagaSredstva === "jako"      ? `pH: ${ph.toFixed(2)} — sredstvo je jako aktivno`
+          : snagaSredstva === "aktivno" ? `pH: ${ph.toFixed(2)} — sredstvo je aktivno`
+          : snagaSredstva === "slabi"   ? `pH: ${ph.toFixed(2)} — sredstvo slabi`
+          :                               `pH: ${ph.toFixed(2)} — sredstvo iscrpljeno`;
+        const phSig: "dobro" | "upozorenje" | "lose" =
+          snagaSredstva === "jako" || snagaSredstva === "aktivno" ? "dobro"
+          : snagaSredstva === "slabi" ? "upozorenje" : "lose";
 
-        // ── Red 2: Sredstvo radi? ───────────────────────────────────────────
-        const r2Sig: "da" | "pazi" | "ne" =
-          snagaSredstva === "jako" || snagaSredstva === "aktivno" ? "da"
-          : snagaSredstva === "slabi" ? "pazi" : "ne";
+        // Protok
+        const protokLabel =
+          napreduje                                       ? `Protok: raste +${deltaFlowPct!.toFixed(1)}% — čišćenje napreduje`
+          : deltaFlowPct !== null && deltaFlowPct > 0     ? `Protok: blago raste +${deltaFlowPct.toFixed(1)}% — napredak blag`
+          : deltaFlowPct !== null && deltaFlowPct < -1    ? `Protok: pada ${deltaFlowPct.toFixed(1)}% — pratiti stanje`
+          :                                                  "Protok: stabilan — nema daljnjeg poboljšanja";
+        const protokSig: "dobro" | "upozorenje" | "lose" =
+          napreduje ? "dobro"
+          : deltaFlowPct !== null && deltaFlowPct > 0 ? "upozorenje"
+          : deltaFlowPct !== null && deltaFlowPct < -1 ? "lose" : "upozorenje";
 
-        const r2Label =
-          snagaSredstva === "jako"      ? `Sredstvo jako aktivno — pH ${ph.toFixed(2)}`
-          : snagaSredstva === "aktivno" ? `Sredstvo aktivno — pH ${ph.toFixed(2)}`
-          : snagaSredstva === "slabi"   ? `Sredstvo slabi — pH visok (${ph.toFixed(2)})`
-          :                               `Sredstvo iscrpljeno — pH ${ph.toFixed(2)}`;
+        // Temp OUT
+        const tempOutLabel =
+          deltaTOut !== null && deltaTOut >= 1  ? `Temp OUT: +${deltaTOut.toFixed(1)} °C — izmjena topline se poboljšava`
+          : deltaTOut !== null && deltaTOut > 0 ? `Temp OUT: +${deltaTOut.toFixed(1)} °C — blagi porast`
+          : deltaTOut !== null && deltaTOut < -0.5 ? `Temp OUT: ${deltaTOut.toFixed(1)} °C — pada, pratiti`
+          :                                          "Temp OUT: bez promjene — reakcija više ne napreduje";
+        const tempOutSig: "dobro" | "upozorenje" | "lose" =
+          deltaTOut !== null && deltaTOut >= 1 ? "dobro"
+          : deltaTOut !== null && deltaTOut < -0.5 ? "lose" : "upozorenje";
 
-        // ── Red 3: Što dalje? ────────────────────────────────────────────────
-        const r3Sig: "da" | "pazi" | "info" =
-          trebaNoviciklus ? "pazi"
-          : trebaNadopuna ? "pazi"
-          : "info";
+        // ── Uputa serviseru ─────────────────────────────────────────────────
+        const uputaText =
+          trebaNoviciklus
+            ? "Ciklus je pri kraju. Pripremi završetak — ispusti otopinu, isperi sustav i pokreni novi ciklus s čistom vodom i svježim sredstvom."
+            : trebaNadopuna
+            ? "Dodaj nadopunu kemijskog sredstva. Pratiti pH — ako ne padne ispod 4.0, razmisli o novom ciklusu umjesto nadopune."
+            : napreduje
+            ? "Nastavi cirkulaciju. Čišćenje aktivno napreduje — prati pH, protok i Temp OUT. Nema potrebe za intervencijom."
+            : "Nastavi cirkulaciju još kratko i prati pH, protok i Temp OUT. Ako se protok i Temp OUT ne mijenjaju, a pH ostaje nizak, reakcija je aktivna ali napredak stagnira. Sljedeći korak: provjeri ima li smisla nastaviti, promijeniti smjer cirkulacije ili pripremiti završetak ciklusa.";
 
-        const r3Label =
-          trebaNoviciklus ? "Razmotri završetak ciklusa ili pokretanje novog"
-          : trebaNadopuna ? "Dodaj nadopunu — sredstvo slabi"
-          : uputa.label ?? "Nastavi cirkulaciju";
-
-        type Sig = "da" | "ne" | "pazi" | "info";
-        const sigStyle: Record<Sig, { mark: string; color: string }> = {
-          da:   { mark: "✓", color: "text-emerald-400" },
-          ne:   { mark: "!", color: "text-rose-400" },
-          pazi: { mark: "~", color: "text-amber-400" },
-          info: { mark: "→", color: "text-blue-400" },
+        type Sig = "dobro" | "upozorenje" | "lose";
+        const sigCfg: Record<Sig, { dot: string; text: string }> = {
+          dobro:      { dot: "bg-emerald-500", text: "text-emerald-600 dark:text-emerald-400" },
+          upozorenje: { dot: "bg-amber-400",   text: "text-amber-600 dark:text-amber-400" },
+          lose:       { dot: "bg-rose-500",     text: "text-rose-600 dark:text-rose-400" },
         };
 
-        const rows: { label: string; s: Sig }[] = [
-          { label: r1Label, s: r1Sig },
-          { label: r2Label, s: r2Sig },
-          { label: r3Label, s: r3Sig },
+        const razlozi: { label: string; sig: Sig }[] = [
+          { label: phLabel,      sig: phSig },
+          { label: protokLabel,  sig: protokSig },
+          { label: tempOutLabel, sig: tempOutSig },
         ];
 
         return (
-          <div className="rounded-xl border border-border/60 bg-card/60 overflow-hidden">
-            <div className="px-3 py-1.5 border-b border-border/40">
-              <span className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/40">Pregled stanja</span>
+          <div className="flex flex-col gap-3">
+            {/* ZAŠTO JE OVO STANJE? */}
+            <div className="rounded-2xl border border-border bg-card overflow-hidden">
+              <div className="px-4 py-2.5 border-b border-border bg-muted/30">
+                <span className="text-[11px] font-black uppercase tracking-widest text-foreground">
+                  Zašto je ovo stanje?
+                </span>
+              </div>
+              <div className="divide-y divide-border">
+                {razlozi.map((r, i) => {
+                  const cfg = sigCfg[r.sig];
+                  return (
+                    <div key={i} className="flex items-center gap-3 px-4 py-3.5">
+                      <span className={`shrink-0 w-2.5 h-2.5 rounded-full mt-0.5 ${cfg.dot}`} />
+                      <span className={`text-sm font-semibold leading-snug ${cfg.text}`}>
+                        {r.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-            <div className="divide-y divide-border/30">
-              {rows.map((r, i) => {
-                const s = sigStyle[r.s];
-                return (
-                  <div key={i} className="flex items-center gap-2.5 px-3 py-2">
-                    <span className={`text-[13px] font-black shrink-0 w-4 text-center leading-none ${s.color}`}>{s.mark}</span>
-                    <span className="text-[12px] font-medium text-foreground leading-snug">{r.label}</span>
-                  </div>
-                );
-              })}
+
+            {/* UPUTA SERVISERU */}
+            <div className={`rounded-2xl border-2 overflow-hidden ${
+              trebaNoviciklus
+                ? "border-amber-400/60 bg-amber-400/5"
+                : trebaNadopuna
+                ? "border-blue-500/40 bg-blue-500/5"
+                : "border-border bg-card"
+            }`}>
+              <div className={`px-4 py-2.5 border-b ${
+                trebaNoviciklus ? "border-amber-400/30 bg-amber-400/10"
+                : trebaNadopuna ? "border-blue-500/20 bg-blue-500/8"
+                : "border-border bg-muted/30"
+              }`}>
+                <span className="text-[11px] font-black uppercase tracking-widest text-foreground">
+                  Uputa serviseru
+                </span>
+              </div>
+              <div className="px-4 py-4">
+                <p className="text-sm font-medium text-foreground leading-relaxed">
+                  {uputaText}
+                </p>
+                {/* Sljedeći korak pill */}
+                <div className="mt-3 pt-3 border-t border-border/60">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block mb-1.5">
+                    Sljedeći korak
+                  </span>
+                  <p className="text-sm font-bold text-foreground">
+                    {trebaNoviciklus
+                      ? "Pripremi završetak ciklusa"
+                      : trebaNadopuna
+                      ? "Dodaj nadopunu kemijskog sredstva"
+                      : napreduje
+                      ? "Nastavi cirkulaciju — nema intervencije"
+                      : "Procijeni smjer cirkulacije ili pripremi završetak"}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         );
