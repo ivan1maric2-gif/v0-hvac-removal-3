@@ -821,11 +821,11 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
             </div>
 
             {/* ── Uputa serviseru ────────────────────────────────────────── */}
-            <div className="px-4 py-3 border-t border-emerald-500/30">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-emerald-300/70 mb-1.5">
+            <div className="px-4 py-3 border-t border-slate-600/30 bg-slate-900/60">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
                 Uputa serviseru
               </h3>
-              <p className="text-sm font-medium text-white leading-relaxed">
+              <p className="text-sm font-medium text-slate-100 leading-relaxed">
                 {trebaNoviciklus
                   ? "Ciklus je pri kraju. Pripremi završetak — ispusti otopinu, isperi sustav i pokreni novi ciklus."
                   : trebaNadopuna
@@ -837,21 +837,21 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
             </div>
 
             {/* ── Sljedeći korak ─────────────────────────────────────────── */}
-            <div className="px-4 py-3 border-t border-emerald-500/30">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-emerald-300/70 mb-1.5">
+            <div className="px-4 py-3 border-t border-slate-600/30 bg-slate-900/60">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5">
                 Sljedeći korak
               </h3>
               {trebaNoviciklus ? (
-                <p className="text-sm font-bold text-white">Pripremi završetak ciklusa.</p>
+                <p className="text-sm font-bold text-slate-100">Pripremi završetak ciklusa.</p>
               ) : trebaNadopuna ? (
-                <p className="text-sm font-bold text-white">Dodaj nadopunu kemijskog sredstva.</p>
+                <p className="text-sm font-bold text-slate-100">Dodaj nadopunu kemijskog sredstva.</p>
               ) : napreduje ? (
-                <p className="text-sm font-bold text-white">Nastavi cirkulaciju — nema intervencije.</p>
+                <p className="text-sm font-bold text-slate-100">Nastavi cirkulaciju — nema intervencije.</p>
               ) : (
                 <div className="flex flex-col gap-1">
-                  <p className="text-sm font-bold text-white">Promijeni smjer cirkulacije</p>
-                  <p className="text-xs text-emerald-300/60 font-semibold">ILI</p>
-                  <p className="text-sm font-bold text-white">Pripremi završetak ciklusa.</p>
+                  <p className="text-sm font-bold text-slate-100">Promijeni smjer cirkulacije</p>
+                  <p className="text-xs text-slate-500 font-semibold">ILI</p>
+                  <p className="text-sm font-bold text-slate-100">Pripremi završetak ciklusa.</p>
                 </div>
               )}
             </div>
