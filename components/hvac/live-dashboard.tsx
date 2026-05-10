@@ -855,7 +855,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
             </div>
 
             {/* ── pH kartica s detaljima ─────────────────────────────────── */}
-            {lastM && (
+            {lastMj && (
               <div className="mx-6 mb-6 rounded-2xl bg-slate-900/70 border border-slate-700/50 px-4 py-3 flex items-start gap-4">
                 <div className="flex-1">
                   <span className="text-xs font-black uppercase tracking-widest text-slate-400">pH</span>
@@ -1323,7 +1323,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         )}
       </div>
 
-      {/* ── 10. COLLAPSIBLE: Napredne akcije ────────────────────────────────── */}
+      {/* ── 10. COLLAPSIBLE: Napredne akcije ──���─────────────────────────────── */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         <button
           type="button"
