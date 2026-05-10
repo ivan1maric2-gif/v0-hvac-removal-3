@@ -193,7 +193,7 @@ export function NovaSesijaEkran() {
 
   // ───────────────────────────────────────────────────────────────────────────
   // SEKCIJA 2 — SYSTEM TYPE
-  // ───────────────────────────────────────────────────────────────────────────
+  // ────────────────────────────────────────────────────���──────────────────────
   const [tipSustava, setTipSustava] = useState<SystemCategory | null>(null);
   const [cilj, setCilj] = useState<string | null>(null);
 
@@ -351,12 +351,22 @@ export function NovaSesijaEkran() {
                   }`}
                 >
                   <option value="">Odaberi cilj čišćenja...</option>
-                  <option value="Ploče iz razmjenjivača topline">Ploče iz razmjenjivača topline</option>
-                  <option value="Rezervoar">Rezervoar</option>
-                  <option value="Cjevovod">Cjevovod</option>
-                  <option value="Kondenzator">Kondenzator</option>
-                  <option value="Spirala">Spirala</option>
-                  <option value="Drugo">Drugo</option>
+                  <option value="Heat exchanger">Razmjenjivač topline</option>
+                  <option value="Tank">Spremnik / bojler</option>
+                  <option value="Installation">Instalacija</option>
+                  <option value="DHW installation">Instalacija PTV</option>
+                  <option value="Heating system">Grijanje</option>
+                  <option value="Underfloor heating">Podno grijanje</option>
+                  <option value="Solar system">Solarni sustav</option>
+                  <option value="Condenser">Kondenzator</option>
+                  <option value="Evaporator">Isparivač</option>
+                  <option value="Heat pump">Toplinska pumpa</option>
+                  <option value="HVAC system">HVAC sustav</option>
+                  <option value="Pipework">Cjevovod</option>
+                  <option value="Fan coil">Fan coil</option>
+                  <option value="Boiler">Kotao</option>
+                  <option value="Multiple components">Više komponenti</option>
+                  <option value="Other">Ostalo</option>
                 </select>
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 pointer-events-none">
                   <ChevronDown />
