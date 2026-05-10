@@ -859,49 +859,49 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         const stagnacija = protokStagnira && tempOutStagnira && (snagaSredstva === "jako" || snagaSredstva === "aktivno");
 
         return (
-          <div className="rounded-3xl overflow-hidden border-2 border-emerald-500/50 bg-gradient-to-br from-emerald-600 to-emerald-700">
+          <div className="rounded-2xl overflow-hidden border-2 border-emerald-500/50 bg-gradient-to-br from-emerald-600 to-emerald-700">
 
             {/* ── Header naslov s ikona ──────────────────────────────────── */}
-            <div className="px-6 pt-6 pb-4 flex items-start gap-4">
-              <span className="text-4xl leading-none shrink-0">⇄</span>
+            <div className="px-4 pt-4 pb-3 flex items-start gap-3">
+              <span className="text-2xl leading-none shrink-0">⇄</span>
               <div>
-                <h2 className="text-4xl font-black text-white leading-tight tracking-tight">
+                <h2 className="text-2xl font-black text-white leading-tight">
                   CIRKULACIJA<br />AKTIVNA
                 </h2>
               </div>
             </div>
 
             {/* ── Status redovi s ikonama ────────────────────────────────── */}
-            <div className="px-6 pb-6 pt-2 space-y-4">
+            <div className="px-4 pb-4 pt-1 space-y-2.5">
               {/* pH s ikona kap */}
-              <div className="flex items-start gap-4">
-                <span className="text-3xl leading-none shrink-0 mt-0.5">💧</span>
+              <div className="flex items-start gap-3">
+                <span className="text-2xl leading-none shrink-0 mt-0.5">💧</span>
                 <div>
-                  <p className="text-base font-bold text-white leading-snug">{phStatusNaslov}</p>
+                  <p className="text-sm font-bold text-white leading-snug">{phStatusNaslov}</p>
                   {phStatusPodnaslov && (
-                    <p className="text-sm text-emerald-50 mt-1">{phStatusPodnaslov}</p>
+                    <p className="text-xs text-emerald-50 mt-0.5">{phStatusPodnaslov}</p>
                   )}
                 </div>
               </div>
 
               {/* Protok s ikona valova */}
-              <div className="flex items-start gap-4">
-                <span className="text-3xl leading-none shrink-0 mt-0.5">≈≈</span>
+              <div className="flex items-start gap-3">
+                <span className="text-2xl leading-none shrink-0 mt-0.5">≈≈</span>
                 <div>
-                  <p className="text-base font-bold text-white leading-snug">{protokStatusNaslov}</p>
+                  <p className="text-sm font-bold text-white leading-snug">{protokStatusNaslov}</p>
                   {protokStatusPodnaslov && (
-                    <p className="text-sm text-emerald-50 mt-1">{protokStatusPodnaslov}</p>
+                    <p className="text-xs text-emerald-50 mt-0.5">{protokStatusPodnaslov}</p>
                   )}
                 </div>
               </div>
 
               {/* Temp OUT s ikona termometra */}
-              <div className="flex items-start gap-4">
-                <span className="text-3xl leading-none shrink-0 mt-0.5">🌡</span>
+              <div className="flex items-start gap-3">
+                <span className="text-2xl leading-none shrink-0 mt-0.5">🌡</span>
                 <div>
-                  <p className="text-base font-bold text-white leading-snug">{tempOutStatusNaslov}</p>
+                  <p className="text-sm font-bold text-white leading-snug">{tempOutStatusNaslov}</p>
                   {tempOutStatusPodnaslov && (
-                    <p className="text-sm text-emerald-50 mt-1">{tempOutStatusPodnaslov}</p>
+                    <p className="text-xs text-emerald-50 mt-0.5">{tempOutStatusPodnaslov}</p>
                   )}
                 </div>
               </div>
@@ -1178,7 +1178,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         )}
       </div>
 
-      {/* ── 8. COLLAPSIBLE: Podsjetnik za mjerenje ──────────────────────────── */}
+      {/* ── 8. COLLAPSIBLE: Podsjetnik za mjerenje ───────────────────��──────── */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         <button
           type="button"
