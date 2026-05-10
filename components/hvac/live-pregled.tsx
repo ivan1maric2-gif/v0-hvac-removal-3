@@ -17,6 +17,7 @@ import { WarningsKartica } from "@/components/hvac/warnings-kartica";
 import { LiveChemistryDashboard } from "@/components/hvac/live-chemistry-dashboard";
 import { ScaleRemovalKartica } from "@/components/hvac/scale-removal-kartica";
 import { getDashboardConfig } from "@/lib/dynamic-dashboard-config";
+import { StatusSustavaBanner } from "@/components/hvac/status-sustava-banner";
 
 // ─── Delta helpers ────────────────────────────────────────────────────────────
 
@@ -2497,7 +2498,7 @@ function calculateStabilizacija(sesija: Sesija, aktivanCiklus: Ciklus | null): S
   // pH nizak = jaka kiselina još prisutna
   const phNizak = zadnjiPHVal != null && zadnjiPHVal < 2.0;
 
-  // ── Razina kamenca (bodovni sustav) ─���──────────────���─────────────────────────
+  // ── Razina kamenca (bodovni sustav) �����──────────────���─────────────────────────
   const totalNadopune = sviCiklusi.reduce((s, c) => s + (c.nadopune?.length ?? 0), 0);
   const phUkupno = sPHs.length >= 2
     ? Math.abs((getMjerenjePH(sPHs[sPHs.length - 1]) ?? 7) - (getMjerenjePH(sPHs[0]) ?? 7)) : 0;
@@ -3127,6 +3128,20 @@ function CiklusKartica({ ciklus, sesija, isActive, defaultExpanded = false }: Ci
           {expanded ? "Zatvori" : "Prikaži mjerenja"}
         </span>
       </div>
+
+      {/* STATUS SUSTAVA + SLJEDEĆA AKCIJA — uvijek vidljivo kad je ciklus aktivan i ima mjerenja */}
+      {isActive && liveChemistryState && lastM && (
+        <div className="px-3 py-3 border-t border-border">
+          <StatusSustavaBanner
+            liveState={liveChemistryState}
+            trend={reactionTrend}
+            dPhTotal={dPhTotal}
+            dFlowTotal={dFlowTotal}
+            topUpCount={ciklus.nadopune?.length ?? 0}
+            isActive={isActive}
+          />
+        </div>
+      )}
 
       {/* Expandable measurement list */}
       {expanded && (
