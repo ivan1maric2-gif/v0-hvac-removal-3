@@ -662,7 +662,27 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
       }
     }
 
-    glasovnaTekst += ` Uputa serviseru: ${uputa.why}`;
+    // Uputa serviseru
+    const uputaTekst = trebaNoviciklus
+      ? "Ciklus je pri kraju. Pripremi završetak."
+      : trebaNadopuna
+      ? "Dodaj nadopunu kemijskog sredstva."
+      : napreduje
+      ? "Nastavi cirkulaciju. Čišćenje aktivno napreduje."
+      : "Nastavi cirkulaciju kratko vrijeme i prati promjene.";
+    
+    glasovnaTekst += ` Uputa serviseru: ${uputaTekst}`;
+
+    // Sljedeći korak
+    const sljedeciKorakTekst = trebaNoviciklus
+      ? "Pripremi završetak ciklusa."
+      : trebaNadopuna
+      ? "Dodaj nadopunu kemijskog sredstva."
+      : napreduje
+      ? "Nastavi cirkulaciju, nema intervencije."
+      : "Promijeni smjer cirkulacije, ili pripremi završetak ciklusa.";
+    
+    glasovnaTekst += ` Sljedeći korak: ${sljedeciKorakTekst}`;
 
     govori(glasovnaTekst);
   // eslint-disable-next-line react-hooks/exhaustive-deps
