@@ -196,6 +196,7 @@ export function NovaSesijaEkran() {
   // ────────────────────────────────────────────────────�������──────────────────────
   const [tipSustava, setTipSustava] = useState<SystemCategory | null>(null);
   const [cilj, setCilj] = useState<string | null>(null);
+  const [ciljOpis, setCiljOpis] = useState("");
 
   // ───────────────────────────────────────────────────────────────────────────
   // SEKCIJA 3 — TECHNICAL DATA
@@ -232,7 +233,7 @@ export function NovaSesijaEkran() {
       datum: new Date().toISOString().slice(0, 10),
       serviser: tehniker.trim(),
       kontakt_osoba: "",
-      opis_problema: `${cilj} — ${procijenjeniVolumen} L, Materijali: ${materijali.join(", ")}`,
+      opis_problema: [cilj, ciljOpis.trim(), `${procijenjeniVolumen} L`, `Materijali: ${materijali.join(", ")}`].filter(Boolean).join(" — "),
       status: "u_radu",
       workMode: "no_subsessions",
       cleaningMode: "descaling",
@@ -372,6 +373,14 @@ export function NovaSesijaEkran() {
                   <ChevronDown />
                 </span>
               </div>
+              {/* Slobodan unos — uvijek vidljiv za dodatni opis */}
+              <input
+                type="text"
+                value={ciljOpis}
+                onChange={(e) => setCiljOpis(e.target.value)}
+                placeholder="Vlastita napomena (npr. bojler 500L, izmjenjivač pločasti...)"
+                className={`${inputCls} mt-2 text-sm`}
+              />
             </Field>
           </div>
 
