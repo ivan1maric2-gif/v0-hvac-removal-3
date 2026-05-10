@@ -302,25 +302,44 @@ export function NovaSesijaEkran() {
           ─────────────────────────────────────────────────────────────────── */}
           <SekcijaHeader label="Tip sustava" />
           <div className="flex flex-col gap-4 pb-6">
-            <Field label="Vrsta sustava" required>
-              <div className="relative">
-                <select
-                  value={tipSustava ?? ""}
-                  onChange={(e) => setTipSustava(e.target.value as SystemCategory | "")}
-                  className={`w-full bg-background border-2 border-border rounded-xl px-4 py-3.5 text-base appearance-none pr-10 cursor-pointer focus:outline-none focus:border-primary transition-all ${
-                    !tipSustava ? "text-muted-foreground/40" : "text-foreground"
-                  }`}
-                >
-                  <option value="">Odaberi vrstu sustava...</option>
-                  {TIP_SUSTAVA.map((tip) => (
-                    <option key={tip.id} value={tip.id}>{tip.label}</option>
-                  ))}
-                </select>
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 pointer-events-none">
-                  <ChevronDown />
-                </span>
+            <fieldset>
+              <legend className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">
+                Vrsta sustava <span className="text-primary">*</span>
+              </legend>
+              <div className="flex flex-col gap-2">
+                {TIP_SUSTAVA.map((tip) => {
+                  const selected = tipSustava === tip.id;
+                  return (
+                    <button
+                      key={tip.id}
+                      type="button"
+                      onClick={() => setTipSustava(tip.id)}
+                      className={`w-full text-left rounded-2xl border-2 px-4 py-3.5 transition-all active:scale-[0.99] ${
+                        selected
+                          ? "border-primary bg-primary/8 text-foreground"
+                          : "border-border bg-card text-foreground hover:border-muted-foreground/40"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold leading-tight">{tip.label}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{tip.sublabel}</p>
+                        </div>
+                        <span className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                          selected ? "border-primary bg-primary" : "border-border"
+                        }`}>
+                          {selected && (
+                            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" strokeWidth="2">
+                              <polyline points="2 5 4 7 8 3" />
+                            </svg>
+                          )}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
-            </Field>
+            </fieldset>
 
             <Field label="Cilj čišćenja" required>
               <div className="relative">
@@ -350,7 +369,7 @@ export function NovaSesijaEkran() {
 
           {/* ───────────────────────────────────────────────────────────────────
               SEKCIJA 3 — TECHNICAL DATA
-          ─────────────────────────────────────────────────────────────────── */}
+          ─────────────────��───────────────────────────────────────────────── */}
           <SekcijaHeader label="Tehnički podaci" />
           <div className="flex flex-col gap-4 pb-6">
             <Field label="Procijenjeni volumen sustava" required>
