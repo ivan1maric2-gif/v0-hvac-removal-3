@@ -17,7 +17,6 @@ import { WarningsKartica } from "@/components/hvac/warnings-kartica";
 import { LiveChemistryDashboard } from "@/components/hvac/live-chemistry-dashboard";
 import { ScaleRemovalKartica } from "@/components/hvac/scale-removal-kartica";
 import { getDashboardConfig } from "@/lib/dynamic-dashboard-config";
-import { StatusSustavaBanner } from "@/components/hvac/status-sustava-banner";
 
 // ─── Delta helpers ────────────────────────────────────────────────────────────
 
@@ -573,7 +572,7 @@ function interpretDS40(
       kemijskoStanje: "Kontaminacija",
       contaminationStatus: "Moguća korozija, ulja ili magnetit",
       message: "Moguća korozija, ulja ili magnetit.",
-      napomena: "Smeđa/prljava pjena ukazuje na nečistoće u sustavu.",
+      napomena: "Sme��a/prljava pjena ukazuje na nečistoće u sustavu.",
       recommendation: "Pratiti stanje magnetskog filtera. Razmotriti powerflushing ako se stanje ne poboljšava.",
       action: "PRATITI STANJE",
       actionColor: "bg-orange-900/50 text-orange-300 border-orange-700",
@@ -3128,20 +3127,6 @@ function CiklusKartica({ ciklus, sesija, isActive, defaultExpanded = false }: Ci
           {expanded ? "Zatvori" : "Prikaži mjerenja"}
         </span>
       </div>
-
-      {/* STATUS SUSTAVA + SLJEDEĆA AKCIJA — uvijek vidljivo kad je ciklus aktivan i ima mjerenja */}
-      {isActive && liveChemistryState && lastM && (
-        <div className="px-3 py-3 border-t border-border">
-          <StatusSustavaBanner
-            liveState={liveChemistryState}
-            trend={reactionTrend}
-            dPhTotal={dPhTotal}
-            dFlowTotal={dFlowTotal}
-            topUpCount={ciklus.nadopune?.length ?? 0}
-            isActive={isActive}
-          />
-        </div>
-      )}
 
       {/* Expandable measurement list */}
       {expanded && (
