@@ -73,11 +73,12 @@ export function NoviCiklusWorkflow({
   const sesija = getSesija(sesijaId);
 
   // ─── Workflow State ─────────────────────────────────────────────────────────
-  // Ciklus #1: preskačemo "prep" (nema prethodne otopine) — direktno na "water"
-  // Ciklus #2+: počinjemo s "prep" (zatvaranje prethodnog, ispiranje, razlog)
+  // Ciklus #1: preskačemo "prep" i "water" — direktno na "chemical"
+  //   Volumen se uzima iz session setup-a (procijenjeniVolumenL)
+  // Ciklus #2+: puni workflow prep → water → chemical → zero
   const sesijaPrvotna = getSesija(sesijaId);
-  const inicialniStep: WorkflowStep =
-    (sesijaPrvotna?.ciklusi ?? []).length === 0 ? "water" : "prep";
+  const _isFirstInit = (sesijaPrvotna?.ciklusi ?? []).length === 0;
+  const inicialniStep: WorkflowStep = _isFirstInit ? "chemical" : "prep";
   const [state, setState] = useState<WorkflowState>({ step: inicialniStep });
 
   // ─── Derived: Previous cycle context ────────────────────────────────────────
@@ -161,7 +162,16 @@ export function NoviCiklusWorkflow({
 
   /** Step 4: Zero measurement completed → create cycle and finish workflow */
   const handleZeroComplete = useCallback((data: ZeroMeasurementData) => {
-    if (!state.waterData || !state.chemicalData) return;
+    // Ciklus #1: waterData nije u state — koristimo session volumen + eventualnu korekciju iz kemije
+    // Ciklus #2+: waterData mora postojati
+    if (!isFirst && !state.waterData) return;
+    if (!state.chemicalData) return;
+
+    // Volumen za ciklus #1: iz kemije (volumeCorrection) ili iz sesije
+    const effectiveVolumeL = isFirst
+      ? (state.chemicalData.waterVolumeL || procijenjeniVolumenL || 0)
+      : (state.waterData?.waterVolumeL || 0);
+
     // Za ciklus #1, prepData nije obavezan — koristimo prazne defaultove
     const prep = state.prepData ?? {
       cycleName: "",
@@ -206,11 +216,11 @@ export function NoviCiklusWorkflow({
       rinsePhAfter: prep.rinsePhAfter ? parseFloat(prep.rinsePhAfter) : undefined,
       rinseTdsAfter: prep.rinseTds || undefined,
       
-      // Punjenje vodom
-      waterVolumeL: water.waterVolumeL || 0,
-      waterTempC: water.waterTempC,
-      waterPh: water.waterPh,
-      waterTds: water.waterTds?.toString(),
+      // Volumen — ciklus #1: iz sesije/korekcije | ciklus #2+: iz water step-a
+      waterVolumeL: effectiveVolumeL,
+      waterTempC: isFirst ? setupWaterTempC : water?.waterTempC,
+      waterPh: isFirst ? setupWaterPh : water?.waterPh,
+      waterTds: isFirst ? setupWaterTds : water?.waterTds?.toString(),
       
       // Kemija
       productId: chem.productId,
@@ -272,10 +282,11 @@ export function NoviCiklusWorkflow({
     setState(prev => {
       switch (prev.step) {
         case "water":
-          // Za ciklus #1 nema "prep" ekrana — natrag = odustani
-          if (isFirst) { onCancel(); return prev; }
           return { ...prev, step: "prep" };
-        case "chemical": return { ...prev, step: "water" };
+        case "chemical":
+          // Ciklus #1: nema "water" ekrana — natrag = odustani
+          if (isFirst) { onCancel(); return prev; }
+          return { ...prev, step: "water" };
         case "zero": return { ...prev, step: "chemical" };
         default: return prev;
       }
@@ -337,7 +348,11 @@ export function NoviCiklusWorkflow({
         <DodavanjeKemije
           cycleNumber={cycleNumber}
           cycleName={state.prepData?.cycleName}
-          waterVolumeL={state.waterData?.waterVolumeL || 0}
+          // Ciklus #1: volumen iz sesije, korigirati unutar komponente
+          // Ciklus #2+: volumen iz water step-a
+          waterVolumeL={isFirst ? (procijenjeniVolumenL ?? 0) : (state.waterData?.waterVolumeL || 0)}
+          isFirst={isFirst}
+          defaultVolumeL={isFirst ? procijenjeniVolumenL : undefined}
           onContinue={handleChemicalComplete}
           onBack={handleBack}
         />
@@ -348,7 +363,11 @@ export function NoviCiklusWorkflow({
         <NultoMjerenje
           cycleNumber={cycleNumber}
           cycleName={state.prepData?.cycleName}
-          waterVolumeL={state.waterData?.waterVolumeL || 0}
+          waterVolumeL={
+            isFirst
+              ? (state.chemicalData?.waterVolumeL || procijenjeniVolumenL || 0)
+              : (state.waterData?.waterVolumeL || 0)
+          }
           chemicalProductName={state.chemicalData?.productName || ""}
           concentrationPercent={state.chemicalData?.concentrationPercent}
           onComplete={handleZeroComplete}

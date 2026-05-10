@@ -22,6 +22,10 @@ interface Props {
   cycleNumber: number;
   cycleName?: string;
   waterVolumeL: number;
+  /** Ciklus #1: preskočen je "water" korak — volumen dolazi iz sesije */
+  isFirst?: boolean;
+  /** Procijenjeni volumen iz sesije za prikaz u korekciji */
+  defaultVolumeL?: number;
   suggestedProduct?: { id: string; name: string; defaultConcentration?: number };
   onContinue: (data: ChemicalFillingData) => void;
   onBack: () => void;
@@ -44,6 +48,8 @@ export function DodavanjeKemije({
   cycleNumber,
   cycleName,
   waterVolumeL,
+  isFirst,
+  defaultVolumeL,
   suggestedProduct,
   onContinue,
   onBack,
@@ -57,6 +63,14 @@ export function DodavanjeKemije({
   const [manualConcentration, setManualConcentration] = useState("");
   const [note, setNote] = useState("");
   const [touched, setTouched] = useState(false);
+  // Opcionalna korekcija volumena — samo za ciklus #1
+  const [volumeCorrection, setVolumeCorrection] = useState("");
+
+  // Efektivni volumen — za ciklus #1: korekcija ili session volumen
+  // Za ciklus #2+: volumen iz water step-a (waterVolumeL prop)
+  const effectiveWaterVolumeL = isFirst
+    ? (volumeCorrection ? parseFloat(volumeCorrection) : waterVolumeL)
+    : waterVolumeL;
 
   // Izračuni
   const amountNum = parseFloat(chemicalAmount);
@@ -68,12 +82,9 @@ export function DodavanjeKemije({
 
   // Izračunaj količinu kemije iz koncentracije
   const calculatedAmount = useMemo(() => {
-    if (!effectiveConcentration || waterVolumeL <= 0) return null;
-    // concentration = (chemicalVolume / totalVolume) * 100
-    // chemicalVolume = (concentration / 100) * totalVolume
-    // Pretpostavljamo da je totalVolume ≈ waterVolumeL (kemija je mali dio)
-    return (effectiveConcentration / 100) * waterVolumeL;
-  }, [effectiveConcentration, waterVolumeL]);
+    if (!effectiveConcentration || effectiveWaterVolumeL <= 0) return null;
+    return (effectiveConcentration / 100) * effectiveWaterVolumeL;
+  }, [effectiveConcentration, effectiveWaterVolumeL]);
 
   // Volumen kemije u litrama (za kg/g potrebna gustoća)
   const chemicalVolumeL = useMemo(() => {
@@ -93,10 +104,10 @@ export function DodavanjeKemije({
 
   // Izračunaj stvarnu koncentraciju
   const actualConcentration = useMemo(() => {
-    if (!chemicalVolumeL || waterVolumeL <= 0) return null;
-    const totalVolume = waterVolumeL + chemicalVolumeL;
+    if (!chemicalVolumeL || effectiveWaterVolumeL <= 0) return null;
+    const totalVolume = effectiveWaterVolumeL + chemicalVolumeL;
     return (chemicalVolumeL / totalVolume) * 100;
-  }, [chemicalVolumeL, waterVolumeL]);
+  }, [chemicalVolumeL, effectiveWaterVolumeL]);
 
   // Validacija
   const hasProduct = productName.trim().length > 0;
@@ -112,7 +123,7 @@ export function DodavanjeKemije({
     onContinue({
       productName: productName.trim(),
       productId: suggestedProduct?.id,
-      waterVolumeL,
+      waterVolumeL: effectiveWaterVolumeL,
       chemicalAmount: amountNum,
       chemicalUnit,
       chemicalDensityKgL: needsDensity ? densityNum : undefined,
@@ -147,9 +158,11 @@ export function DodavanjeKemije({
           </button>
           <div className="flex-1">
             <p className="text-xs font-semibold text-primary-foreground/70 uppercase tracking-wider">
-              Korak 2 od 3
+              {isFirst ? "Korak 1 od 2" : "Korak 2 od 3"}
             </p>
-            <h1 className="text-xl font-bold">Dodavanje kemije</h1>
+            <h1 className="text-xl font-bold">
+              {isFirst ? "Kemija — Ciklus #1" : "Dodavanje kemije"}
+            </h1>
           </div>
         </div>
       </header>
@@ -167,18 +180,58 @@ export function DodavanjeKemije({
           </div>
           <div className="text-right">
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Količina vode
+              {isFirst ? "Volumen sustava" : "Količina vode"}
             </span>
-            <p className="text-lg font-bold text-foreground">{waterVolumeL} L</p>
+            <p className="text-lg font-bold text-foreground">{effectiveWaterVolumeL} L</p>
+            {isFirst && volumeCorrection && (
+              <p className="text-xs text-muted-foreground">korigirano</p>
+            )}
           </div>
         </div>
       </div>
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto px-4 py-5">
-        <p className="text-sm text-muted-foreground mb-5">
-          Unesite proizvod i količinu kemije koju dodajete u sustav.
-        </p>
+        {isFirst ? (
+          <p className="text-sm text-muted-foreground mb-5">
+            Sustav je spreman. Odaberite kemijsko sredstvo i unesite količinu.
+          </p>
+        ) : (
+          <p className="text-sm text-muted-foreground mb-5">
+            Unesite proizvod i količinu kemije koju dodajete u sustav.
+          </p>
+        )}
+
+        {/* Korekcija volumena — samo za ciklus #1, opcionalno */}
+        {isFirst && (
+          <div className="mb-6 p-4 bg-muted/50 border border-border rounded-xl">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+              Korekcija volumena
+            </p>
+            <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+              Procjena iz sesije:{" "}
+              <strong className="text-foreground">
+                {defaultVolumeL ? `${defaultVolumeL} L` : "nije unesena"}
+              </strong>
+              {". "}Ako je stvarni volumen drugačiji, ispravite ga ovdje.
+            </p>
+            <div className="relative">
+              <input
+                type="number"
+                inputMode="decimal"
+                step="0.5"
+                min="0"
+                value={volumeCorrection}
+                onChange={(e) => setVolumeCorrection(e.target.value)}
+                placeholder={defaultVolumeL ? String(defaultVolumeL) : "npr. 62"}
+                className="w-full h-11 border border-input rounded-xl px-4 pr-10 text-base bg-background text-foreground focus:border-primary focus:ring-0 transition-colors"
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-muted-foreground">
+                L
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Proizvod - OBAVEZNO */}
         <div className="mb-6">
