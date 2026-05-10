@@ -510,29 +510,6 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
             {/* ── Tab navigation + content — shown when cycle has measurements ── */}
             {aktivanCiklus && aktivanCiklus.mjerenja.length > 0 && (
               <div className="flex flex-col gap-3">
-                {/* 4-tab pill bar */}
-                <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-2xl">
-                  {(["live", "detalji", "preporuka", "pregled"] as const).map((tab) => {
-                    const labels = { live: "Live", detalji: "Detalji", preporuka: "Preporuka", pregled: "Pregled" };
-                    const isActive = workTab === tab;
-                    return (
-                      <button
-                        key={tab}
-                        type="button"
-                        onClick={() => setWorkTab(tab)}
-                        className={`flex-1 py-2.5 rounded-xl text-xs font-bold tracking-wide transition-all ${
-                          isActive && tab === "live"
-                            ? "bg-teal-600 text-white shadow-sm"
-                            : isActive
-                            ? "bg-background text-foreground shadow-sm"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {labels[tab]}
-                      </button>
-                    );
-                  })}
-                </div>
 
                 {/* Live tab */}
                 {workTab === "live" && (
@@ -1610,7 +1587,7 @@ function ModeButton({
   );
 }
 
-// ─── Info banner ──────────────────────────────����────────��──────────────────���─��
+// ─── Info banner ──────────────────────────────����────────��───��──────────────���─��
 
 // ─── Work mode banner ──────────────────────────────��─────────────────────�����────
 
