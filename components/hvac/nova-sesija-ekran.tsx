@@ -196,6 +196,7 @@ interface NovaSesijaForma {
   protokPrije: string;
   tempPrije: string;
   phPrije: string;
+  tdsPrije: string;
 }
 
 export function NovaSesijaEkran() {
@@ -230,6 +231,7 @@ export function NovaSesijaEkran() {
   const [protokPrije, setProtokPrije] = useState(draft?.protokPrije ?? "");
   const [tempPrije, setTempPrije] = useState(draft?.tempPrije ?? "");
   const [phPrije, setPhPrije] = useState(draft?.phPrije ?? "");
+  const [tdsPrije, setTdsPrije] = useState(draft?.tdsPrije ?? "");
 
   // ───────────────────────────────────────────────────────────────────────────
   // AUTO-PREFILL — svi useState zajedno na vrhu, useEffect ispod
@@ -242,7 +244,7 @@ export function NovaSesijaEkran() {
       nazivObjekta, lokacija, tehniker,
       tipSustava, cilj, ciljOpis,
       procijenjeniVolumen, materijali,
-      protokPrije, tempPrije, phPrije,
+      protokPrije, tempPrije, phPrije, tdsPrije,
     });
   }, [nazivObjekta, lokacija, tehniker, tipSustava, cilj, ciljOpis,
       procijenjeniVolumen, materijali, protokPrije, tempPrije, phPrije]);
@@ -350,6 +352,11 @@ export function NovaSesijaEkran() {
       systemCategory: tipSustava,
       podsesije: [],
       ciklusi: [],
+      // Setup vrijednosti — koriste se kao auto-prefill za Ciklus #1
+      setupWaterVolumeL: parseFloat(procijenjeniVolumen) || undefined,
+      setupWaterTempC: tempPrije ? parseFloat(tempPrije) : undefined,
+      setupWaterPh: phPrije ? parseFloat(phPrije) : undefined,
+      setupWaterTds: tdsPrije || undefined,
       createdAt: now,
       updatedAt: now,
     };
@@ -596,7 +603,7 @@ export function NovaSesijaEkran() {
               </Field>
             </div>
             <div className="flex gap-3">
-              <Field label="pH" optional>
+              <Field label="pH mrežne vode" optional>
                 <input
                   type="number"
                   value={phPrije}
@@ -607,6 +614,20 @@ export function NovaSesijaEkran() {
                   step="0.1"
                   className={`${inputCls} flex-1`}
                 />
+              </Field>
+              <Field label="TDS / Provodljivost" optional>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    value={tdsPrije}
+                    onChange={(e) => setTdsPrije(e.target.value)}
+                    placeholder="ppm"
+                    min="0"
+                    step="1"
+                    className={`${inputCls} flex-1`}
+                  />
+                  <span className="text-xs font-bold text-muted-foreground shrink-0">ppm</span>
+                </div>
               </Field>
             </div>
           </div>

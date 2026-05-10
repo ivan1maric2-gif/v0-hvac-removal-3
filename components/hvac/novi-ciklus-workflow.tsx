@@ -36,6 +36,12 @@ interface Props {
   tipProblema?: string;
   /** Procijenjeni volumen sustava u litrama */
   procijenjeniVolumenL?: number;
+  /** Auto-prefill iz session setup-a — temperatura vode */
+  setupWaterTempC?: number;
+  /** Auto-prefill iz session setup-a — pH mrežne vode */
+  setupWaterPh?: number;
+  /** Auto-prefill iz session setup-a — TDS */
+  setupWaterTds?: string;
   /** Callback kad je workflow završen i ciklus pokrenut */
   onComplete: (ciklusId: string) => void;
   /** Callback za odustajanje */
@@ -50,6 +56,9 @@ export function NoviCiklusWorkflow({
   tipSustava,
   tipProblema,
   procijenjeniVolumenL,
+  setupWaterTempC,
+  setupWaterPh,
+  setupWaterTds,
   onComplete,
   onCancel,
 }: Props) {
@@ -64,7 +73,12 @@ export function NoviCiklusWorkflow({
   const sesija = getSesija(sesijaId);
 
   // ─── Workflow State ─────────────────────────────────────────────────────────
-  const [state, setState] = useState<WorkflowState>({ step: "prep" });
+  // Ciklus #1: preskačemo "prep" (nema prethodne otopine) — direktno na "water"
+  // Ciklus #2+: počinjemo s "prep" (zatvaranje prethodnog, ispiranje, razlog)
+  const sesijaPrvotna = getSesija(sesijaId);
+  const inicialniStep: WorkflowStep =
+    (sesijaPrvotna?.ciklusi ?? []).length === 0 ? "water" : "prep";
+  const [state, setState] = useState<WorkflowState>({ step: inicialniStep });
 
   // ─── Derived: Previous cycle context ────────────────────────────────────────
   const { previousCycle, previousCycleNotClosed, cycleNumber, isFirst } = useMemo(() => {
@@ -147,9 +161,20 @@ export function NoviCiklusWorkflow({
 
   /** Step 4: Zero measurement completed → create cycle and finish workflow */
   const handleZeroComplete = useCallback((data: ZeroMeasurementData) => {
-    if (!state.prepData || !state.waterData || !state.chemicalData) return;
-
-    const prep = state.prepData;
+    if (!state.waterData || !state.chemicalData) return;
+    // Za ciklus #1, prepData nije obavezan — koristimo prazne defaultove
+    const prep = state.prepData ?? {
+      cycleName: "",
+      cycleTimestamp: new Date().toISOString(),
+      reason: "prvi_ciklus" as const,
+      rinsed: false,
+      rinseMethod: "nije_ispirano" as const,
+      rinsePhAfter: "",
+      rinseTds: "",
+      drainTimestamp: "",
+      drainAppearance: "nije_evidentirano" as const,
+      drainSediment: "nema" as const,
+    };
     const water = state.waterData;
     const chem = state.chemicalData;
     const now = nowISO();
@@ -246,13 +271,16 @@ export function NoviCiklusWorkflow({
   const handleBack = useCallback(() => {
     setState(prev => {
       switch (prev.step) {
-        case "water": return { ...prev, step: "prep" };
+        case "water":
+          // Za ciklus #1 nema "prep" ekrana — natrag = odustani
+          if (isFirst) { onCancel(); return prev; }
+          return { ...prev, step: "prep" };
         case "chemical": return { ...prev, step: "water" };
         case "zero": return { ...prev, step: "chemical" };
         default: return prev;
       }
     });
-  }, []);
+  }, [isFirst, onCancel]);
 
   // ─── Render ─────────────────────────────────────────────────────────────────
 
@@ -292,6 +320,13 @@ export function NoviCiklusWorkflow({
       return (
         <PunjenjeVodom
           referenceData={refData}
+          isFirst={isFirst}
+          defaultValues={{
+            waterVolumeL: procijenjeniVolumenL ? String(procijenjeniVolumenL) : "",
+            waterTempC: setupWaterTempC ? String(setupWaterTempC) : "",
+            waterPh: setupWaterPh ? String(setupWaterPh) : "",
+            waterTds: setupWaterTds ?? "",
+          }}
           onContinue={handleWaterComplete}
           onBack={handleBack}
         />

@@ -687,6 +687,16 @@ export interface Sesija {
   /** Automatski: Δ Temp OUT (zadnji − referentni, °C) */
   sessionDeltaTempOutC?: number;
 
+  // ─── Session setup vrijednosti — koriste se kao default za Ciklus #1 ─────────
+  /** Procijenjeni volumen sustava (L) iz session setup-a */
+  setupWaterVolumeL?: number;
+  /** Temperatura vode iz session setup-a (°C) */
+  setupWaterTempC?: number;
+  /** pH mrežne vode iz session setup-a */
+  setupWaterPh?: number;
+  /** TDS iz session setup-a (ppm) */
+  setupWaterTds?: string;
+
   // Timestamps
   createdAt?: string;  // ISO — when the session was first created
   updatedAt?: string;  // ISO — last modification time

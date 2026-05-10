@@ -351,7 +351,7 @@ export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
             );
             return (
               <span className="text-[11px] text-secondary-foreground/50 font-medium">
-                {p === 0 ? "Nema uređaja" : `Ure��aja: ${p}`}
+                {p === 0 ? "Nema uređaja" : `Ure����aja: ${p}`}
                 {c > 0 && <> · Ciklusa: {c}</>}
                 {m > 0 && <> · Mjerenja: {m}</>}
               </span>
@@ -1223,7 +1223,10 @@ export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
             nazivObjekta={sesija.naziv_objekta}
             tipSustava={sesija.systemCategory}
             tipProblema={sesija.cleaningMode}
-            procijenjeniVolumenL={prethodniCiklus?.waterVolumeL}
+            procijenjeniVolumenL={prethodniCiklus?.waterVolumeL ?? sesija.setupWaterVolumeL}
+            setupWaterTempC={sesija.setupWaterTempC}
+            setupWaterPh={sesija.setupWaterPh}
+            setupWaterTds={sesija.setupWaterTds}
             onComplete={(ciklusId) => {
               // Workflow je završen, ciklus je kreiran s nultim mjerenjem
               // Idi na Live praćenje (LiveDashboard je na "live" tabu)
