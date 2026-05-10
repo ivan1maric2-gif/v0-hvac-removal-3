@@ -859,80 +859,52 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         const stagnacija = protokStagnira && tempOutStagnira && (snagaSredstva === "jako" || snagaSredstva === "aktivno");
 
         return (
-          <div className="rounded-2xl overflow-hidden border-2 border-emerald-600/40 bg-emerald-950/30 dark:bg-emerald-950/40">
+          <div className="rounded-3xl overflow-hidden border-2 border-emerald-500/50 bg-gradient-to-br from-emerald-600 to-emerald-700">
 
-            {/* ── Naslov ─────────────────────────────────────────────────── */}
-            <div className="px-5 pt-5 pb-4 border-b border-emerald-600/20">
-              <h2 className="text-[13px] font-black uppercase tracking-widest text-emerald-500">
-                Cirkulacija aktivna
-              </h2>
-            </div>
-
-            {/* ── Status redovi ──────────────────────────────────────────── */}
-            <div className="px-5 py-4 flex flex-col gap-4">
-              {/* pH */}
+            {/* ── Header naslov s ikona ──────────────────────────────────── */}
+            <div className="px-6 pt-6 pb-4 flex items-start gap-4">
+              <span className="text-4xl leading-none shrink-0">⇄</span>
               <div>
-                <p className="text-[15px] font-bold text-foreground leading-snug">{phStatusNaslov}</p>
-                {phStatusPodnaslov && (
-                  <p className="text-sm text-emerald-400/80 mt-0.5">{phStatusPodnaslov}</p>
-                )}
-              </div>
-
-              {/* Protok */}
-              <div>
-                <p className="text-[15px] font-bold text-foreground leading-snug">{protokStatusNaslov}</p>
-                {protokStatusPodnaslov && (
-                  <p className="text-sm text-emerald-400/80 mt-0.5">{protokStatusPodnaslov}</p>
-                )}
-              </div>
-
-              {/* Temp OUT */}
-              <div>
-                <p className="text-[15px] font-bold text-foreground leading-snug">{tempOutStatusNaslov}</p>
-                {tempOutStatusPodnaslov && (
-                  <p className="text-sm text-emerald-400/80 mt-0.5">{tempOutStatusPodnaslov}</p>
-                )}
+                <h2 className="text-4xl font-black text-white leading-tight tracking-tight">
+                  CIRKULACIJA<br />AKTIVNA
+                </h2>
               </div>
             </div>
 
-            {/* ── Uputa serviseru ────────────────────────────────────────── */}
-            <div className="px-5 py-4 border-t border-emerald-600/20">
-              <h3 className="text-[11px] font-black uppercase tracking-widest text-emerald-500/70 mb-2">
-                Uputa serviseru
-              </h3>
-              <p className="text-[15px] font-medium text-foreground leading-relaxed">
-                {trebaNoviciklus
-                  ? "Ciklus je pri kraju. Pripremi završetak — ispusti otopinu, isperi sustav i pokreni novi ciklus."
-                  : trebaNadopuna
-                  ? "Dodaj nadopunu kemijskog sredstva."
-                  : napreduje
-                  ? "Nastavi cirkulaciju. Čišćenje aktivno napreduje — prati pH, protok i Temp OUT."
-                  : "Nastavi cirkulaciju kratko vrijeme i prati pH, protok i Temp OUT. Ako protok i Temp OUT ne mijenjaju vrijednosti, a pH ostaje nizak, reakcija je aktivna, ali napredak stagnira."}
-              </p>
-            </div>
-
-            {/* ── Sljedeći korak ─────────────────────────────────────────── */}
-            <div className="px-5 py-4 border-t border-emerald-600/20">
-              <h3 className="text-[11px] font-black uppercase tracking-widest text-emerald-500/70 mb-2">
-                Sljedeći korak
-              </h3>
-              {trebaNoviciklus ? (
-                <p className="text-[15px] font-bold text-foreground">Pripremi završetak ciklusa.</p>
-              ) : trebaNadopuna ? (
-                <p className="text-[15px] font-bold text-foreground">Dodaj nadopunu kemijskog sredstva.</p>
-              ) : napreduje ? (
-                <p className="text-[15px] font-bold text-foreground">Nastavi cirkulaciju — nema intervencije.</p>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <p className="text-[15px] font-bold text-foreground">
-                    Promijeni smjer cirkulacije
-                  </p>
-                  <p className="text-sm text-emerald-500/60 font-semibold tracking-wider">ILI</p>
-                  <p className="text-[15px] font-bold text-foreground">
-                    Pripremi završetak ciklusa.
-                  </p>
+            {/* ── Status redovi s ikonama ────────────────────────────────── */}
+            <div className="px-6 pb-6 pt-2 space-y-4">
+              {/* pH s ikona kap */}
+              <div className="flex items-start gap-4">
+                <span className="text-3xl leading-none shrink-0 mt-0.5">💧</span>
+                <div>
+                  <p className="text-base font-bold text-white leading-snug">{phStatusNaslov}</p>
+                  {phStatusPodnaslov && (
+                    <p className="text-sm text-emerald-50 mt-1">{phStatusPodnaslov}</p>
+                  )}
                 </div>
-              )}
+              </div>
+
+              {/* Protok s ikona valova */}
+              <div className="flex items-start gap-4">
+                <span className="text-3xl leading-none shrink-0 mt-0.5">≈≈</span>
+                <div>
+                  <p className="text-base font-bold text-white leading-snug">{protokStatusNaslov}</p>
+                  {protokStatusPodnaslov && (
+                    <p className="text-sm text-emerald-50 mt-1">{protokStatusPodnaslov}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Temp OUT s ikona termometra */}
+              <div className="flex items-start gap-4">
+                <span className="text-3xl leading-none shrink-0 mt-0.5">🌡</span>
+                <div>
+                  <p className="text-base font-bold text-white leading-snug">{tempOutStatusNaslov}</p>
+                  {tempOutStatusPodnaslov && (
+                    <p className="text-sm text-emerald-50 mt-1">{tempOutStatusPodnaslov}</p>
+                  )}
+                </div>
+              </div>
             </div>
 
           </div>
