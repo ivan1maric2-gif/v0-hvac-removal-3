@@ -79,13 +79,6 @@ const FOAM_LABEL: Record<string, string> = {
 
 // ─── TEMP OUT helpers ─────────────────────────────────────────────────────────
 
-/** Parsira EC string u broj µS/cm */
-function parseEc(ec: string | undefined): number | null {
-  if (!ec) return null;
-  const n = parseFloat(ec.replace(",", "."));
-  return isNaN(n) ? null : n;
-}
-
 /** Boja za delta TEMP OUT: rast = zelena (bolja izmjena), pad = narančasta */
 function deltaTempOutClass(d: number): string {
   if (d >= 2) return "text-green-500 font-bold";
@@ -93,28 +86,6 @@ function deltaTempOutClass(d: number): string {
   if (d < -2) return "text-rose-500 font-bold";
   if (d < -0.5) return "text-amber-400 font-bold";
   return "text-muted-foreground";
-}
-
-/** Boja za delta EC: rast = zelena (kamenac se otapa → raste EC), pad = siva */
-function deltaEcClass(d: number): string {
-  if (d >= 100) return "text-green-500 font-bold";
-  if (d > 30) return "text-green-400 font-bold";
-  if (d < -50) return "text-rose-500 font-bold";
-  return "text-muted-foreground";
-}
-
-/**
- * Komentar provodljivosti — interpretacija rasta EC kao rezultata otapanja kamenca.
- * Kamenac (CaCO3) povećava provodljivost vode kad se otopi.
- */
-function ecComment(deltaEc: number | null, ec: number | null): string | null {
-  if (deltaEc === null || ec === null) return null;
-  if (deltaEc >= 200) return "Znatan rast provodljivosti — intenzivno otapanje kamenca.";
-  if (deltaEc >= 100) return "Povecanje provodljivosti — kamenac reagira s kiselinom.";
-  if (deltaEc >= 30)  return "Blago povecanje provodljivosti — reakcija u tijeku.";
-  if (deltaEc > -30 && deltaEc < 30) return "Provodljivost stabilna.";
-  if (deltaEc < -30)  return "Provodljivost pada — pratiti sustav.";
-  return null;
 }
 
 /** Komentar kretanja TEMP OUT */
@@ -277,14 +248,8 @@ export function CiklusVremenskiSlijed({ ciklus, sesija, showTitle = true }: Prop
   const tempOutDeltaTotal = cycleRefTempOut !== null && lastTempOut !== null
     ? lastTempOut - cycleRefTempOut : null;
 
-  // EC (provodljivost) summary — komentar rasta EC = rezultat otapanja kamenca
-  const cycleRefEc = parseEc(cycleRef?.ec);
-  const lastEc = parseEc(lastMj?.ec);
-  const ecDeltaTotal = cycleRefEc !== null && lastEc !== null ? lastEc - cycleRefEc : null;
-
-  // Fallback: scan all mjerenja for ec/tempOutC if lastMj doesn't have it
+  // Fallback: scan all mjerenja for tempOutC if lastMj doesn't have it
   const anyTempOut = allMjerenja.find((m) => m.tempOutC != null);
-  const anyEc = allMjerenja.find((m) => m.ec != null);
 
   if (groups.length === 0) {
     return (
@@ -353,33 +318,23 @@ export function CiklusVremenskiSlijed({ ciklus, sesija, showTitle = true }: Prop
           </div>
         )}
 
-        {/* Red 4: EC (provodljivost) summary + komentar */}
-        {(cycleRefEc !== null || lastEc !== null || anyEc) && (
-          <div className="flex flex-col border-b border-border">
-            <div className="grid grid-cols-2 divide-x divide-border">
-              <SummaryCell
-                label="Poc. EC"
-                value={cycleRefEc !== null ? `${cycleRefEc.toFixed(0)} µS` : "—"}
-              />
-              <SummaryCell
-                label="Zad. EC"
-                value={lastEc !== null ? `${lastEc.toFixed(0)} µS` : "—"}
-                delta={ecDeltaTotal !== null
-                  ? `${sign(ecDeltaTotal)}${ecDeltaTotal.toFixed(0)} µS`
-                  : undefined}
-                deltaClass={ecDeltaTotal !== null
-                  ? (ecDeltaTotal >= 30 ? "text-green-500" : ecDeltaTotal <= -50 ? "text-rose-500" : "text-muted-foreground")
-                  : undefined}
-              />
-            </div>
-            {/* Komentar provodljivosti — povećanje EC = rezultat smanjenja kamenca */}
-            {ecDeltaTotal !== null && (
-              <div className="px-4 py-1.5">
-                <p className={`text-[9px] leading-relaxed ${ecDeltaTotal >= 30 ? "text-green-400" : "text-muted-foreground/70"}`}>
-                  {ecComment(ecDeltaTotal, lastEc)}
-                </p>
-              </div>
-            )}
+        {/* Red 4: Δ TEMP OUT summary — prikaz samo ako postoje podaci */}
+        {(cycleRefTempOut !== null || lastTempOut !== null || anyTempOut) && tempOutDeltaTotal !== null && (
+          <div className="grid grid-cols-2 divide-x divide-border border-b border-border">
+            <SummaryCell
+              label="Ref. TEMP OUT"
+              value={cycleRefTempOut !== null ? `${cycleRefTempOut.toFixed(1)} °C` : "—"}
+            />
+            <SummaryCell
+              label="Δ TEMP OUT"
+              value={lastTempOut !== null ? `${lastTempOut.toFixed(1)} °C` : "—"}
+              delta={tempOutDeltaTotal !== null
+                ? `${sign(tempOutDeltaTotal)}${tempOutDeltaTotal.toFixed(1)} °C od ref.`
+                : undefined}
+              deltaClass={tempOutDeltaTotal !== null
+                ? (tempOutDeltaTotal >= 1 ? "text-green-500" : tempOutDeltaTotal <= -1 ? "text-rose-500" : "text-muted-foreground")
+                : undefined}
+            />
           </div>
         )}
 
@@ -696,37 +651,23 @@ function RefRow({
         </div>
       </div>
 
-      {/* TEMP OUT + EC red — samo ako postoje podaci */}
-      {(m.tempOutC != null || m.ec != null) && (
+      {/* TEMP OUT + Δ TEMP OUT red — samo ako postoje podaci */}
+      {m.tempOutC != null && (
         <div className="grid grid-cols-2 divide-x divide-violet-500/10 border-t border-violet-500/10">
           {/* TEMP OUT */}
           <div className="px-3 py-2.5 flex flex-col gap-0.5">
             <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/70">TEMP OUT</span>
-            {m.tempOutC != null ? (
-              <>
-                <span className="text-xl font-black tabular-nums text-foreground leading-none">
-                  {m.tempOutC.toFixed(1)}
-                </span>
-                <span className="text-[9px] text-muted-foreground">°C izlaz</span>
-              </>
-            ) : (
-              <span className="text-xl font-black text-muted-foreground/30 leading-none">—</span>
-            )}
+            <span className="text-xl font-black tabular-nums text-foreground leading-none">
+              {m.tempOutC.toFixed(1)}
+            </span>
+            <span className="text-[9px] text-muted-foreground">°C izlaz</span>
           </div>
 
-          {/* EC provodljivost */}
+          {/* Δ TEMP OUT — za referentno mjerenje prikazuje 0.0 (referenca je ona sama) */}
           <div className="px-3 py-2.5 flex flex-col gap-0.5">
-            <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/70">EC provodljivost</span>
-            {m.ec != null ? (
-              <>
-                <span className="text-xl font-black tabular-nums text-foreground leading-none">
-                  {parseEc(m.ec)?.toFixed(0) ?? m.ec}
-                </span>
-                <span className="text-[9px] text-muted-foreground">µS/cm</span>
-              </>
-            ) : (
-              <span className="text-xl font-black text-muted-foreground/30 leading-none">—</span>
-            )}
+            <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/70">Δ TEMP OUT</span>
+            <span className="text-xl font-black tabular-nums text-muted-foreground/30 leading-none">0.0</span>
+            <span className="text-[9px] text-muted-foreground">°C ref.</span>
           </div>
         </div>
       )}
@@ -805,15 +746,6 @@ function MjerenjeRow({
   const deltaTempOutFromCycle = showCycleDelta && m.tempOutC != null && cycleRefTempOut != null
     ? m.tempOutC - cycleRefTempOut : null;
 
-  // EC (provodljivost) delta od group ref
-  const mEc = parseEc(m.ec);
-  const groupRefEcVal = parseEc(groupRef?.ec);
-  const cycleRefEcVal = parseEc(cycleRef?.ec);
-  const deltaEcFromGroupRef = mEc !== null && groupRefEcVal !== null ? mEc - groupRefEcVal : null;
-  const deltaEcFromCycle = showCycleDelta && mEc !== null && cycleRefEcVal !== null
-    ? mEc - cycleRefEcVal : null;
-  // Komentar EC za ovo mjerenje
-  const ecKomentar = ecComment(deltaEcFromGroupRef ?? deltaEcFromCycle, mEc);
   const tempOutKom = tempOutComment(deltaTempOutFromGroupRef ?? deltaTempOutFromCycle);
 
   return (
@@ -895,58 +827,41 @@ function MjerenjeRow({
         </div>
       </div>
 
-      {/* TEMP OUT + EC red — samo ako postoje podaci */}
-      {(m.tempOutC != null || m.ec != null) && (
+      {/* TEMP OUT + Δ TEMP OUT OD REF. red — samo ako postoje podaci */}
+      {m.tempOutC != null && (
         <div className="border-t border-border">
           <div className="grid grid-cols-2 divide-x divide-border">
             {/* TEMP OUT */}
             <div className="px-3 py-2.5 flex flex-col gap-0.5">
               <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/70">TEMP OUT</span>
-              {m.tempOutC != null ? (
+              <span className={`text-xl font-black tabular-nums leading-none ${deltaTempOutFromGroupRef !== null ? deltaTempOutClass(deltaTempOutFromGroupRef) : "text-foreground"}`}>
+                {m.tempOutC.toFixed(1)}
+              </span>
+              <span className="text-[9px] text-muted-foreground">°C izlaz</span>
+            </div>
+
+            {/* Δ TEMP OUT OD REF. */}
+            <div className="px-3 py-2.5 flex flex-col gap-0.5">
+              <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/70">Δ TEMP OUT OD REF.</span>
+              {deltaTempOutFromCycle !== null ? (
                 <>
-                  <span className={`text-xl font-black tabular-nums leading-none ${deltaTempOutFromGroupRef !== null ? deltaTempOutClass(deltaTempOutFromGroupRef) : "text-foreground"}`}>
-                    {m.tempOutC.toFixed(1)}
+                  <span className={`text-xl font-black tabular-nums leading-none ${deltaTempOutClass(deltaTempOutFromCycle)}`}>
+                    {sign(deltaTempOutFromCycle)}{deltaTempOutFromCycle.toFixed(1)}
                   </span>
-                  <span className="text-[9px] text-muted-foreground">°C izlaz</span>
-                  {deltaTempOutFromGroupRef !== null && (
+                  <span className="text-[9px] text-muted-foreground">°C</span>
+                  {deltaTempOutFromGroupRef !== null && deltaTempOutFromGroupRef !== deltaTempOutFromCycle && (
                     <span className={`text-[9px] tabular-nums ${deltaTempOutClass(deltaTempOutFromGroupRef)}`}>
                       {sign(deltaTempOutFromGroupRef)}{deltaTempOutFromGroupRef.toFixed(1)} °C{" "}
-                      <span className="text-muted-foreground/50 font-normal">od ref.</span>
-                    </span>
-                  )}
-                  {deltaTempOutFromCycle !== null && (
-                    <span className={`text-[9px] tabular-nums ${deltaTempOutClass(deltaTempOutFromCycle)}`}>
-                      {sign(deltaTempOutFromCycle)}{deltaTempOutFromCycle.toFixed(1)} °C{" "}
-                      <span className="text-muted-foreground/50 font-normal">poc. cikl.</span>
+                      <span className="text-muted-foreground/50 font-normal">od grupe</span>
                     </span>
                   )}
                 </>
-              ) : (
-                <span className="text-xl font-black text-muted-foreground/30 leading-none">—</span>
-              )}
-            </div>
-
-            {/* EC provodljivost */}
-            <div className="px-3 py-2.5 flex flex-col gap-0.5">
-              <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/70">EC provodljivost</span>
-              {mEc != null ? (
+              ) : deltaTempOutFromGroupRef !== null ? (
                 <>
-                  <span className={`text-xl font-black tabular-nums leading-none ${deltaEcFromGroupRef !== null ? deltaEcClass(deltaEcFromGroupRef) : "text-foreground"}`}>
-                    {mEc.toFixed(0)}
+                  <span className={`text-xl font-black tabular-nums leading-none ${deltaTempOutClass(deltaTempOutFromGroupRef)}`}>
+                    {sign(deltaTempOutFromGroupRef)}{deltaTempOutFromGroupRef.toFixed(1)}
                   </span>
-                  <span className="text-[9px] text-muted-foreground">µS/cm</span>
-                  {deltaEcFromGroupRef !== null && (
-                    <span className={`text-[9px] tabular-nums ${deltaEcClass(deltaEcFromGroupRef)}`}>
-                      {sign(deltaEcFromGroupRef)}{deltaEcFromGroupRef.toFixed(0)} µS{" "}
-                      <span className="text-muted-foreground/50 font-normal">od ref.</span>
-                    </span>
-                  )}
-                  {deltaEcFromCycle !== null && (
-                    <span className={`text-[9px] tabular-nums ${deltaEcClass(deltaEcFromCycle)}`}>
-                      {sign(deltaEcFromCycle)}{deltaEcFromCycle.toFixed(0)} µS{" "}
-                      <span className="text-muted-foreground/50 font-normal">poc. cikl.</span>
-                    </span>
-                  )}
+                  <span className="text-[9px] text-muted-foreground">°C</span>
                 </>
               ) : (
                 <span className="text-xl font-black text-muted-foreground/30 leading-none">—</span>
@@ -954,19 +869,12 @@ function MjerenjeRow({
             </div>
           </div>
 
-          {/* Komentari — kretanje TEMP OUT i EC interpretacija */}
-          {(ecKomentar || tempOutKom) && (
+          {/* Komentar TEMP OUT */}
+          {tempOutKom && (
             <div className="px-3 py-1.5 flex flex-col gap-0.5 border-t border-border/50">
-              {tempOutKom && (
-                <p className={`text-[9px] leading-relaxed ${deltaTempOutFromGroupRef !== null && deltaTempOutFromGroupRef >= 1 ? "text-green-400" : "text-muted-foreground/70"}`}>
-                  {tempOutKom}
-                </p>
-              )}
-              {ecKomentar && (
-                <p className={`text-[9px] leading-relaxed ${deltaEcFromGroupRef !== null && deltaEcFromGroupRef >= 30 ? "text-green-400" : "text-muted-foreground/70"}`}>
-                  {ecKomentar}
-                </p>
-              )}
+              <p className={`text-[9px] leading-relaxed ${deltaTempOutFromGroupRef !== null && deltaTempOutFromGroupRef >= 1 ? "text-green-400" : "text-muted-foreground/70"}`}>
+                {tempOutKom}
+              </p>
             </div>
           )}
         </div>

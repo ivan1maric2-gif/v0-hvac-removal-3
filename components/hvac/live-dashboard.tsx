@@ -969,7 +969,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         {(tOut !== null || refTOut !== null) && (
           <div className="rounded-2xl border border-border bg-card px-4 py-3.5">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Temp OUT</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">TEMP OUT</span>
               {tOut !== null && tOutTrend !== null ? (
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                   tOutTrend === "raste"
@@ -997,7 +997,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
               </div>
               {dTout !== null && (
                 <div className="flex flex-col items-end gap-0.5 pb-0.5">
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/40">Δ od ref.</span>
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/40">Δ TEMP OUT OD REF.</span>
                   <span className={`text-lg font-black tabular-nums leading-none ${
                     dTout > 0.5 ? "text-emerald-500" :
                     dTout < -0.5 ? "text-rose-500" :

@@ -1390,7 +1390,7 @@ export function BrziUnosMjerenja({
             )}
           </div>
 
-          {/* ── Napredni podaci (collapsed) ───────────────────────────────── */}
+          {/* ── Napredni podaci (collapsed) ────────────────��──────────────── */}
           <div className="flex flex-col gap-0">
             <button
               type="button"
@@ -1418,23 +1418,6 @@ export function BrziUnosMjerenja({
                       className="min-w-0 flex-1 border-2 border-border rounded-xl px-4 py-4 text-2xl font-bold tabular-nums text-center bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                     <MicButton onResult={(v) => setTds(v)} fieldName="TDS" className="shrink-0 w-16 h-16 rounded-xl border-2 bg-primary/10" />
-                  </div>
-                </div>
-
-                {/* EC */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-semibold text-muted-foreground">EC (mS/cm)</label>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      step="0.1"
-                      value={ec}
-                      onChange={(e) => setEc(e.target.value)}
-                      placeholder="npr. 0.9"
-                      className="min-w-0 flex-1 border-2 border-border rounded-xl px-4 py-4 text-2xl font-bold tabular-nums text-center bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                    />
-                    <MicButton onResult={(v) => setEc(v)} fieldName="EC" className="shrink-0 w-16 h-16 rounded-xl border-2 bg-primary/10" />
                   </div>
                 </div>
 
