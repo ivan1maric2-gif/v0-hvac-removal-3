@@ -639,6 +639,11 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
     const dFlow_ = currFlow_ != null && baseFlow_ != null ? currFlow_ - baseFlow_ : null;
     const dTout_ = tOut_ != null && refTOut_ != null ? tOut_ - refTOut_ : null;
 
+    // Izracunaj stanje za TTS
+    const napreduje_ = dFlow_ != null && dFlow_ > 0.5;
+    const trebaNadopuna_ = currPh_ != null && currPh_ > 4.5;
+    const trebaNoviciklus_ = currPh_ != null && currPh_ > 6.0;
+
     // TTS — tocno prema specifikaciji dokumenta
     const phTekst = currPh_ != null ? currPh_.toFixed(2) : "nepoznat";
 
@@ -652,19 +657,19 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
       ? (dTout_ > 0 ? "raste" : "pada")
       : "bez promjene, reakcija stagnira";
 
-    const uputaTekst = trebaNoviciklus
+    const uputaTekst = trebaNoviciklus_
       ? "Ciklus je pri kraju. Pripremi zavrsetak, ispusti otopinu, isperi sustav i pokreni novi ciklus."
-      : trebaNadopuna
+      : trebaNadopuna_
       ? "Dodaj nadopunu kemijskog sredstva."
-      : napreduje
+      : napreduje_
       ? "Nastavi cirkulaciju. Ciscenje aktivno napreduje."
       : "Nastavi cirkulaciju kratko vrijeme i prati promjene. Ako protok i Temp OUT ne mijenjaju vrijednosti, a pH ostaje nizak, reakcija je aktivna, ali napredak stagnira.";
 
-    const sljedeciKorakTekst = trebaNoviciklus
+    const sljedeciKorakTekst = trebaNoviciklus_
       ? "Pripremi zavrsetak ciklusa."
-      : trebaNadopuna
+      : trebaNadopuna_
       ? "Dodaj nadopunu kemijskog sredstva."
-      : napreduje
+      : napreduje_
       ? "Nastavi cirkulaciju, nema intervencije."
       : "Promijeni smjer cirkulacije, ili pripremi zavrsetak ciklusa.";
 
