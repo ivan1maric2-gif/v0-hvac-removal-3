@@ -193,7 +193,7 @@ export function NovaSesijaEkran() {
 
   // ───────────────────────────────────────────────────────────────────────────
   // SEKCIJA 2 — SYSTEM TYPE
-  // ────────────────────────────────────────────────────�����──────────────────────
+  // ────────────────────────────────────────────────────�������──────────────────────
   const [tipSustava, setTipSustava] = useState<SystemCategory | null>(null);
   const [cilj, setCilj] = useState<string | null>(null);
 
@@ -450,7 +450,7 @@ export function NovaSesijaEkran() {
               </Field>
             </div>
             <div className="flex gap-3">
-              <Field label="Temperatura" optional>
+              <Field label="Temperatura OUT" optional>
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
