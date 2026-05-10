@@ -907,6 +907,42 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
               </div>
             </div>
 
+            {/* ── Uputa serviseru ────────────────────────────────────────── */}
+            <div className="px-4 py-3 border-t border-emerald-500/30">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-emerald-300/70 mb-1.5">
+                Uputa serviseru
+              </h3>
+              <p className="text-sm font-medium text-white leading-relaxed">
+                {trebaNoviciklus
+                  ? "Ciklus je pri kraju. Pripremi završetak — ispusti otopinu, isperi sustav i pokreni novi ciklus."
+                  : trebaNadopuna
+                  ? "Dodaj nadopunu kemijskog sredstva."
+                  : napreduje
+                  ? "Nastavi cirkulaciju. Čišćenje aktivno napreduje."
+                  : "Nastavi cirkulaciju kratko vrijeme i prati promjene."}
+              </p>
+            </div>
+
+            {/* ── Sljedeći korak ─────────────────────────────────────────── */}
+            <div className="px-4 py-3 border-t border-emerald-500/30">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-emerald-300/70 mb-1.5">
+                Sljedeći korak
+              </h3>
+              {trebaNoviciklus ? (
+                <p className="text-sm font-bold text-white">Pripremi završetak ciklusa.</p>
+              ) : trebaNadopuna ? (
+                <p className="text-sm font-bold text-white">Dodaj nadopunu kemijskog sredstva.</p>
+              ) : napreduje ? (
+                <p className="text-sm font-bold text-white">Nastavi cirkulaciju — nema intervencije.</p>
+              ) : (
+                <div className="flex flex-col gap-1">
+                  <p className="text-sm font-bold text-white">Promijeni smjer cirkulacije</p>
+                  <p className="text-xs text-emerald-300/60 font-semibold">ILI</p>
+                  <p className="text-sm font-bold text-white">Pripremi završetak ciklusa.</p>
+                </div>
+              )}
+            </div>
+
           </div>
         );
       })()}
@@ -1178,7 +1214,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         )}
       </div>
 
-      {/* ── 8. COLLAPSIBLE: Podsjetnik za mjerenje ───────────────────�����─────── */}
+      {/* ── 8. COLLAPSIBLE: Podsjetnik za mjerenje ───────────────────�������─────── */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         <button
           type="button"
