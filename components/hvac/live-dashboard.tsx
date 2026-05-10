@@ -749,40 +749,6 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         )}
       </div>
 
-      {/* 2. GLAVNI STATUS REAKCIJE */}
-      <div className={`rounded-2xl overflow-hidden border-2 shadow-lg ${uputa.border} ${
-        rs.severity === "critical" || rs.severity === "warning" ? "animate-pulse-border" : ""
-      }`}>
-        <div className={`${uputa.bg} px-5 py-6`}>
-          <div className="flex flex-col gap-3">
-            <span className={`${uputa.text}`}>{uputa.icon}</span>
-            <p className={`text-3xl font-black leading-tight tracking-tight text-balance ${uputa.text}`}>
-              {uputa.label}
-            </p>
-            <p className={`leading-relaxed font-bold text-pretty ${uputa.subtextColor} ${
-              rs.severity === "critical" || rs.severity === "warn"
-                ? "text-lg"
-                : "text-base"
-            }`}>
-              {uputa.why}
-            </p>
-          </div>
-        </div>
-        {/* Istaknuti bottom bar za kritične statuse */}
-        {(rs.severity === "critical" || rs.severity === "warn") && (
-          <div className={`px-5 py-3 border-t ${uputa.border} bg-background/40 flex items-center gap-2`}>
-            <span className={`w-2 h-2 rounded-full shrink-0 animate-pulse ${
-              rs.severity === "critical" ? "bg-red-500" : "bg-amber-500"
-            }`} />
-            <span className={`text-xs font-bold uppercase tracking-widest ${
-              rs.severity === "critical" ? "text-red-600 dark:text-red-400" : "text-amber-600 dark:text-amber-400"
-            }`}>
-              {rs.severity === "critical" ? "Potrebna akcija" : "Pažnja"}
-            </span>
-          </div>
-        )}
-      </div>
-
       {/* ── 3. CIRKULACIJA AKTIVNA + ZAŠTO + PREPORUKA ─────────────────────── */}
       {lastMj && (() => {
         const snagaSredstva: "jako" | "aktivno" | "slabi" | "iscrpljeno" =
