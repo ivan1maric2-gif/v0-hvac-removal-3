@@ -296,7 +296,7 @@ export function NoviCiklusPrep({
           </button>
           <div className="flex-1">
             <h1 className="text-xl font-bold">Novi ciklus #{cycleNumber}</h1>
-            <p className="text-sm text-primary-foreground/70 mt-0.5">Priprema za punjenje</p>
+            <p className="text-sm text-primary-foreground/70 mt-0.5">Nova voda, nova kemija i nova reakcija.</p>
           </div>
         </div>
         
@@ -685,9 +685,27 @@ export function NoviCiklusPrep({
             completed
           >
             {/* Info tekst */}
-            <p className="text-sm text-muted-foreground mb-5">
-              Novi ciklus predstavlja novo kemijsko punjenje i novu reakciju sustava.
+            <p className="text-sm text-muted-foreground mb-3">
+              Novi ciklus znači novu vodu, novu kemiju i novo referentno mjerenje.
             </p>
+            {/* Checklist */}
+            {!isFirst && (
+              <div className="flex flex-col gap-2 mb-5">
+                {[
+                  "Prljava otopina ispuštena",
+                  "Sustav ispran",
+                  "Dodana nova voda",
+                  "Dodana nova kemija",
+                ].map((item) => (
+                  <div key={item} className="flex items-center gap-2.5">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary shrink-0">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span className="text-sm text-foreground">{item}</span>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* ─────────────────────────────────────────────────────────────────── */}
             {/* Automatski broj ciklusa - prominentan prikaz */}
@@ -833,7 +851,7 @@ export function NoviCiklusPrep({
                 : "bg-muted text-muted-foreground cursor-not-allowed"
             }`}
           >
-            Nastavi na punjenje
+            {isFirst ? "Pokreni ciklus" : "Pokreni novi ciklus"}
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>

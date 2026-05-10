@@ -588,20 +588,24 @@ export function PokreniCiklusModal({
 
   const STEP_META: Record<Exclude<Step, "confirm">, { title: string; subtitle: string }> = {
     stanje: {
-      title: "Stanje sustava",
-      subtitle: "Zabilježite stanje prije čišćenja",
+      title: isFirst ? "Pokretanje ciklusa #1" : "Stanje sustava",
+      subtitle: isFirst
+        ? "Kemijska priprema i početak reakcije."
+        : "Zabilježite stanje otopine prije ispuštanja.",
     },
     voda: {
-      title: "Punjenje vodom",
-      subtitle: "Unesite količinu čiste vode",
+      title: "Čista voda",
+      subtitle: "Unesite količinu čiste vode za novi ciklus.",
     },
     sredstvo: {
       title: "Kemijsko sredstvo",
-      subtitle: "Odaberite sredstvo i unesite količinu",
+      subtitle: "Odaberite sredstvo i unesite količinu.",
     },
     pregled: {
       title: "Pregled i pokretanje",
-      subtitle: "Provjerite podatke i pokrenite ciklus",
+      subtitle: isFirst
+        ? "Provjerite podatke i pokrenite prvi ciklus."
+        : "Provjerite podatke i pokrenite novi ciklus.",
     },
   };
 
@@ -628,7 +632,7 @@ export function PokreniCiklusModal({
         </button>
         <div className="flex-1 min-w-0">
           <p className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest mb-0.5">
-            {isFirst ? `Ciklus #${cycleNumber}` : `Ciklus #${cycleNumber} — Nova otopina`}
+            {isFirst ? `Ciklus #${cycleNumber}` : `Novi ciklus #${cycleNumber} — Nova otopina`}
           </p>
           <h1 className="text-xl font-black leading-tight tracking-tight text-foreground text-balance">
             {currentMeta.title}
@@ -1421,7 +1425,7 @@ export function PokreniCiklusModal({
             className="w-full bg-primary text-primary-foreground rounded-2xl py-4 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none shadow-sm"
             style={{ minHeight: 56 }}
           >
-            Pokreni ciklus #{cycleNumber}
+            {isFirst ? "Pokreni ciklus" : `Pokreni novi ciklus #${cycleNumber}`}
           </button>
         )}
 

@@ -351,7 +351,7 @@ export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
             );
             return (
               <span className="text-[11px] text-secondary-foreground/50 font-medium">
-                {p === 0 ? "Nema uređaja" : `Uređaja: ${p}`}
+                {p === 0 ? "Nema uređaja" : `Ure��aja: ${p}`}
                 {c > 0 && <> · Ciklusa: {c}</>}
                 {m > 0 && <> · Mjerenja: {m}</>}
               </span>
@@ -763,9 +763,9 @@ export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-base font-bold text-foreground">Spremno za ciscenje jednog uredaja</p>
+                    <p className="text-base font-bold text-foreground">Sesija aktivna</p>
                     <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                      Pokrenite prvi ciklus. Ciklus znaci cista voda + novo sredstvo.
+                      Odaberite kemijsko sredstvo i pokrenite prvi ciklus.
                     </p>
                   </div>
                 </div>
@@ -773,7 +773,7 @@ export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
                   onClick={() => setModal({ tip: "novi_ciklus" })}
                   className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
                 >
-                  Pokreni prvi ciklus
+                  Pokreni ciklus
                 </button>
               </div>
             )}
@@ -1611,7 +1611,7 @@ function ModeButton({
   );
 }
 
-// ─── Info banner ──────────────────────────────����────────��───��──────────────���─��
+// ─── Info banner ──────────────────────────────����─────���──��───��──────────────���─��
 
 // ─── Work mode banner ──────────────────────────────��─────────────────────�����────
 

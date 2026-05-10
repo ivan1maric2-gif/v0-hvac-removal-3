@@ -335,12 +335,12 @@ export function NadopunaModal({
                 </svg>
               </div>
               <div className="flex flex-col gap-1">
-                <p className="text-sm font-bold text-amber-900">Vazno — procitajte prije nastavka</p>
+                <p className="text-sm font-bold text-amber-900">Nadopuna ostaje unutar postojećeg ciklusa.</p>
                 <p className="text-sm text-amber-800 leading-relaxed">
-                  Nadopuna znaci da se sredstvo dodaje u <strong>postojecu otopinu</strong>. Stara otopina se ne ispusta.
+                  Sredstvo se dodaje u <strong>postojeću otopinu</strong> — ne kreira se novi ciklus i ne resetira se referentno mjerenje.
                 </p>
                 <p className="text-sm text-amber-700 leading-relaxed mt-1">
-                  Ako je otopina ispustena i dodana cista voda, koristite <strong>&quot;Pokreni novi ciklus&quot;</strong>.
+                  Ako je otopina ispuštena i dodana čista voda, koristite <strong>&quot;Novi ciklus&quot;</strong>.
                 </p>
               </div>
             </div>
@@ -385,7 +385,7 @@ export function NadopunaModal({
             onClick={() => setConfirmed(true)}
             className="w-full bg-amber-500 text-white rounded-2xl py-4 font-bold text-sm hover:bg-amber-600 active:scale-[0.98] transition-all"
           >
-            Razumijem — dodajem nadopunu, ne novi ciklus
+            Dodaj nadopunu
           </button>
           <button
             onClick={onClose}
