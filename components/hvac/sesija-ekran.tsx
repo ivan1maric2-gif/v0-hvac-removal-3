@@ -78,10 +78,9 @@ type Modal =
 
 interface SesijaEkranProps {
   sesijaId: string;
-  autoStartCiklus?: boolean;
 }
 
-export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
+export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
   const {
     navigiraj,
     idi_na_pocetni,
@@ -107,14 +106,6 @@ export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
   const sesija = getSesija(sesijaId);
   const [modal, setModal] = useState<Modal>(null);
   const [showIzvjestaj, setShowIzvjestaj] = useState(false);
-
-  // Auto-start prvi ciklus — otvori modal odmah ako je sesija tek kreirana
-  useEffect(() => {
-    if (autoStartCiklus && sesija && (sesija.ciklusi ?? []).length === 0) {
-      setModal({ tip: "novi_ciklus" });
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // ─── Centralni handler za završetak sesije ─────────────────────────────────
   // Poziva se sa SVIH mjesta gdje postoji "Završi sesiju" gumb.
@@ -188,6 +179,14 @@ export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
         </button>
       </div>
     );
+  }
+
+  // Guard: Mode A sessions with no cycles must go through setup first
+  const isModeAGuard = sesija.workMode === "no_subsessions";
+  const nemaCiklusaGuard = isModeAGuard && (sesija.ciklusi ?? []).length === 0;
+  if (nemaCiklusaGuard) {
+    navigiraj({ ime: "setup_ciklus", sesijaId });
+    return null;
   }
 
   const stat = izracunajStatistiku(sesija);
@@ -351,7 +350,7 @@ export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
             );
             return (
               <span className="text-[11px] text-secondary-foreground/50 font-medium">
-                {p === 0 ? "Nema uređaja" : `Ure����aja: ${p}`}
+                {p === 0 ? "Nema uređaja" : `Uređaja: ${p}`}
                 {c > 0 && <> · Ciklusa: {c}</>}
                 {m > 0 && <> · Mjerenja: {m}</>}
               </span>
@@ -763,9 +762,9 @@ export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-base font-bold text-foreground">Sesija aktivna</p>
+                    <p className="text-base font-bold text-foreground">Spremno za ciscenje jednog uredaja</p>
                     <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                      Odaberite kemijsko sredstvo i pokrenite prvi ciklus.
+                      Pokrenite prvi ciklus. Ciklus znaci cista voda + novo sredstvo.
                     </p>
                   </div>
                 </div>
@@ -773,7 +772,7 @@ export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
                   onClick={() => setModal({ tip: "novi_ciklus" })}
                   className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
                 >
-                  Pokreni ciklus
+                  Pokreni prvi ciklus
                 </button>
               </div>
             )}
@@ -1223,10 +1222,7 @@ export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
             nazivObjekta={sesija.naziv_objekta}
             tipSustava={sesija.systemCategory}
             tipProblema={sesija.cleaningMode}
-            procijenjeniVolumenL={prethodniCiklus?.waterVolumeL ?? sesija.setupWaterVolumeL}
-            setupWaterTempC={sesija.setupWaterTempC}
-            setupWaterPh={sesija.setupWaterPh}
-            setupWaterTds={sesija.setupWaterTds}
+            procijenjeniVolumenL={prethodniCiklus?.waterVolumeL}
             onComplete={(ciklusId) => {
               // Workflow je završen, ciklus je kreiran s nultim mjerenjem
               // Idi na Live praćenje (LiveDashboard je na "live" tabu)
@@ -1614,7 +1610,7 @@ function ModeButton({
   );
 }
 
-// ─── Info banner ──────────────────────────────����─────���──��───��──────────────���─��
+// ─── Info banner ──────────────────────────────����────────��──────────────────���─��
 
 // ─── Work mode banner ──────────────────────────────��─────────────────────�����────
 
@@ -1801,7 +1797,7 @@ function PodsesijaKartica({
             onClick={onZavrsi}
             className="flex-1 py-2.5 text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors"
           >
-            Zavr��i
+            Završi
           </button>
         )}
       </div>

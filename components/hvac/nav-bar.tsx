@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { useApp } from "@/lib/app-state";
 import type { Ekran } from "@/lib/app-state";
-import { useWorkflowNav } from "@/lib/workflow-nav";
 
 
 
@@ -162,20 +161,12 @@ function MicButton() {
 
 export function NavBar() {
   const { ekran, sesije, nazad, naprijed, idi_na_pocetni, mozeLiNazad, mozeLiNaprijed } = useApp();
-  const { active: workflowNav } = useWorkflowNav();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
   // Sve dok nije mountano na klijentu, uvijek renderiramo "pocetni" stanje
   // kako bismo izbjegli hydration mismatch (SSR nema localStorage).
   const isPocetni = !mounted || ekran.ime === "pocetni";
-
-  // Ako je aktivan workflow, strelice kontroliraju korake workflowa
-  // Inače, koriste globalnu ekran-level navigaciju
-  const handleBack = workflowNav ? workflowNav.onBack : nazad;
-  const handleForward = workflowNav?.onForward ?? naprijed;
-  const canGoBack = workflowNav ? workflowNav.canGoBack : mozeLiNazad;
-  const canGoForward = workflowNav ? (workflowNav.canGoForward ?? false) : mozeLiNaprijed;
 
   return (
     <div className="sticky top-0 z-50 border-b border-border shadow-sm bg-background">
@@ -191,11 +182,11 @@ export function NavBar() {
           <div className="flex items-center gap-1 shrink-0">
             {/* Nazad */}
             <button
-              onClick={handleBack}
-              disabled={!canGoBack}
+              onClick={nazad}
+              disabled={!mozeLiNazad}
               aria-label="Natrag"
               className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all active:scale-95 shrink-0 ${
-                canGoBack
+                mozeLiNazad
                   ? "bg-muted hover:bg-primary/10 hover:text-primary text-foreground"
                   : "bg-muted/40 text-muted-foreground/30 cursor-not-allowed"
               }`}
@@ -205,10 +196,10 @@ export function NavBar() {
               </svg>
             </button>
 
-            {/* Naprijed — vidljiv samo ako ima kamo naprijed */}
-            {canGoForward && (
+            {/* Naprijed — vidljiv samo ako ima ekrana naprijed */}
+            {mozeLiNaprijed && (
               <button
-                onClick={handleForward}
+                onClick={naprijed}
                 aria-label="Naprijed"
                 className="flex items-center justify-center w-10 h-10 rounded-xl bg-muted hover:bg-primary/10 hover:text-primary text-foreground active:scale-95 transition-all shrink-0"
               >

@@ -295,14 +295,8 @@ export function NoviCiklusPrep({
             </svg>
           </button>
           <div className="flex-1">
-            <h1 className="text-xl font-bold">
-              {isFirst ? `Ciklus #${cycleNumber}` : `Novi ciklus #${cycleNumber}`}
-            </h1>
-            <p className="text-sm text-primary-foreground/70 mt-0.5">
-              {isFirst
-                ? "Pokretanje početne kemijske reakcije sustava."
-                : "Nova voda, nova kemija i nova reakcija."}
-            </p>
+            <h1 className="text-xl font-bold">Novi ciklus #{cycleNumber}</h1>
+            <p className="text-sm text-primary-foreground/70 mt-0.5">Priprema za punjenje</p>
           </div>
         </div>
         
@@ -682,38 +676,18 @@ export function NoviCiklusPrep({
             </WorkflowCard>
           )}
 
-          {/* ══════════════════════════���════════════════════════════════════════ */}
-          {/* CARD 3: Pokretanje ciklusa */}
+          {/* ═══════════════════════════════════════════════════════════════════ */}
+          {/* CARD 3: Pokretanje novog ciklusa */}
           {/* ═══════════════════════════════════════════════════════════════════ */}
           <WorkflowCard
             step={isFirst ? 1 : 3}
-            title={isFirst ? "Pokretanje ciklusa" : "Pokretanje novog ciklusa"}
+            title="Pokretanje novog ciklusa"
             completed
           >
-            {/* Info tekst — samo za ciklus #2+ */}
-            {!isFirst && (
-              <p className="text-sm text-muted-foreground mb-3">
-                Novi ciklus znači novu vodu, novu kemiju i novo referentno mjerenje.
-              </p>
-            )}
-            {/* Checklist */}
-            {!isFirst && (
-              <div className="flex flex-col gap-2 mb-5">
-                {[
-                  "Prljava otopina ispuštena",
-                  "Sustav ispran",
-                  "Dodana nova voda",
-                  "Dodana nova kemija",
-                ].map((item) => (
-                  <div key={item} className="flex items-center gap-2.5">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary shrink-0">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    <span className="text-sm text-foreground">{item}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+            {/* Info tekst */}
+            <p className="text-sm text-muted-foreground mb-5">
+              Novi ciklus predstavlja novo kemijsko punjenje i novu reakciju sustava.
+            </p>
 
             {/* ─────────────────────────────────────────────────────────────────── */}
             {/* Automatski broj ciklusa - prominentan prikaz */}
@@ -725,7 +699,7 @@ export function NoviCiklusPrep({
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {isFirst ? "Ciklus" : "Novi ciklus"}
+                    Novi ciklus
                   </p>
                   <p className="text-lg font-bold text-foreground">
                     Ciklus #{cycleNumber}
@@ -751,14 +725,14 @@ export function NoviCiklusPrep({
             </div>
 
             {/* ─────────────────────────────────────────────────────────────────── */}
-            {/* Razlog pokretanja - samo za ciklus #2+ */}
+            {/* Razlog pokretanja - GLAVNO POLJE */}
             {/* ─────────────────────────────────────────────────────────────────── */}
-            {!isFirst && <div className="mb-5">
+            <div className="mb-5">
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 block">
                 Razlog pokretanja novog ciklusa
               </label>
               <div className="grid grid-cols-2 gap-2">
-                {RAZLOZI.filter(r => r.value !== "prvi_ciklus").map((r) => (
+                {RAZLOZI.filter(r => isFirst ? r.value === "prvi_ciklus" : r.value !== "prvi_ciklus").map((r) => (
                   <button
                     key={r.value}
                     type="button"
@@ -797,7 +771,7 @@ export function NoviCiklusPrep({
                   </p>
                 </div>
               )}
-            </div>}
+            </div>
 
             {/* ─────────────────────────────────────────────────────────────────── */}
             {/* Servisna napomena */}
@@ -859,7 +833,7 @@ export function NoviCiklusPrep({
                 : "bg-muted text-muted-foreground cursor-not-allowed"
             }`}
           >
-            {isFirst ? "Pokreni ciklus" : "Pokreni novi ciklus"}
+            Nastavi na punjenje
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>

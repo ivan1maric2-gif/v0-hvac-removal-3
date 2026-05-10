@@ -174,7 +174,7 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
     writeDraft<SetupForm>(draftKey, form);
   }, [draftKey, form]);
 
-  // MORA biti prije svakog conditional returna — Rules of Hooks
+  // Map tipSustava to systemCategory — mora biti ispred svakog conditional returna
   const systemCategoryForModal: SystemCategory = useMemo(() => {
     if (form.tipSustava === "TPV") return "dhw_potable";
     if (form.tipSustava === "tehnicka_voda") return "technical_water";

@@ -59,7 +59,7 @@ export type Ekran =
   | { ime: "pocetni" }
   | { ime: "nova_sesija" }
   | { ime: "setup_ciklus"; sesijaId: string }
-  | { ime: "sesija"; sesijaId: string; autoStartCiklus?: true }
+  | { ime: "sesija"; sesijaId: string }
   | { ime: "podsesija"; sesijaId: string; podsesijaId: string }
   | { ime: "povijest" }
   | { ime: "baza_proizvoda" }

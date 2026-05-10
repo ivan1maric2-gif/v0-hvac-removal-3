@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { useWorkflowNav } from "@/lib/workflow-nav";
+import React, { useState, useMemo } from "react";
 import type {
   Ciklus,
   RazlogCiklusa,
@@ -165,8 +164,6 @@ interface FormState {
   chemicalAddedAt: string;
   chemicalNote: string;
   chemicalDensityKgL: string;
-  // Korekcija volumena — opcionalno, samo ciklus #1
-  volumeCorrection: string;
 }
 
 function defaultForm(defaultWater?: number, defaultChem?: string, isFirst?: boolean): FormState {
@@ -205,11 +202,10 @@ function defaultForm(defaultWater?: number, defaultChem?: string, isFirst?: bool
     chemicalAddedAt: nowIso(),
     chemicalNote: "",
     chemicalDensityKgL: "",
-    volumeCorrection: "",
   };
 }
 
-// ─── Main component ───────────────────────────���─────────���─────────────���───────
+// ─── Main component ─────────────────────────────────────���─────────────���───────
 
 export function PokreniCiklusModal({
   sessionId,
@@ -232,9 +228,7 @@ export function PokreniCiklusModal({
 }: Props) {
   const { getProizvod } = useProducts();
   const isFirst = cycleNumber === 1;
-  // Ciklus #1: sustav je već napunjen — počinjemo s kemijom, ne vodom
-  const initialStep: Step = hasActiveCycle ? "confirm" : (isFirst ? "sredstvo" : "stanje");
-  const [step, setStep] = useState<Step>(initialStep);
+  const [step, setStep] = useState<Step>(hasActiveCycle ? "confirm" : "stanje");
 
   // Pre-resolve product from defaultProductId so the picker shows it immediately
   const initialProduct = React.useMemo(
@@ -310,33 +304,22 @@ export function PokreniCiklusModal({
 
   // ── Validation ───────────────────────────────────────────────────────────
   const drainOk = isFirst
-    ? true  // Ciklus #1: sustav je već napunjen iz session setup-a
+    ? form.cleanWaterAdded
     : form.previousSolutionDrained && form.cleanWaterAdded;
 
-  const formValid = isFirst
-    // Ciklus #1: samo kemija je obavezna — voda dolazi iz session setup-a
-    ? selectedProduct !== null &&
-      form.chemicalProductName.trim() !== "" &&
-      form.chemicalAmount !== "" &&
-      chemAmt > 0 &&
-      form.chemicalAddedAt !== "" &&
-      (!productIsSystemIncompatible || systemWarningConfirmed)
-    // Ciklus #2+: standardna validacija s vodom i ispuštanjem
-    : selectedProduct !== null &&
-      form.waterVolumeL !== "" &&
-      waterL > 0 &&
-      form.chemicalProductName.trim() !== "" &&
-      form.chemicalAmount !== "" &&
-      chemAmt > 0 &&
-      form.chemicalAddedAt !== "" &&
-      drainOk &&
-      (!productIsSystemIncompatible || systemWarningConfirmed);
+  const formValid =
+    selectedProduct !== null &&
+    form.waterVolumeL !== "" &&
+    waterL > 0 &&
+    form.chemicalProductName.trim() !== "" &&
+    form.chemicalAmount !== "" &&
+    chemAmt > 0 &&
+    form.chemicalAddedAt !== "" &&
+    drainOk &&
+    (!productIsSystemIncompatible || systemWarningConfirmed);
 
   // ── Wizard step order ────────────────────────────────────────────────────
-  // Ciklus #1: sustav je već pripremljen iz session setup-a — preskačemo stanje+voda
-  const WIZARD_STEPS: Step[] = isFirst
-    ? ["sredstvo", "pregled"]
-    : ["stanje", "voda", "sredstvo", "pregled"];
+  const WIZARD_STEPS: Step[] = ["stanje", "voda", "sredstvo", "pregled"];
   const stepIndex = WIZARD_STEPS.indexOf(step as Exclude<Step, "confirm">);
 
   // Per-step forward validation — what must be true to advance
@@ -374,19 +357,6 @@ export function PokreniCiklusModal({
       hasActiveCycle ? setStep("confirm") : onClose();
     }
   }
-
-  // ── Registracija workflow navigacije ─────────────────────────────────────
-  // NavBar strelica "natrag" kontrolira korake wizarda dok je modal otvoren.
-  const { register, unregister } = useWorkflowNav();
-  const stableGoBack = useCallback(goBack, [step, WIZARD_STEPS, hasActiveCycle, onClose]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    register({
-      onBack: stableGoBack,
-      canGoBack: true, // uvijek true — na prvom koraku zatvara modal
-      canGoForward: false,
-    });
-  }, [step, stableGoBack, register]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => () => unregister(), [unregister]);
 
   function handleNext() {
     setTouched(true);
@@ -462,15 +432,9 @@ export function PokreniCiklusModal({
       rinsePhAfter: form.rinsePhAfter ? parseFloat(form.rinsePhAfter) : undefined,
       rinseTdsAfter: form.rinseTdsAfter.trim() || undefined,
       rinseNote: form.rinseNote.trim() || undefined,
-      cleanWaterAdded: isFirst ? true : form.cleanWaterAdded,
-      // Ciklus #1: volumen iz session setup-a + opcionalna korekcija servisera
-      // Ciklus #2+: volumen koji serviser unosi u "Punjenje vodom" koraku
-      waterVolumeL: isFirst
-        ? (form.volumeCorrection ? parseFloat(form.volumeCorrection) : (defaultWaterVolumeL ?? waterL))
-        : waterL,
-      volumen_vode: isFirst
-        ? (form.volumeCorrection ? parseFloat(form.volumeCorrection) : (defaultWaterVolumeL ?? waterL))
-        : waterL,
+      cleanWaterAdded: form.cleanWaterAdded,
+      waterVolumeL: waterL,
+      volumen_vode: waterL,
       waterTempC: form.waterTempC ? parseFloat(form.waterTempC) : undefined,
       waterPh: form.waterPh ? parseFloat(form.waterPh) : undefined,
       waterTds: form.waterTds.trim() || undefined,
@@ -529,15 +493,11 @@ export function PokreniCiklusModal({
               </svg>
             </div>
             <div>
-              <h2 className="text-base font-bold text-white leading-tight">
-                {isFirst ? "Pokreni ciklus?" : "Pokreni novi ciklus?"}
-              </h2>
-              {!isFirst && (
-                <p className="text-sm text-white/80 mt-1 leading-relaxed">
-                  Pokretanje novog ciklusa znači da je prethodna otopina ispuštena i da se kreće s
-                  čistom vodom i novim sredstvom.
-                </p>
-              )}
+              <h2 className="text-base font-bold text-white leading-tight">Pokreni novi ciklus?</h2>
+              <p className="text-sm text-white/80 mt-1 leading-relaxed">
+                Pokretanje novog ciklusa znači da je prethodna otopina ispuštena i da se kreće s
+                čistom vodom i novim sredstvom.
+              </p>
             </div>
           </div>
 
@@ -628,26 +588,20 @@ export function PokreniCiklusModal({
 
   const STEP_META: Record<Exclude<Step, "confirm">, { title: string; subtitle: string }> = {
     stanje: {
-      title: isFirst ? "Pokretanje ciklusa #1" : "Stanje sustava",
-      subtitle: isFirst
-        ? "Kemijska priprema i početak reakcije."
-        : "Zabilježite stanje otopine prije ispuštanja.",
+      title: "Stanje sustava",
+      subtitle: "Zabilježite stanje prije čišćenja",
     },
     voda: {
-      title: "Čista voda",
-      subtitle: "Unesite količinu čiste vode za novi ciklus.",
+      title: "Punjenje vodom",
+      subtitle: "Unesite količinu čiste vode",
     },
     sredstvo: {
-      title: isFirst ? "Kemija — Ciklus #1" : "Kemijsko sredstvo",
-      subtitle: isFirst
-        ? "Sustav je spreman. Odaberite kemijsko sredstvo i dozu."
-        : "Odaberite sredstvo i unesite količinu.",
+      title: "Kemijsko sredstvo",
+      subtitle: "Odaberite sredstvo i unesite količinu",
     },
     pregled: {
       title: "Pregled i pokretanje",
-      subtitle: isFirst
-        ? "Provjerite podatke i pokrenite prvi ciklus."
-        : "Provjerite podatke i pokrenite novi ciklus.",
+      subtitle: "Provjerite podatke i pokrenite ciklus",
     },
   };
 
@@ -674,7 +628,7 @@ export function PokreniCiklusModal({
         </button>
         <div className="flex-1 min-w-0">
           <p className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest mb-0.5">
-            {isFirst ? `Ciklus #${cycleNumber}` : `Novi ciklus #${cycleNumber} — Nova otopina`}
+            {isFirst ? `Ciklus #${cycleNumber}` : `Ciklus #${cycleNumber} — Nova otopina`}
           </p>
           <h1 className="text-xl font-black leading-tight tracking-tight text-foreground text-balance">
             {currentMeta.title}
@@ -741,16 +695,13 @@ export function PokreniCiklusModal({
                 className={inputCls}
               />
             </CField>
-            {/* Razlog pokretanja — samo za ciklus #2+ */}
-            {!isFirst && (
-              <CField label="Razlog pokretanja novog ciklusa *">
-                <select name="reason" value={form.reason} onChange={handle} className={inputCls}>
-                  {RAZLOZI.filter(r => r.value !== "prvi_ciklus").map((r) => (
-                    <option key={r.value} value={r.value}>{r.label}</option>
-                  ))}
-                </select>
-              </CField>
-            )}
+            <CField label="Razlog pokretanja novog ciklusa *">
+              <select name="reason" value={form.reason} onChange={handle} className={inputCls}>
+                {RAZLOZI.map((r) => (
+                  <option key={r.value} value={r.value}>{r.label}</option>
+                ))}
+              </select>
+            </CField>
           </CSection>
 
           {/* Zatvaranje prethodnog ciklusa */}
@@ -1081,7 +1032,7 @@ export function PokreniCiklusModal({
                     <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
                   </svg>
                   <div className="flex flex-col gap-0.5">
-                    <p className="text-xs font-bold text-red-800">Nekompatibilno s odabranom vrstom ��išćenja</p>
+                    <p className="text-xs font-bold text-red-800">Nekompatibilno s odabranom vrstom čišćenja</p>
                     <p className="text-xs text-red-700">
                       <strong>{selectedProduct.name}</strong> nije namijenjeno za{" "}
                       <strong>{CLEANING_MODE_LABELS[cleaningMode]}</strong>. Odaberi drugi proizvod ili potvrdi
@@ -1271,31 +1222,6 @@ export function PokreniCiklusModal({
             </CSection>
           )}
 
-          {/* Korekcija volumena — samo za ciklus #1, opcionalno */}
-          {isFirst && (
-            <CSection title="Korekcija volumena">
-              <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-                Procijenjeni volumen iz sesije:{" "}
-                <strong className="text-foreground">
-                  {defaultWaterVolumeL ? `${defaultWaterVolumeL} L` : "nije unesen"}
-                </strong>.
-                Ako je stvarni volumen drugačiji, unesite korekciju.
-              </p>
-              <CField label="Stvarni volumen sustava (L) — neobavezno">
-                <input
-                  type="number"
-                  name="volumeCorrection"
-                  value={form.volumeCorrection}
-                  onChange={handle}
-                  min="0"
-                  step="0.5"
-                  placeholder={defaultWaterVolumeL ? String(defaultWaterVolumeL) : "npr. 62"}
-                  className={inputCls}
-                />
-              </CField>
-            </CSection>
-          )}
-
           </>} {/* end step === "sredstvo" */}
 
           {/* ════════════════════════════════════════════════════════ */}
@@ -1305,8 +1231,8 @@ export function PokreniCiklusModal({
 
           <CSection title="Pregled unesenih podataka">
             <div className="flex flex-col gap-2">
-              {/* Stanje row — samo za ciklus #2+ */}
-              {!isFirst && <div className="rounded-xl border border-border bg-card px-4 py-3 flex flex-col gap-1.5">
+              {/* Stanje row */}
+              <div className="rounded-xl border border-border bg-card px-4 py-3 flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Stanje sustava</span>
                   <button
@@ -1329,9 +1255,8 @@ export function PokreniCiklusModal({
                 {!initialFlowLMin && !form.initialPhSustava && form.vizualnoStanje === "nije_provjereno" && (
                   <p className="text-xs text-muted-foreground italic">Stanje nije zabilježeno</p>
                 )}
-              </div>}
-              {/* Voda row — za ciklus #2+ */}
-              {!isFirst && (
+              </div>
+              {/* Voda row */}
               <div className="rounded-xl border border-border bg-card px-4 py-3 flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Voda</span>
@@ -1343,27 +1268,10 @@ export function PokreniCiklusModal({
                     Uredi
                   </button>
                 </div>
-                <SummaryRow label="Količina vode" value={waterL > 0 ? `${waterL} L` : "—"} />
+                <SummaryRow label="Kolicina vode" value={waterL > 0 ? `${waterL} L` : "—"} />
                 {form.waterTempC && <SummaryRow label="Temperatura" value={`${form.waterTempC} °C`} />}
                 {form.waterPh && <SummaryRow label="pH vode" value={form.waterPh} />}
               </div>
-              )}
-              {/* Volumen iz sesije — samo za ciklus #1 */}
-              {isFirst && (
-              <div className="rounded-xl border border-border bg-card px-4 py-3 flex flex-col gap-1.5">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Volumen sustava</span>
-                <SummaryRow
-                  label="Volumen"
-                  value={
-                    form.volumeCorrection
-                      ? `${form.volumeCorrection} L (korigiran)`
-                      : defaultWaterVolumeL
-                      ? `${defaultWaterVolumeL} L (iz sesije)`
-                      : "—"
-                  }
-                />
-              </div>
-              )}
               {/* Sredstvo row */}
               <div className="rounded-xl border border-border bg-card px-4 py-3 flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
@@ -1513,7 +1421,7 @@ export function PokreniCiklusModal({
             className="w-full bg-primary text-primary-foreground rounded-2xl py-4 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none shadow-sm"
             style={{ minHeight: 56 }}
           >
-            {isFirst ? "Pokreni ciklus" : `Pokreni novi ciklus #${cycleNumber}`}
+            Pokreni ciklus #{cycleNumber}
           </button>
         )}
 
