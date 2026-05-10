@@ -193,7 +193,7 @@ export function NovaSesijaEkran() {
 
   // ───────────────────────────────────────────────────────────────────────────
   // SEKCIJA 2 — SYSTEM TYPE
-  // ────────────────────────────────────────────────────���──────────────────────
+  // ────────────────────────────────────────────────────�����──────────────────────
   const [tipSustava, setTipSustava] = useState<SystemCategory | null>(null);
   const [cilj, setCilj] = useState<string | null>(null);
 
@@ -399,7 +399,7 @@ export function NovaSesijaEkran() {
 
             <Field label="Materijali sustava" required>
               <div className="grid grid-cols-2 gap-2">
-                {["Nehrđajući čelik", "Mesing", "Plastika", "Bakar", "Čelik", "Aluminij"].map((mat) => {
+                {["Nehrđajući čelik", "Bakar", "Mesing", "Čelik", "Aluminij", "Plastika", "Miješani materijali"].map((mat) => {
                   const isSelected = materijali.includes(mat);
                   return (
                     <button
