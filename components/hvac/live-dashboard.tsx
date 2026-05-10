@@ -910,26 +910,6 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
             </div>
 
           </div>
-            <div className="px-4 py-3 border-t border-indigo-700/40 bg-indigo-950/50">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-1.5">
-                Sljedeći korak
-              </h3>
-              {trebaNoviciklus ? (
-                <p className="text-sm font-bold text-indigo-100">Pripremi završetak ciklusa.</p>
-              ) : trebaNadopuna ? (
-                <p className="text-sm font-bold text-indigo-100">Dodaj nadopunu kemijskog sredstva.</p>
-              ) : napreduje ? (
-                <p className="text-sm font-bold text-indigo-100">Nastavi cirkulaciju — nema intervencije.</p>
-              ) : (
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-bold text-indigo-100">Promijeni smjer cirkulacije</p>
-                  <p className="text-xs text-indigo-500 font-semibold">ILI</p>
-                  <p className="text-sm font-bold text-indigo-100">Pripremi završetak ciklusa.</p>
-                </div>
-              )}
-            </div>
-
-          </div>
         );
       })()}
 
