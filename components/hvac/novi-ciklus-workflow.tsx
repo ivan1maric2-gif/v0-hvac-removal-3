@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useApp } from "@/lib/app-state";
 import { genId, nowISO } from "@/lib/utils";
+import { useWorkflowNav } from "@/lib/workflow-nav";
 import type { Ciklus, Mjerenje, RazlogCiklusa, JedinicaProtoka, DrainSediment, JedinicaKemikalije } from "@/lib/types";
 import { NoviCiklusPrep, type PrepData, type PreviousCycleContext } from "./novi-ciklus-prep";
 import { PunjenjeVodom, type WaterFillingData, type CycleReferenceData } from "./punjenje-vodom";
@@ -292,6 +293,20 @@ export function NoviCiklusWorkflow({
       }
     });
   }, [isFirst, onCancel]);
+
+  // ─── Registracija workflow navigacije ───────────────────────────────────────
+  // NavBar strelice koriste ove handlere dok je workflow aktivan.
+  // canGoBack: na "prep" nema nazad (jedino odustani), na svim ostalim je true.
+  const { register, unregister } = useWorkflowNav();
+  useEffect(() => {
+    const canGoBack = state.step !== "prep" && state.step !== "done";
+    register({
+      onBack: handleBack,
+      canGoBack,
+      canGoForward: false,
+    });
+  }, [state.step, handleBack, register]);
+  useEffect(() => () => unregister(), [unregister]);
 
   // ─── Render ─────────────────────────────────────────────────────────────────
 

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
+import { useWorkflowNav } from "@/lib/workflow-nav";
 import type {
   Ciklus,
   RazlogCiklusa,
@@ -373,6 +374,19 @@ export function PokreniCiklusModal({
       hasActiveCycle ? setStep("confirm") : onClose();
     }
   }
+
+  // ── Registracija workflow navigacije ─────────────────────────────────────
+  // NavBar strelica "natrag" kontrolira korake wizarda dok je modal otvoren.
+  const { register, unregister } = useWorkflowNav();
+  const stableGoBack = useCallback(goBack, [step, WIZARD_STEPS, hasActiveCycle, onClose]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    register({
+      onBack: stableGoBack,
+      canGoBack: true, // uvijek true — na prvom koraku zatvara modal
+      canGoForward: false,
+    });
+  }, [step, stableGoBack, register]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => unregister(), [unregister]);
 
   function handleNext() {
     setTouched(true);
