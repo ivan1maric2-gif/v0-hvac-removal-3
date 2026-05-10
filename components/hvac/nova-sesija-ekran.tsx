@@ -351,7 +351,7 @@ export function NovaSesijaEkran() {
                   }`}
                 >
                   <option value="">Odaberi cilj čišćenja...</option>
-                  <option value="Heat exchanger">Razmjenjivač topline</option>
+                  <option value="Heat exchanger">Izmjenjivač topline</option>
                   <option value="Tank">Spremnik / bojler</option>
                   <option value="Installation">Instalacija</option>
                   <option value="DHW installation">Instalacija PTV</option>
