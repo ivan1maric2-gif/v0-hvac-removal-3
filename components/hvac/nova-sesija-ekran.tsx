@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useApp } from "@/lib/app-state";
 import type { Sesija, SystemCategory } from "@/lib/types";
 import { genId, nowISO } from "@/lib/utils";
@@ -182,7 +182,7 @@ function Check() {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function NovaSesijaEkran() {
-  const { navigiraj, dodajSesiju } = useApp();
+  const { navigiraj, dodajSesiju, sesije } = useApp();
 
   // ───────────────────────────────────────────────────────────────────────────
   // SEKCIJA 1 — BASIC INFO
@@ -193,10 +193,15 @@ export function NovaSesijaEkran() {
 
   // ───────────────────────────────────────────────────────────────────────────
   // SEKCIJA 2 — SYSTEM TYPE
-  // ────────────────────────────────────────────────────���������──────────────────────
+  // ───────────────────────────────────────────────────────────────────────────
   const [tipSustava, setTipSustava] = useState<SystemCategory | null>(null);
   const [cilj, setCilj] = useState<string | null>(null);
   const [ciljOpis, setCiljOpis] = useState("");
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // AUTO-PREFILL — traži prethodnu sesiju prema nazivu objekta + lokaciji
+  // ───────────────────────────────────────────────────────────────────────────
+  const [autoPopunjeno, setAutoPopunjeno] = useState(false);
 
   // ───────────────────────────────────────────────────────────────────────────
   // SEKCIJA 3 — TECHNICAL DATA
@@ -210,6 +215,77 @@ export function NovaSesijaEkran() {
   const [protokPrije, setProtokPrije] = useState("");
   const [tempPrije, setTempPrije] = useState("");
   const [phPrije, setPhPrije] = useState("");
+
+  // Auto-prefill — kada serviser upiše naziv objekta i lokaciju, traži prethodnu sesiju
+  useEffect(() => {
+    const naziv = nazivObjekta.trim().toLowerCase();
+    const lok = lokacija.trim().toLowerCase();
+
+    if (naziv.length < 3 && lok.length < 3) {
+      setAutoPopunjeno(false);
+      return;
+    }
+
+    // Traži najnoviju sesiju koja odgovara nazivu objekta ili lokaciji
+    const prethodna = sesije
+      .filter((s) => !s.isDemo)
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .find((s) => {
+        const sNaziv = (s.naziv_objekta ?? "").toLowerCase();
+        const sLok = (s.lokacija ?? "").toLowerCase();
+        return (
+          (naziv.length >= 3 && sNaziv.includes(naziv)) ||
+          (lok.length >= 3 && sLok.includes(lok))
+        );
+      });
+
+    if (!prethodna) {
+      setAutoPopunjeno(false);
+      return;
+    }
+
+    // Popuni samo prazna polja — ne prepiši ono što je serviser već upisao
+    let popunjeno = false;
+
+    if (!tipSustava && prethodna.systemCategory) {
+      setTipSustava(prethodna.systemCategory);
+      popunjeno = true;
+    }
+
+    if (!cilj && !ciljOpis) {
+      // Pokušaj izvući cilj iz opis_problema
+      const opisDijelovi = (prethodna.opis_problema ?? "").split(" — ");
+      const mogucCilj = opisDijelovi[0]?.trim();
+      if (mogucCilj && mogucCilj.length > 0) {
+        setCiljOpis(mogucCilj);
+        popunjeno = true;
+      }
+    }
+
+    if (!procijenjeniVolumen) {
+      // Pokušaj izvući volumen iz opis_problema (npr. "55 L")
+      const volumenMatch = (prethodna.opis_problema ?? "").match(/(\d+(?:\.\d+)?)\s*L/);
+      if (volumenMatch) {
+        setProcijenjeniVolumen(volumenMatch[1]);
+        popunjeno = true;
+      }
+    }
+
+    if (materijali.length === 0) {
+      // Pokušaj izvući materijale iz opis_problema (npr. "Materijali: Bakar, Čelik")
+      const materijaliMatch = (prethodna.opis_problema ?? "").match(/Materijali:\s*(.+?)(?:\s*—|$)/);
+      if (materijaliMatch) {
+        const listaIzPrethodne = materijaliMatch[1].split(",").map((m) => m.trim()).filter(Boolean);
+        if (listaIzPrethodne.length > 0) {
+          setMaterijali(listaIzPrethodne);
+          popunjeno = true;
+        }
+      }
+    }
+
+    setAutoPopunjeno(popunjeno);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nazivObjekta, lokacija]);
 
   // Validacija
   // cilj je validan ako je odabran iz liste ILI ako je serviser upisao vlastiti opis
@@ -298,6 +374,13 @@ export function NovaSesijaEkran() {
               />
             </Field>
           </div>
+
+          {/* Info poruka za auto-prefill — mala, neutralna, neinvazivna */}
+          {autoPopunjeno && (
+            <p className="text-xs text-muted-foreground mb-4 px-1 leading-relaxed">
+              Podaci su automatski učitani iz prethodne sesije i mogu se promijeniti po potrebi.
+            </p>
+          )}
 
           <div className="h-px bg-border/60 mb-1" />
 
