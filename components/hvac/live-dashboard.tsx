@@ -803,12 +803,12 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
           <div className="rounded-3xl overflow-hidden border-2 border-emerald-500/60 bg-gradient-to-br from-emerald-700 to-emerald-800">
 
             {/* ── Naslov s ikonom u krugu ────────────────────────────────── */}
-            <div className="px-6 pt-6 pb-3 flex items-start gap-4">
-              <div className="w-14 h-14 rounded-full border-2 border-emerald-300/40 flex items-center justify-center shrink-0 bg-emerald-600/30">
-                <span className="text-2xl">⇄</span>
+            <div className="px-4 pt-5 pb-3 flex items-start gap-3">
+              <div className="w-12 h-12 rounded-full border-2 border-emerald-300/40 flex items-center justify-center shrink-0 bg-emerald-600/30">
+                <span className="text-xl">⇄</span>
               </div>
-              <div className="flex-1">
-                <h2 className="text-3xl font-black text-white leading-tight mb-1">
+              <div className="flex-1 min-w-0">
+                <h2 className="text-xl font-black text-white leading-tight mb-1">
                   CIRKULACIJA AKTIVNA
                 </h2>
                 <p className="text-sm text-emerald-100">
