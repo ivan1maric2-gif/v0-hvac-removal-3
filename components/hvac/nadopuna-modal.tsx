@@ -325,14 +325,20 @@ export function NadopunaModal({
           </div>
 
           {/* Workflow Guidance */}
-          <div className="rounded-2xl border border-border bg-muted/40 px-4 py-3 flex flex-col gap-1.5">
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Nadopuna dodaje kemiju u postojeću otopinu — ne kreira se novi ciklus i referentno mjerenje ostaje nepromijenjeno.
-            </p>
-            <p className="text-sm font-semibold text-foreground">
-              Unesite količinu dodane kemije.
-            </p>
-            <p className="text-xs text-muted-foreground mt-0.5">
+          <div className="rounded-2xl border border-border bg-muted/40 px-4 py-3 flex flex-col gap-2">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Glavna uputa</p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Nadopuna dodaje kemiju u postojeću otopinu bez pokretanja novog ciklusa.
+              </p>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Sljedeća akcija</p>
+              <p className="text-sm font-semibold text-foreground leading-snug">
+                Unesite količinu dodane kemije.
+              </p>
+            </div>
+            <p className="text-xs text-muted-foreground border-t border-border pt-2 mt-0.5">
               Ako je otopina ispuštena i dodana čista voda, koristite <strong className="text-foreground">&quot;Novi ciklus&quot;</strong>.
             </p>
           </div>

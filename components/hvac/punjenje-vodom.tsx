@@ -91,13 +91,19 @@ export function PunjenjeVodom({ referenceData, onContinue, onBack }: Props) {
       <main className="flex-1 overflow-y-auto px-4 py-5">
 
         {/* ── Workflow Guidance ─────────────────────────────────────────── */}
-        <div className="mb-5 pb-4 border-b border-border">
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            Volumen otopine određuje točnost izračuna koncentracije kemije za ovaj ciklus.
-          </p>
-          <p className="text-sm font-semibold text-foreground mt-1.5">
-            Unesite količinu čiste vode kojom punite sustav.
-          </p>
+        <div className="mb-5 pb-4 border-b border-border flex flex-col gap-2">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Glavna uputa</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Volumen otopine određuje točnost izračuna koncentracije kemije za ovaj ciklus.
+            </p>
+          </div>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Sljedeća akcija</p>
+            <p className="text-sm font-semibold text-foreground leading-snug">
+              Unesite količinu čiste vode kojom punite sustav.
+            </p>
+          </div>
         </div>
 
         {/* Količina vode - OBAVEZNO, PRIMARY */}

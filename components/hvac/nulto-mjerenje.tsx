@@ -227,13 +227,19 @@ export function NultoMjerenje({
       </header>
 
       {/* Workflow Guidance */}
-      <div className="shrink-0 border-b border-border px-4 py-3">
-        <p className="text-xs text-muted-foreground leading-relaxed">
-          Referentno mjerenje postavlja nultu točku — sva kasnija mjerenja računaju delta u odnosu na ove vrijednosti.
-        </p>
-        <p className="text-sm font-semibold text-foreground mt-1.5">
-          Unesite početni pH i protok odmah nakon dodavanja kemije.
-        </p>
+      <div className="shrink-0 border-b border-border px-4 py-3 flex flex-col gap-2">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Glavna uputa</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Referentno mjerenje postavlja nultu točku — sva kasnija mjerenja računaju delta u odnosu na ove vrijednosti.
+          </p>
+        </div>
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Sljedeća akcija</p>
+          <p className="text-sm font-semibold text-foreground leading-snug">
+            Unesite početni pH i protok odmah nakon dodavanja kemije.
+          </p>
+        </div>
       </div>
 
       {/* ─── Main Content ───────────────────────────────────────────────────── */}
