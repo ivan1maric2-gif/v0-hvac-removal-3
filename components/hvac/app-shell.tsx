@@ -23,7 +23,7 @@ export function AppShell() {
       case "setup_ciklus":
         return <SetupCiklusEkran sesijaId={ekran.sesijaId} />;
       case "sesija":
-        return <SesijaEkran sesijaId={ekran.sesijaId} />;
+        return <SesijaEkran sesijaId={ekran.sesijaId} autoStartCiklus={ekran.autoStartCiklus} />;
       case "podsesija":
         return <PodsesijaEkran sesijaId={ekran.sesijaId} podsesijaId={ekran.podsesijaId} />;
       case "povijest":

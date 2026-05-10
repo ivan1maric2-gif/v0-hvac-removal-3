@@ -324,7 +324,9 @@ export function NovaSesijaEkran() {
     };
 
     dodajSesiju(novaSesija);
-    navigiraj({ ime: "setup_ciklus", sesijaId: novaSesija.id });
+    // Single-device workflow: preskočiti setup_ciklus, ići direktno na sesiju
+    // Modal za prvi ciklus se otvara automatski putem autoStartCiklus flaga
+    navigiraj({ ime: "sesija", sesijaId: novaSesija.id, autoStartCiklus: true });
   }
 
   // ──────────────────────────────────────────────────────────────────────────────
@@ -604,7 +606,7 @@ export function NovaSesijaEkran() {
             className="w-full bg-primary text-primary-foreground rounded-xl py-4 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none shadow-sm"
             style={{ minHeight: 56 }}
           >
-            Pokreni prvi ciklus
+            Pokreni sesiju
           </button>
 
         </form>

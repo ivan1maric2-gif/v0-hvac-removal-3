@@ -78,9 +78,10 @@ type Modal =
 
 interface SesijaEkranProps {
   sesijaId: string;
+  autoStartCiklus?: boolean;
 }
 
-export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
+export function SesijaEkran({ sesijaId, autoStartCiklus }: SesijaEkranProps) {
   const {
     navigiraj,
     idi_na_pocetni,
@@ -106,6 +107,14 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
   const sesija = getSesija(sesijaId);
   const [modal, setModal] = useState<Modal>(null);
   const [showIzvjestaj, setShowIzvjestaj] = useState(false);
+
+  // Auto-start prvi ciklus — otvori modal odmah ako je sesija tek kreirana
+  useEffect(() => {
+    if (autoStartCiklus && sesija && (sesija.ciklusi ?? []).length === 0) {
+      setModal({ tip: "novi_ciklus" });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ─── Centralni handler za završetak sesije ─────────────────────────────────
   // Poziva se sa SVIH mjesta gdje postoji "Završi sesiju" gumb.
@@ -1610,7 +1619,7 @@ function ModeButton({
   );
 }
 
-// ─── Info banner ──────────────────────────────����────────��──────────────────���─��
+// ─── Info banner ──────────────────────────────����────────��───��──────────────���─��
 
 // ─── Work mode banner ──────────────────────────────��─────────────────────�����────
 
