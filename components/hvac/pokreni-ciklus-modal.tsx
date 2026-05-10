@@ -515,11 +515,15 @@ export function PokreniCiklusModal({
               </svg>
             </div>
             <div>
-              <h2 className="text-base font-bold text-white leading-tight">Pokreni novi ciklus?</h2>
-              <p className="text-sm text-white/80 mt-1 leading-relaxed">
-                Pokretanje novog ciklusa znači da je prethodna otopina ispuštena i da se kreće s
-                čistom vodom i novim sredstvom.
-              </p>
+              <h2 className="text-base font-bold text-white leading-tight">
+                {isFirst ? "Pokreni ciklus?" : "Pokreni novi ciklus?"}
+              </h2>
+              {!isFirst && (
+                <p className="text-sm text-white/80 mt-1 leading-relaxed">
+                  Pokretanje novog ciklusa znači da je prethodna otopina ispuštena i da se kreće s
+                  čistom vodom i novim sredstvom.
+                </p>
+              )}
             </div>
           </div>
 
@@ -723,13 +727,16 @@ export function PokreniCiklusModal({
                 className={inputCls}
               />
             </CField>
-            <CField label="Razlog pokretanja novog ciklusa *">
-              <select name="reason" value={form.reason} onChange={handle} className={inputCls}>
-                {RAZLOZI.map((r) => (
-                  <option key={r.value} value={r.value}>{r.label}</option>
-                ))}
-              </select>
-            </CField>
+            {/* Razlog pokretanja — samo za ciklus #2+ */}
+            {!isFirst && (
+              <CField label="Razlog pokretanja novog ciklusa *">
+                <select name="reason" value={form.reason} onChange={handle} className={inputCls}>
+                  {RAZLOZI.filter(r => r.value !== "prvi_ciklus").map((r) => (
+                    <option key={r.value} value={r.value}>{r.label}</option>
+                  ))}
+                </select>
+              </CField>
+            )}
           </CSection>
 
           {/* Zatvaranje prethodnog ciklusa */}
@@ -1060,7 +1067,7 @@ export function PokreniCiklusModal({
                     <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
                   </svg>
                   <div className="flex flex-col gap-0.5">
-                    <p className="text-xs font-bold text-red-800">Nekompatibilno s odabranom vrstom čišćenja</p>
+                    <p className="text-xs font-bold text-red-800">Nekompatibilno s odabranom vrstom ��išćenja</p>
                     <p className="text-xs text-red-700">
                       <strong>{selectedProduct.name}</strong> nije namijenjeno za{" "}
                       <strong>{CLEANING_MODE_LABELS[cleaningMode]}</strong>. Odaberi drugi proizvod ili potvrdi
