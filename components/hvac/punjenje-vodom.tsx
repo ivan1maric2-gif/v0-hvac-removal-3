@@ -89,9 +89,16 @@ export function PunjenjeVodom({ referenceData, onContinue, onBack }: Props) {
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto px-4 py-5">
-        <p className="text-sm text-muted-foreground mb-5">
-          Unesite količinu vode kojom punite sustav. Ovi podaci su potrebni za izračun koncentracije kemije.
-        </p>
+
+        {/* ── Workflow Guidance ─────────────────────────────────────────── */}
+        <div className="mb-5 pb-4 border-b border-border">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Volumen otopine određuje točnost izračuna koncentracije kemije za ovaj ciklus.
+          </p>
+          <p className="text-sm font-semibold text-foreground mt-1.5">
+            Unesite količinu čiste vode kojom punite sustav.
+          </p>
+        </div>
 
         {/* Količina vode - OBAVEZNO, PRIMARY */}
         <div className="mb-6">

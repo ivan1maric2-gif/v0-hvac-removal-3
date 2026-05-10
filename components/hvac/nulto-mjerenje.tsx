@@ -226,14 +226,13 @@ export function NultoMjerenje({
         </div>
       </header>
 
-      {/* Info banner */}
-      <div className="shrink-0 bg-emerald-500/10 border-b border-emerald-500/20 px-4 py-2.5 flex items-center gap-2">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-emerald-600 shrink-0">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 16v-4M12 8h.01" />
-        </svg>
-        <p className="text-sm text-emerald-700 dark:text-emerald-300 font-medium">
-          Ovo mjerenje je nulta tocka — sva live mjerenja usporedit ce se s ovim.
+      {/* Workflow Guidance */}
+      <div className="shrink-0 border-b border-border px-4 py-3">
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Referentno mjerenje postavlja nultu točku — sva kasnija mjerenja računaju delta u odnosu na ove vrijednosti.
+        </p>
+        <p className="text-sm font-semibold text-foreground mt-1.5">
+          Unesite početni pH i protok odmah nakon dodavanja kemije.
         </p>
       </div>
 

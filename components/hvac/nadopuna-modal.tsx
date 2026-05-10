@@ -324,16 +324,18 @@ export function NadopunaModal({
             ))}
           </div>
 
-          {/* Warning block */}
-          <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 flex flex-col gap-3">
-            <div className="flex items-start gap-3">
-              <div className="shrink-0 w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center mt-0.5">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-amber-600">
-                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                  <line x1="12" y1="9" x2="12" y2="13" />
-                  <line x1="12" y1="17" x2="12.01" y2="17" />
-                </svg>
-              </div>
+          {/* Workflow Guidance */}
+          <div className="rounded-2xl border border-border bg-muted/40 px-4 py-3 flex flex-col gap-1.5">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Nadopuna dodaje kemiju u postojeću otopinu — ne kreira se novi ciklus i referentno mjerenje ostaje nepromijenjeno.
+            </p>
+            <p className="text-sm font-semibold text-foreground">
+              Unesite količinu dodane kemije.
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Ako je otopina ispuštena i dodana čista voda, koristite <strong className="text-foreground">&quot;Novi ciklus&quot;</strong>.
+            </p>
+          </div>
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-bold text-amber-900">Vazno — procitajte prije nastavka</p>
                 <p className="text-sm text-amber-800 leading-relaxed">

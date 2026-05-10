@@ -324,6 +324,18 @@ export function DodavanjeKemije({
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
 
+        {/* ── Workflow Guidance ────────────────────────────────────────── */}
+        <div className="px-4 pt-4 pb-3 border-b border-border">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {isFirst
+              ? "Sustav je spreman. Odaberite kemijsko sredstvo i pripremite početnu reakciju ciklusa."
+              : "Odaberite kemijsko sredstvo i pripremite reakciju za novi ciklus."}
+          </p>
+          <p className="text-sm font-semibold text-foreground mt-1.5">
+            Odaberite proizvod iz baze i unesite količinu kemije.
+          </p>
+        </div>
+
         {/* ── SECTION 1: Odabir proizvoda ─────────────────────────────── */}
         <div className="px-4 pt-5 pb-4">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
