@@ -23,6 +23,7 @@ import { nadjiIndikatorZonu, SNAGA_SREDSTVA_LABELS } from "@/lib/product-types";
 import type { SnagaSredstva } from "@/lib/product-types";
 import { resolveChemicalStrength } from "@/lib/chemical-strength-matrix";
 import { MjerenjeTimer } from "./mjerenje-timer";
+import { PreporukaKartica } from "./preporuka-kartica";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -1457,6 +1458,11 @@ export function BrziUnosMjerenja({
 
       {/* ── Sticky footer ─────────────────────────────────────────────────── */}
       <div className="shrink-0 border-t border-border bg-background px-3 py-3 flex flex-col gap-2 max-w-lg mx-auto w-full">
+        {/* Live recommendation preview — appears as soon as pH is entered */}
+        {livePreporuka && (
+          <PreporukaKartica preporuka={livePreporuka} compact />
+        )}
+
         {touched && !phValid && (
           <p className="text-[10px] text-center font-semibold text-destructive">Unesite pH vrijednost.</p>
         )}
