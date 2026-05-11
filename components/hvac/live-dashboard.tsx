@@ -613,7 +613,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
 
   const uputa = resolveUputaState();
 
-  // ── Glasovna uputa — triggerira se za svako novo mjerenje (po ID-u) ──────
+  // ── Glasovna uputa — triggerira se za svako novo mjerenje (po ID-u) ��─────
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     if (!lastMj) return;
@@ -682,9 +682,12 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
       "Uputa serviseru: " + uputaTekst + " " +
       "Sljedeci korak: " + sljedeciKorakTekst;
 
-    govori(glasovnaTekst);
+    // Govori samo ako vodič NIJE pauziran
+    if (!vodičPauziran) {
+      govori(glasovnaTekst);
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lastMj]);
+  }, [lastMj, vodičPauziran]);
 
   // ── Derived display values ───────────────────────────────────────────────
   const basePh = baseline ? getMjerenjePH(baseline) : null;
@@ -887,10 +890,10 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
 
 
 
-            {/* ── Gumb Pauziraj / Nastavi vodič ─────────────────────────── */}
+            {/* ── Gumb Pauziraj / Nastavi vodič (samo TTS) ─────────────── */}
             <div className="px-6 py-3 border-t border-emerald-500/20 flex items-center justify-between bg-emerald-800/30">
               <span className="text-xs text-emerald-200/60 font-medium">
-                {vodičPauziran ? "Vodič je pauziran. Praćenje mjerenja ostaje aktivno." : "Servisni vodič aktivan"}
+                {vodičPauziran ? "Glasovne upute pauzirane" : "Glasovne upute aktivne"}
               </span>
               <button
                 type="button"
@@ -901,49 +904,45 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
                     : "bg-emerald-900/60 border-emerald-600/40 text-emerald-200 hover:bg-emerald-800/60"
                 }`}
               >
-                {vodičPauziran ? "Nastavi vodič" : "Pauziraj vodič"}
+                {vodičPauziran ? "Nastavi glasovne upute" : "Pauziraj glasovne upute"}
               </button>
             </div>
 
-            {/* ── Uputa serviseru — skriva se kad je vodič pauziran ─────── */}
-            {!vodičPauziran && (
-              <div className="px-6 py-4 border-t border-indigo-700/40 bg-indigo-950/50">
-                <h3 className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">
-                  Uputa serviseru
-                </h3>
-                <p className="text-sm font-medium text-indigo-100 leading-relaxed">
-                  {trebaNoviciklus
-                    ? "Ciklus je pri kraju. Pripremi završetak — ispusti otopinu, isperi sustav i pokreni novi ciklus."
-                    : trebaNadopuna
-                    ? "Dodaj nadopunu kemijskog sredstva."
-                    : napreduje
-                    ? "Nastavi cirkulaciju. Čišćenje aktivno napreduje."
-                    : "Nastavi cirkulaciju kratko vrijeme i prati promjene."}
-                </p>
-              </div>
-            )}
+            {/* ── Uputa serviseru ────────────────────────────────────────── */}
+            <div className="px-6 py-4 border-t border-indigo-700/40 bg-indigo-950/50">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">
+                Uputa serviseru
+              </h3>
+              <p className="text-sm font-medium text-indigo-100 leading-relaxed">
+                {trebaNoviciklus
+                  ? "Ciklus je pri kraju. Pripremi završetak — ispusti otopinu, isperi sustav i pokreni novi ciklus."
+                  : trebaNadopuna
+                  ? "Dodaj nadopunu kemijskog sredstva."
+                  : napreduje
+                  ? "Nastavi cirkulaciju. Čišćenje aktivno napreduje."
+                  : "Nastavi cirkulaciju kratko vrijeme i prati promjene."}
+              </p>
+            </div>
 
-            {/* ── Sljedeći korak — skriva se kad je vodič pauziran ─────── */}
-            {!vodičPauziran && (
-              <div className="px-6 py-4 border-t border-indigo-700/40 bg-indigo-950/50">
-                <h3 className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">
-                  Sljedeći korak
-                </h3>
-                {trebaNoviciklus ? (
+            {/* ── Sljedeći korak ─────────────────────────────────────────── */}
+            <div className="px-6 py-4 border-t border-indigo-700/40 bg-indigo-950/50">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">
+                Sljedeći korak
+              </h3>
+              {trebaNoviciklus ? (
+                <p className="text-sm font-bold text-indigo-100">Pripremi završetak ciklusa.</p>
+              ) : trebaNadopuna ? (
+                <p className="text-sm font-bold text-indigo-100">Dodaj nadopunu kemijskog sredstva.</p>
+              ) : napreduje ? (
+                <p className="text-sm font-bold text-indigo-100">Nastavi cirkulaciju — nema intervencije.</p>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <p className="text-sm font-bold text-indigo-100">Promijeni smjer cirkulacije</p>
+                  <p className="text-xs text-indigo-500 font-semibold">ILI</p>
                   <p className="text-sm font-bold text-indigo-100">Pripremi završetak ciklusa.</p>
-                ) : trebaNadopuna ? (
-                  <p className="text-sm font-bold text-indigo-100">Dodaj nadopunu kemijskog sredstva.</p>
-                ) : napreduje ? (
-                  <p className="text-sm font-bold text-indigo-100">Nastavi cirkulaciju — nema intervencije.</p>
-                ) : (
-                  <div className="flex flex-col gap-2">
-                    <p className="text-sm font-bold text-indigo-100">Promijeni smjer cirkulacije</p>
-                    <p className="text-xs text-indigo-500 font-semibold">ILI</p>
-                    <p className="text-sm font-bold text-indigo-100">Pripremi završetak ciklusa.</p>
-                  </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
 
           </div>
         );
