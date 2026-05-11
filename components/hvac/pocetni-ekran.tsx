@@ -740,27 +740,18 @@ export function PocetniEkran() {
     .sort((a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime())[0] ?? null;
 
   if (loadError) {
-    // Prikaži samo kratku poruku — ne cijeli tehnički string koji može sadržavati URL-ove
-    const userMsg =
-      loadError.toLowerCase().includes("url") ||
-      loadError.toLowerCase().includes("key") ||
-      loadError.toLowerCase().includes("required")
-        ? "Baza podataka nije dostupna. Provjerite konfiguraciju ili kontaktirajte podršku."
-        : loadError.length > 120
-        ? loadError.slice(0, 120) + "…"
-        : loadError;
-
+    // loadError is already sanitized in app-state.tsx — safe to render directly
     return (
       <div className="flex flex-col flex-1 bg-background items-center justify-center px-6 text-center">
         <div className="w-12 h-12 mb-5 rounded-full bg-destructive/10 border border-destructive/30 flex items-center justify-center shrink-0">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-destructive">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-destructive" aria-hidden="true">
             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
             <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
           </svg>
         </div>
         <p className="text-base font-bold text-foreground mb-2 leading-snug">Greška pri učitavanju podataka</p>
         <p className="text-sm text-muted-foreground mb-6 max-w-xs leading-relaxed break-words overflow-hidden">
-          {userMsg}
+          {loadError}
         </p>
         <button
           onClick={() => window.location.reload()}

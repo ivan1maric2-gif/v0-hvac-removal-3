@@ -224,9 +224,28 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
       }
     }).catch((err: unknown) => {
-      const msg = err instanceof Error ? err.message : "Nepoznata greška pri učitavanju.";
-      console.warn("[storage] getSesije greška:", msg);
-      setLoadError(msg);
+      const raw = err instanceof Error ? err.message : String(err);
+      const lower = raw.toLowerCase();
+      console.warn("[storage] getSesije greška:", raw);
+
+      let userMsg: string;
+      if (
+        lower.includes("supabaseurl") ||
+        lower.includes("anon") ||
+        lower.includes("key") ||
+        lower.includes("required") ||
+        lower.includes("url")
+      ) {
+        userMsg = "Baza podataka nije dostupna. Provjerite konfiguraciju ili kontaktirajte podršku.";
+      } else if (lower.includes("network") || lower.includes("fetch") || lower.includes("timeout")) {
+        userMsg = "Nema veze s internetom ili je server nedostupan. Osvježite stranicu.";
+      } else if (raw.length > 120) {
+        userMsg = raw.slice(0, 120) + "…";
+      } else {
+        userMsg = raw;
+      }
+
+      setLoadError(userMsg);
       setUcitavaSe(false);
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -807,7 +826,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [updateSesije, mapCiklusSesije]
   );
 
-  // ── Session level ─────────────────────────────────��─���─────────────────────
+  // ── Session level ─────────────────────────────────��─���──────��──────────────
 
   const postaviStatusSesije = useCallback(
     (sesijaId: string, status: StatusSesije) =>
