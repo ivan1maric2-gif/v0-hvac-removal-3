@@ -741,7 +741,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
     dToutPrev > 0.3 ? "raste" :
     dToutPrev < -0.3 ? "pada" : "stabilna";
 
-  // ── Live procjena uklonjenog kamenca ──────────────────���─────────────────────
+  // ── Live procjena uklonjenog kamenca ──────────────────���──────────���──────────
   // Sve varijable (basePh, baseFlow, currFlow, tOut, refTOut) su definirane iznad
   const peakFoamLive = allMjerenja.reduce<Mjerenje["foamLevel"]>((peak, m) => {
     const order: Mjerenje["foamLevel"][] = ["nema", "slaba", "srednja", "jaka", "vrlo_jaka"];
@@ -839,94 +839,68 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
           : "Pratiti trend.";
 
         return (
-          <div className="rounded-3xl overflow-hidden border-2 border-emerald-500/60 bg-gradient-to-br from-emerald-700 to-emerald-800">
+          <div className="flex flex-col gap-3">
 
-            {/* ── Naslov s ikonom u krugu ────────────────────────────────── */}
-            <div className="px-4 pt-5 pb-3 flex items-start gap-3">
-              <div className="w-12 h-12 rounded-full border-2 border-emerald-300/40 flex items-center justify-center shrink-0 bg-emerald-600/30">
-                <span className="text-xl">⇄</span>
+            {/* ── CIRKULACIJA AKTIVNA kartica ───────────────────────────────── */}
+            <div className="bg-teal-600 rounded-xl overflow-hidden border border-teal-500">
+
+              {/* Naslov */}
+              <div className="px-4 pt-4 pb-3 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-teal-200 mb-0.5">Status cirkulacije</p>
+                  <h2 className="text-lg font-black text-white leading-tight">
+                    CIRKULACIJA AKTIVNA
+                  </h2>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-teal-500/50 border border-teal-400/40 flex items-center justify-center shrink-0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="17 1 21 5 17 9" /><path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                    <polyline points="7 23 3 19 7 15" /><path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                  </svg>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-xl font-black text-white leading-tight mb-1">
-                  CIRKULACIJA AKTIVNA
-                </h2>
-                <p className="text-sm text-emerald-100">
-                  {napreduje ? "Voda se uspješno cirkulira kroz sustav." : "Status cirkulacije u tijeku."}
-                </p>
+
+              {/* Status redovi */}
+              <div className="px-4 pb-4 flex flex-col gap-2.5">
+                <div className="flex flex-col">
+                  <p className="text-sm font-bold text-white leading-snug">{phStatusNaslov}</p>
+                  {phStatusPodnaslov && <p className="text-xs text-teal-100 mt-0.5">{phStatusPodnaslov}</p>}
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-sm font-bold text-white leading-snug">{protokStatusNaslov}</p>
+                  {protokStatusPodnaslov && <p className="text-xs text-teal-100 mt-0.5">{protokStatusPodnaslov}</p>}
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-sm font-bold text-white leading-snug">{tempOutStatusNaslov}</p>
+                  {tempOutStatusPodnaslov && <p className="text-xs text-teal-100 mt-0.5">{tempOutStatusPodnaslov}</p>}
+                </div>
+              </div>
+
+              {/* TTS gumb */}
+              <div className="px-4 py-2.5 border-t border-teal-500/40 flex items-center justify-between bg-teal-700/40">
+                <span className="text-xs text-teal-200/70 font-medium">
+                  {ttsPauziran ? "Glasovne upute pauzirane" : "Glasovne upute aktivne"}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setTtsPauziran((v) => !v)}
+                  className={`min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
+                    ttsPauziran
+                      ? "bg-white text-teal-700 border-white"
+                      : "bg-teal-500/30 border-teal-400/40 text-teal-100 hover:bg-teal-500/50"
+                  }`}
+                >
+                  {ttsPauziran ? "Nastavi glasovne upute" : "Pauziraj glasovne upute"}
+                </button>
               </div>
             </div>
 
-            {/* ── Status redovi s ikonama u krugovima ────────────────────── */}
-            <div className="px-6 pb-6 pt-4 space-y-4">
-              {/* pH */}
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full border-2 border-emerald-300/40 flex items-center justify-center shrink-0 bg-emerald-600/30">
-                  <span className="text-xl">💧</span>
-                </div>
-                <div>
-                  <p className="text-base font-bold text-white leading-snug">{phStatusNaslov}</p>
-                  {phStatusPodnaslov && (
-                    <p className="text-sm text-emerald-100 mt-0.5">{phStatusPodnaslov}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Protok */}
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full border-2 border-emerald-300/40 flex items-center justify-center shrink-0 bg-emerald-600/30">
-                  <span className="text-xl">≈≈</span>
-                </div>
-                <div>
-                  <p className="text-base font-bold text-white leading-snug">{protokStatusNaslov}</p>
-                  {protokStatusPodnaslov && (
-                    <p className="text-sm text-emerald-100 mt-0.5">{protokStatusPodnaslov}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Temp OUT */}
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full border-2 border-emerald-300/40 flex items-center justify-center shrink-0 bg-emerald-600/30">
-                  <span className="text-xl">🌡</span>
-                </div>
-                <div>
-                  <p className="text-base font-bold text-white leading-snug">{tempOutStatusNaslov}</p>
-                  {tempOutStatusPodnaslov && (
-                    <p className="text-sm text-emerald-100 mt-0.5">{tempOutStatusPodnaslov}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-
-
-            {/* ── Gumb Pauziraj / Nastavi TTS ────────────────────────────── */}
-            <div className="px-6 py-3 border-t border-emerald-500/20 flex items-center justify-between bg-emerald-800/30">
-              <span className="text-xs text-emerald-200/60 font-medium">
-                {ttsPauziran ? "Glasovne upute pauzirane" : "Glasovne upute aktivne"}
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  console.log("[v0] Klik na gumb - trenutno ttsPauziran:", ttsPauziran);
-                  setTtsPauziran((v) => !v);
-                }}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
-                  ttsPauziran
-                    ? "bg-emerald-600 border-emerald-500 text-white"
-                    : "bg-emerald-900/60 border-emerald-600/40 text-emerald-200 hover:bg-emerald-800/60"
-                }`}
-              >
-                {ttsPauziran ? "Nastavi glasovne upute" : "Pauziraj glasovne upute"}
-              </button>
-            </div>
-
-            {/* ── Uputa serviseru ────────────────────────────────────────── */}
-            <div className="px-6 py-4 border-t border-indigo-700/40 bg-indigo-950/50">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">
+            {/* ── Uputa serviseru ───────────────────────────────────────────── */}
+            <div className="bg-white rounded-xl border border-slate-100 shadow-sm px-4 py-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
                 Uputa serviseru
-              </h3>
-              <p className="text-sm font-medium text-indigo-100 leading-relaxed">
+              </p>
+              <p className="text-sm font-medium text-slate-700 leading-relaxed">
                 {trebaNoviciklus
                   ? "Ciklus je pri kraju. Pripremi završetak — ispusti otopinu, isperi sustav i pokreni novi ciklus."
                   : trebaNadopuna
@@ -937,22 +911,22 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
               </p>
             </div>
 
-            {/* ── Sljedeći korak ─────────────────────────────────────────── */}
-            <div className="px-6 py-4 border-t border-indigo-700/40 bg-indigo-950/50">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">
+            {/* ── Sljedeći korak ───────────────────────────────────────────── */}
+            <div className="bg-white rounded-xl border border-slate-100 shadow-sm px-4 py-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
                 Sljedeći korak
-              </h3>
+              </p>
               {trebaNoviciklus ? (
-                <p className="text-sm font-bold text-indigo-100">Pripremi završetak ciklusa.</p>
+                <p className="text-sm font-bold text-slate-800">Pripremi završetak ciklusa.</p>
               ) : trebaNadopuna ? (
-                <p className="text-sm font-bold text-indigo-100">Dodaj nadopunu kemijskog sredstva.</p>
+                <p className="text-sm font-bold text-slate-800">Dodaj nadopunu kemijskog sredstva.</p>
               ) : napreduje ? (
-                <p className="text-sm font-bold text-indigo-100">Nastavi cirkulaciju — nema intervencije.</p>
+                <p className="text-sm font-bold text-slate-800">Nastavi cirkulaciju — nema intervencije.</p>
               ) : (
-                <div className="flex flex-col gap-2">
-                  <p className="text-sm font-bold text-indigo-100">Promijeni smjer cirkulacije</p>
-                  <p className="text-xs text-indigo-500 font-semibold">ILI</p>
-                  <p className="text-sm font-bold text-indigo-100">Pripremi završetak ciklusa.</p>
+                <div className="flex flex-col gap-1.5">
+                  <p className="text-sm font-bold text-slate-800">Promijeni smjer cirkulacije</p>
+                  <p className="text-xs text-slate-400 font-semibold">ILI</p>
+                  <p className="text-sm font-bold text-slate-800">Pripremi završetak ciklusa.</p>
                 </div>
               )}
             </div>
