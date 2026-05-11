@@ -426,6 +426,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
   const isDark = mounted ? resolvedTheme !== "light" : false;
   const lastSpokenRef = useRef<string>("");
   const isFirstLoadRef = useRef(true);
+  const [vodičPauziran, setVodičPauziran] = useState(false);
 
   // Listen for mic button press from nav-bar
   useEffect(() => {
@@ -750,7 +751,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
   return (
     <div className="flex flex-col gap-4">
 
-      {/* ── 1. HEADER — info strip ──────────────────────────────��───────────── */}
+      {/* ── 1. HEADER — info strip ────────────��─────────────────��───────────── */}
       <div className="flex items-center justify-between gap-2 bg-card border border-border rounded-2xl px-4 py-3">
         <div className="flex flex-col gap-0.5 min-w-0">
           {(ciklus.chemicalProductName ?? ciklus.kemikalija) && (
@@ -886,41 +887,63 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
 
 
 
-            {/* ── Uputa serviseru ────────────────────────────────────────── */}
-            <div className="px-6 py-4 border-t border-indigo-700/40 bg-indigo-950/50 rounded-b-2xl">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">
-                Uputa serviseru
-              </h3>
-              <p className="text-sm font-medium text-indigo-100 leading-relaxed">
-                {trebaNoviciklus
-                  ? "Ciklus je pri kraju. Pripremi završetak — ispusti otopinu, isperi sustav i pokreni novi ciklus."
-                  : trebaNadopuna
-                  ? "Dodaj nadopunu kemijskog sredstva."
-                  : napreduje
-                  ? "Nastavi cirkulaciju. Čišćenje aktivno napreduje."
-                  : "Nastavi cirkulaciju kratko vrijeme i prati promjene."}
-              </p>
+            {/* ── Gumb Pauziraj / Nastavi vodič ─────────────────────────── */}
+            <div className="px-6 py-3 border-t border-emerald-500/20 flex items-center justify-between bg-emerald-800/30">
+              <span className="text-xs text-emerald-200/60 font-medium">
+                {vodičPauziran ? "Vodič je pauziran. Praćenje mjerenja ostaje aktivno." : "Servisni vodič aktivan"}
+              </span>
+              <button
+                type="button"
+                onClick={() => setVodičPauziran((v) => !v)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
+                  vodičPauziran
+                    ? "bg-emerald-600 border-emerald-500 text-white"
+                    : "bg-emerald-900/60 border-emerald-600/40 text-emerald-200 hover:bg-emerald-800/60"
+                }`}
+              >
+                {vodičPauziran ? "Nastavi vodič" : "Pauziraj vodič"}
+              </button>
             </div>
 
-            {/* ── Sljedeći korak ─────────────────────────────────────────── */}
-            <div className="px-6 py-4 border-t border-indigo-700/40 bg-indigo-950/50">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">
-                Sljedeći korak
-              </h3>
-              {trebaNoviciklus ? (
-                <p className="text-sm font-bold text-indigo-100">Pripremi završetak ciklusa.</p>
-              ) : trebaNadopuna ? (
-                <p className="text-sm font-bold text-indigo-100">Dodaj nadopunu kemijskog sredstva.</p>
-              ) : napreduje ? (
-                <p className="text-sm font-bold text-indigo-100">Nastavi cirkulaciju — nema intervencije.</p>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <p className="text-sm font-bold text-indigo-100">Promijeni smjer cirkulacije</p>
-                  <p className="text-xs text-indigo-500 font-semibold">ILI</p>
+            {/* ── Uputa serviseru — skriva se kad je vodič pauziran ─────── */}
+            {!vodičPauziran && (
+              <div className="px-6 py-4 border-t border-indigo-700/40 bg-indigo-950/50">
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">
+                  Uputa serviseru
+                </h3>
+                <p className="text-sm font-medium text-indigo-100 leading-relaxed">
+                  {trebaNoviciklus
+                    ? "Ciklus je pri kraju. Pripremi završetak — ispusti otopinu, isperi sustav i pokreni novi ciklus."
+                    : trebaNadopuna
+                    ? "Dodaj nadopunu kemijskog sredstva."
+                    : napreduje
+                    ? "Nastavi cirkulaciju. Čišćenje aktivno napreduje."
+                    : "Nastavi cirkulaciju kratko vrijeme i prati promjene."}
+                </p>
+              </div>
+            )}
+
+            {/* ── Sljedeći korak — skriva se kad je vodič pauziran ─────── */}
+            {!vodičPauziran && (
+              <div className="px-6 py-4 border-t border-indigo-700/40 bg-indigo-950/50">
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">
+                  Sljedeći korak
+                </h3>
+                {trebaNoviciklus ? (
                   <p className="text-sm font-bold text-indigo-100">Pripremi završetak ciklusa.</p>
-                </div>
-              )}
-            </div>
+                ) : trebaNadopuna ? (
+                  <p className="text-sm font-bold text-indigo-100">Dodaj nadopunu kemijskog sredstva.</p>
+                ) : napreduje ? (
+                  <p className="text-sm font-bold text-indigo-100">Nastavi cirkulaciju — nema intervencije.</p>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <p className="text-sm font-bold text-indigo-100">Promijeni smjer cirkulacije</p>
+                    <p className="text-xs text-indigo-500 font-semibold">ILI</p>
+                    <p className="text-sm font-bold text-indigo-100">Pripremi završetak ciklusa.</p>
+                  </div>
+                )}
+              </div>
+            )}
 
           </div>
         );
@@ -1336,7 +1359,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         )}
       </div>
 
-      {/* ── 10. COLLAPSIBLE: Napredne akcije ──���──���──────────────────────────── */}
+      {/* ─�� 10. COLLAPSIBLE: Napredne akcije ──���──���──────────────────────────── */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         <button
           type="button"
