@@ -212,9 +212,9 @@ function CiklusBlok({ ciklus, idx }: { ciklus: Ciklus; idx: number }) {
           {ciklus.name ? ` — ${ciklus.name}` : ""}
         </h4>
         <span className={`shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full ${
-          ciklus.status === "zavrsen" ? "bg-emerald-500/10 text-emerald-800 dark:text-emerald-200" :
-          ciklus.status === "prekinut" ? "bg-rose-500/10 text-rose-800 dark:text-rose-200" :
-          "bg-amber-400/10 text-amber-800 dark:text-amber-200"
+          ciklus.status === "zavrsen" ? "bg-emerald-500/10 text-emerald-800" :
+          ciklus.status === "prekinut" ? "bg-rose-500/10 text-rose-800" :
+          "bg-amber-400/10 text-amber-800"
         }`}>
           {ciklus.status}
         </span>
@@ -984,7 +984,7 @@ export function ServisniIzvjestaj({ sesija, onClose }: ServisniIzvjestajProps) {
                   <StatCard
                     label="Poboljšanje"
                     value={fPct(report.flow.flow_improvement_percent)}
-                    color={report.flow.flow_improvement_percent > 0 ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"}
+                    color={report.flow.flow_improvement_percent > 0 ? "text-emerald-700" : "text-rose-700"}
                   />
                 )}
               </div>

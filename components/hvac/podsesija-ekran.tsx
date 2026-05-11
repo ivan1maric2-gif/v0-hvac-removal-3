@@ -750,7 +750,7 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
               className="absolute inset-0 bg-black/40"
               onClick={() => setShowDecisionSheet(false)}
             />
-            <div className="relative bg-white rounded-t-3xl px-4 pt-5 pb-10 flex flex-col gap-3 shadow-xl max-h-[85vh] overflow-y-auto">
+            <div className="relative bg-white rounded-t-3xl px-4 pt-5 flex flex-col gap-3 shadow-xl max-h-[85vh] overflow-y-auto" style={{ paddingBottom: "max(40px, env(safe-area-inset-bottom, 40px))" }}>
               <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-1" />
               <div className="mb-1">
                 <h2 className="text-base font-bold text-slate-900">Odabir odluke o ciklusu</h2>
@@ -1380,7 +1380,7 @@ function ModalWrapper({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-white rounded-t-2xl p-5 pb-8 flex flex-col gap-4 shadow-xl"
+        className="w-full max-w-lg bg-white rounded-t-2xl p-5 flex flex-col gap-4 shadow-xl" style={{ paddingBottom: "max(32px, env(safe-area-inset-bottom, 32px))" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">

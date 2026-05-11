@@ -428,7 +428,7 @@ function InterpretacijaKartica({ ph, phRate, foam }: {
   );
 }
 
-// ─── Main component ──────────────────────────────────────────────���────────────
+// ─── Main component ──────────────────────────────────────────────�����────────────
 
 interface MjerenjeModalInitialValues {
   ph?: number;
@@ -1629,7 +1629,7 @@ export function MjerenjeModal({
       </div>
 
       {/* Fixed footer */}
-      <div className="shrink-0 border-t border-slate-200 bg-white px-4 pt-4 pb-5 flex flex-col gap-3 max-w-lg mx-auto w-full">
+      <div className="shrink-0 border-t border-slate-200 bg-white px-4 pt-4 flex flex-col gap-3 max-w-lg mx-auto w-full" style={{ paddingBottom: "max(20px, env(safe-area-inset-bottom, 20px))" }}>
         {/* Live recommendation card — shown as soon as pH is entered */}
         {/* Warning when cycle has no product defined */}
         {!ciklus.productSnapshot && (
