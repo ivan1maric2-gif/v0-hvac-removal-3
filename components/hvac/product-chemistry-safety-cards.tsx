@@ -261,7 +261,7 @@ export function ChemistryCard({ engine, currentPh, currentColorName }: Chemistry
               <div className="flex items-center justify-between gap-2 mb-1">
                 <p className="text-sm font-black leading-tight">{activePhZone.label}</p>
                 <Badge
-                  label={PH_ZONE_STATUS_LABELS[activePhZone.status] ?? activePhZone.status}
+                  label={(PH_ZONE_STATUS_LABELS as Record<string, string>)[activePhZone.status] ?? activePhZone.status}
                   className={phZoneBg(activePhZone.status)}
                 />
               </div>

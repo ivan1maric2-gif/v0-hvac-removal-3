@@ -1023,26 +1023,30 @@ export function RezultatMjerenja({
                 </div>
               )}
 
-              {/* 8. CYCLE DECISION — cycleDecisionType + razlog (ako je vidljiv) */}
-              {preporuka?.cycleDecisionType && preporuka.cycleDecisionType !== "continue" && (
+              {/* 8. CYCLE DECISION — prikaži samo kad nije nastavi */}
+              {preporuka?.cycleDecisionType && preporuka.cycleDecisionType !== "nastavi_ciklus" && (
                 <div className={`rounded-xl border-2 px-4 py-4 flex flex-col gap-1.5 ${
-                  preporuka.cycleDecisionType === "finish"
+                  preporuka.cycleDecisionType === "zavrsi_i_isperi" || preporuka.cycleDecisionType === "zavrsi_posao"
                     ? "border-emerald-300 bg-emerald-50"
-                    : preporuka.cycleDecisionType === "new_cycle"
+                    : preporuka.cycleDecisionType === "zavrsi_i_novi_ciklus"
                     ? "border-red-200 bg-red-50"
                     : "border-amber-200 bg-amber-50"
                 }`}>
                   <span className={`text-[10px] font-black uppercase tracking-widest ${
-                    preporuka.cycleDecisionType === "finish" ? "text-emerald-700"
-                    : preporuka.cycleDecisionType === "new_cycle" ? "text-red-700"
-                    : "text-amber-700"
+                    preporuka.cycleDecisionType === "zavrsi_i_isperi" || preporuka.cycleDecisionType === "zavrsi_posao"
+                      ? "text-emerald-700"
+                      : preporuka.cycleDecisionType === "zavrsi_i_novi_ciklus"
+                      ? "text-red-700"
+                      : "text-amber-700"
                   }`}>
                     Odluka o ciklusu
                   </span>
                   <p className={`text-sm font-bold leading-snug ${
-                    preporuka.cycleDecisionType === "finish" ? "text-emerald-900"
-                    : preporuka.cycleDecisionType === "new_cycle" ? "text-red-900"
-                    : "text-amber-900"
+                    preporuka.cycleDecisionType === "zavrsi_i_isperi" || preporuka.cycleDecisionType === "zavrsi_posao"
+                      ? "text-emerald-900"
+                      : preporuka.cycleDecisionType === "zavrsi_i_novi_ciklus"
+                      ? "text-red-900"
+                      : "text-amber-900"
                   }`}>
                     {preporuka.cycleDecision ?? "Nema podataka"}
                   </p>

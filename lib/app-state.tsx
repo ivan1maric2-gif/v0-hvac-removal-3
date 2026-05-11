@@ -856,14 +856,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           }
 
           // Auto-detektiraj: "zavrseno" ili "uz_upozorenje" ovisno o completion phases
+          // IspiranjeData.evidentirano was removed — check systemRinsedWithCleanWater instead
           const imaisiranje =
             s.workMode === "with_subsessions"
-              ? (s.podsesije ?? []).some((p) => p.completionPhases?.ispiranje?.evidentirano)
-              : s.completionPhases?.ispiranje?.evidentirano ?? false;
+              ? (s.podsesije ?? []).some((p) => p.completionPhases?.ispiranje?.systemRinsedWithCleanWater)
+              : false; // Sesija does not have completionPhases; covered by podsesije
           const imaNeutralizaciju =
             s.workMode === "with_subsessions"
-              ? (s.podsesije ?? []).some((p) => p.completionPhases?.neutralizacija?.evidentirano)
-              : s.completionPhases?.neutralizacija?.evidentirano ?? false;
+              ? (s.podsesije ?? []).some((p) => p.completionPhases?.neutralizacija?.neutralizerProductName != null)
+              : false;
 
           const finalStatus: StatusSesije =
             imaisiranje && imaNeutralizaciju ? "zavrseno" : "uz_upozorenje";

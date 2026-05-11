@@ -426,7 +426,9 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
         {/* Alerts + Compliance Panel — engine output display */}
         <AlertsCompliancePanel
           sesija={sesija}
-          allCiklusi={allCiklusi}
+          allCiklusi={sesija.workMode === "with_subsessions"
+            ? sesija.podsesije.flatMap((p) => p.ciklusi)
+            : (sesija as unknown as { ciklusi?: import("@/lib/types").Ciklus[] }).ciklusi ?? []}
         />
 
         {/* Demo data warning */}
@@ -615,8 +617,8 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
                           const d = currFlow - baseFlow;
                           cells.push({ label: "Δprotok od ref.", value: `${d >= 0 ? "+" : ""}${d.toFixed(1)} L/min`, positive: d >= 0 });
                         }
-                        if (lastMj?.flowChange != null) {
-                          const d = lastMj.flowChange;
+                        if ((lastMj as Record<string, unknown>)?.flowChange != null) {
+                          const d = (lastMj as unknown as { flowChange: number }).flowChange;
                           cells.push({ label: "Δprotok od zad.", value: `${d >= 0 ? "+" : ""}${d.toFixed(1)} L/min`, positive: d >= 0 });
                         }
 
@@ -1618,7 +1620,7 @@ function ModeButton({
 
 // ─── Info banner ──────────────────────────────����────────��───��──────────────���─��
 
-// ─── Work mode banner ──────────────────────────────��─────────────────────�����────
+// ─���─ Work mode banner ──────────────────────────────��─────────────────────�����────
 
 function WorkModeBanner({
   sesija,
@@ -2670,7 +2672,7 @@ function CompletionPhasesPanel({
       <div className="bg-primary/5 px-4 py-4 border-b border-primary/15">
         <p className="text-[9px] font-black uppercase tracking-widest text-primary/60 mb-1">Obavezne faze završetka</p>
         <p className="text-base font-black text-foreground leading-tight">
-          Kemijska reakcija završena — slijedi ispiranje i neutralizacija.
+          Kemijska reakcija zavr��ena — slijedi ispiranje i neutralizacija.
         </p>
       </div>
 

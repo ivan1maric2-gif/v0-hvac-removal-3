@@ -158,7 +158,7 @@ export function DodavanjeKemije({
     [sviProizvodi]
   );
 
-  const filteredProducts = useMemo(() => {
+  const filteredProducts = useMemo((): Product[] => {
     const q = searchQuery.toLowerCase().trim();
     if (!q) return relevantProducts;
     return relevantProducts.filter(

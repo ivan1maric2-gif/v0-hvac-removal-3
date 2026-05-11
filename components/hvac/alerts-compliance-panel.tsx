@@ -102,7 +102,7 @@ export function buildAlertsFromEngine(
     const cycleLabel = `Ciklus #${c.cycleNumber ?? c.broj}`;
     c.mjerenja.forEach((m) => {
       const t = m.timestamp ?? m.createdAt;
-      const mAny = m as Record<string, unknown>;
+      const mAny = m as unknown as Record<string, unknown>;
       if (!mAny.warnings) return;
       const warns = Array.isArray(mAny.warnings) ? mAny.warnings : [];
       warns.forEach((w: { message?: string; text?: string; level?: string; severity?: string } | string) => {

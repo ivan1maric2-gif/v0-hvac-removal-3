@@ -24,6 +24,7 @@ import {
   aktivniCiklus,
   zadnjiPH,
   zadnjeMjerenje,
+  zadnjeMjerenjeCiklusa,
   pocetnoMjerenjeCiklusa,
   getMjerenjePH,
   getMjerenjeTimestamp,
@@ -240,7 +241,7 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
         {/* Alerts + Compliance Panel — engine output display */}
         <AlertsCompliancePanel
           sesija={sesija}
-          allCiklusi={allCiklusi}
+          allCiklusi={podsesija.ciklusi}
           podsesija={podsesija}
         />
 
@@ -388,8 +389,8 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
         {/* Product / Chemistry / Material Safety kartice — prikazati kad je productSnapshot dostupan */}
         {akt?.productSnapshot && (() => {
           const engine = getProductEngine(akt.productSnapshot);
-          const zadnjiPh = zadnjiPH(akt.mjerenja);
-          const zadnjaMjerenja = zadnjeMjerenje(akt.mjerenja);
+          const zadnjiPh = getMjerenjePH(zadnjeMjerenjeCiklusa(akt) ?? null);
+          const zadnjaMjerenja = zadnjeMjerenjeCiklusa(akt) ?? null;
           const currentColor = zadnjaMjerenja && "colorIndicator" in zadnjaMjerenja ? (zadnjaMjerenja as { colorIndicator?: string }).colorIndicator : undefined;
           return (
             <div className="flex flex-col gap-3">
@@ -1363,7 +1364,7 @@ function CompletionPhasesPanelB({
   );
 }
 
-// ─── Modals ───────────��────────────────────────────────────────────────���──────
+// ─── Modals ─────��─────��────────────────────────────────────────────────���──────
 
 function ModalWrapper({
   title,

@@ -145,11 +145,11 @@ function MjerenjaTable({ mjerenja }: { mjerenja: Mjerenje[] }) {
                 </span>
               </Td>
               <Td mono>{m.timestamp ? new Date(m.timestamp).toLocaleTimeString("hr-HR", { hour: "2-digit", minute: "2-digit" }) : "—"}</Td>
-              <Td mono>{m.ph_value != null ? m.ph_value.toFixed(2) : "—"}</Td>
-              <Td mono>{m.pressure_bar != null ? m.pressure_bar.toFixed(2) : "—"}</Td>
-              <Td mono>{m.temperature_c != null ? m.temperature_c.toFixed(1) : "—"}</Td>
-              <Td mono>{m.flow_lpm != null ? m.flow_lpm.toFixed(1) : "—"}</Td>
-              <Td><EffBadge status={m.effectiveness_status ?? null} /></Td>
+              <Td mono>{m.phValue != null ? m.phValue.toFixed(2) : "—"}</Td>
+              <Td mono>{"—"}</Td>
+              <Td mono>{(m.tempOutC ?? m.temperatureC) != null ? (m.tempOutC ?? m.temperatureC)!.toFixed(1) : "—"}</Td>
+              <Td mono>{m.flowLMin != null ? m.flowLMin.toFixed(1) : "—"}</Td>
+              <Td><EffBadge status={null} /></Td>
             </tr>
           ))}
         </tbody>
@@ -596,9 +596,9 @@ function buildCycleEvents(events: TimelineEvent[], c: Ciklus) {
     events.push({
       type: "measurement",
       time: t,
-      label: isRef ? `Referentno mjerenje — pH ${m.ph_value?.toFixed(2) ?? "—"}` : `Mjerenje — pH ${m.ph_value?.toFixed(2) ?? "—"}`,
-      ph: m.ph_value,
-      flow: m.flow_lpm,
+      label: isRef ? `Referentno mjerenje — pH ${m.phValue?.toFixed(2) ?? "—"}` : `Mjerenje — pH ${m.phValue?.toFixed(2) ?? "—"}`,
+      ph: m.phValue,
+      flow: m.flowLMin,
       isRef,
     });
   });
@@ -690,8 +690,9 @@ function WarningHistorySection({ allCiklusi }: { allCiklusi: Ciklus[] }) {
   allCiklusi.forEach((c) => {
     c.mjerenja.forEach((m) => {
       const t = m.timestamp ?? m.createdAt ?? "";
-      if (m.warnings && Array.isArray(m.warnings)) {
-        m.warnings.forEach((w: { message?: string; level?: string; text?: string; severity?: string }) => {
+      const mAny = m as unknown as Record<string, unknown>;
+      if (mAny.warnings && Array.isArray(mAny.warnings)) {
+        (mAny.warnings as Array<{ message?: string; level?: string; text?: string; severity?: string }>).forEach((w) => {
           warnings.push({
             time: t,
             message: w.message ?? w.text ?? String(w),

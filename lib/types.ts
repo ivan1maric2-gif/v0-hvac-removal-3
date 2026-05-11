@@ -25,9 +25,9 @@ export function izracunajStatusSesije(s: {
   podsesije?: Array<{
     status: string;
     ciklusi?: Array<{ status: string; mjerenja: unknown[] }>;
-    completionPhases?: { ispiranje?: { evidentirano?: boolean }; neutralizacija?: { evidentirano?: boolean } } | null;
+    completionPhases?: { ispiranje?: unknown; neutralizacija?: unknown } | null;
   }>;
-  completionPhases?: { ispiranje?: { evidentirano?: boolean }; neutralizacija?: { evidentirano?: boolean } } | null;
+  completionPhases?: { ispiranje?: unknown; neutralizacija?: unknown } | null;
   workMode?: string;
 }): StatusSesije {
   const sviCiklusi =
@@ -49,11 +49,11 @@ export function izracunajStatusSesije(s: {
     const zavrsenePodsesije = (s.podsesije ?? []).filter((p) => p.status === "zavrseno");
     // Uzimamo zadnju završenu podsesiju s completionPhases
     const zadnjaFaza = [...zavrsenePodsesije].reverse().find((p) => p.completionPhases);
-    imaisiranje      = zadnjaFaza?.completionPhases?.ispiranje?.evidentirano ?? false;
-    imaNeutralizaciju = zadnjaFaza?.completionPhases?.neutralizacija?.evidentirano ?? false;
+    imaisiranje      = Boolean((zadnjaFaza?.completionPhases?.ispiranje as { systemRinsedWithCleanWater?: boolean } | undefined)?.systemRinsedWithCleanWater);
+    imaNeutralizaciju = Boolean((zadnjaFaza?.completionPhases?.neutralizacija as { neutralizerProductName?: string } | undefined)?.neutralizerProductName);
   } else {
-    imaisiranje      = s.completionPhases?.ispiranje?.evidentirano ?? false;
-    imaNeutralizaciju = s.completionPhases?.neutralizacija?.evidentirano ?? false;
+    imaisiranje      = Boolean((s.completionPhases?.ispiranje as { systemRinsedWithCleanWater?: boolean } | undefined)?.systemRinsedWithCleanWater);
+    imaNeutralizaciju = Boolean((s.completionPhases?.neutralizacija as { neutralizerProductName?: string } | undefined)?.neutralizerProductName);
   }
 
   // --- Redoslijed provjere (od najspecifičnijeg prema najopćenitijem) ---
@@ -71,20 +71,20 @@ export function izracunajStatusSesije(s: {
  */
 export function getUzUpozorenjeLabel(s: {
   workMode?: string;
-  completionPhases?: { ispiranje?: { evidentirano?: boolean }; neutralizacija?: { evidentirano?: boolean } } | null;
+  completionPhases?: { ispiranje?: unknown; neutralizacija?: unknown } | null;
   podsesije?: Array<{
-    completionPhases?: { ispiranje?: { evidentirano?: boolean }; neutralizacija?: { evidentirano?: boolean } } | null;
+    completionPhases?: { ispiranje?: unknown; neutralizacija?: unknown } | null;
   }>;
 }): string {
   let imaIspiranje = false;
   let imaNeutralizaciju = false;
 
   if (s.workMode === "with_subsessions") {
-    imaIspiranje      = (s.podsesije ?? []).some((p) => p.completionPhases?.ispiranje?.evidentirano);
-    imaNeutralizaciju = (s.podsesije ?? []).some((p) => p.completionPhases?.neutralizacija?.evidentirano);
+    imaIspiranje      = (s.podsesije ?? []).some((p) => Boolean((p.completionPhases?.ispiranje as { systemRinsedWithCleanWater?: boolean } | undefined)?.systemRinsedWithCleanWater));
+    imaNeutralizaciju = (s.podsesije ?? []).some((p) => Boolean((p.completionPhases?.neutralizacija as { neutralizerProductName?: string } | undefined)?.neutralizerProductName));
   } else {
-    imaIspiranje      = s.completionPhases?.ispiranje?.evidentirano ?? false;
-    imaNeutralizaciju = s.completionPhases?.neutralizacija?.evidentirano ?? false;
+    imaIspiranje      = Boolean((s.completionPhases?.ispiranje as { systemRinsedWithCleanWater?: boolean } | undefined)?.systemRinsedWithCleanWater);
+    imaNeutralizaciju = Boolean((s.completionPhases?.neutralizacija as { neutralizerProductName?: string } | undefined)?.neutralizerProductName);
   }
 
   if (!imaIspiranje && !imaNeutralizaciju) return "Završeno — ispiranje i neutralizacija nisu potvrđeni";

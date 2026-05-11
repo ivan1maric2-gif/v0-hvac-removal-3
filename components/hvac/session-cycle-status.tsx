@@ -299,7 +299,7 @@ export function SessionStatusKartica({
 
       {/* Info grid */}
       <div className="px-4 pb-3 flex flex-col gap-1.5 border-t border-black/5 pt-2.5">
-        <InfoRow label="Datum" value={fmtDate(sesija.datumPocetka ?? sesija.created_at)} />
+        <InfoRow label="Datum" value={fmtDate(sesija.createdAt)} />
         <InfoRow label="Aktivnih ciklusa" value={activeCycleCount > 0 ? activeCycleCount : null} />
         <InfoRow label="Završenih ciklusa" value={completedCycleCount} />
         {sesija.workMode === "with_subsessions" && (
@@ -407,7 +407,7 @@ export function CycleStatusKartica({ ciklus, isActive, cycleNumber }: CycleStatu
 
   const topUpCount = ciklus.nadopune?.length ?? 0;
   const liveMeasurementCount = ciklus.mjerenja.filter(
-    (m) => m.type === "regular" || m.type === "after_top_up"
+    (m) => m.measurementType === "regular_measurement" || m.measurementType === "post_top_up_measurement"
   ).length;
 
   const phases = ciklus.completionPhases;
