@@ -89,13 +89,13 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
   if (!sesija) {
     return (
       <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6 text-center">
-        <p className="text-base font-semibold text-foreground">Sesija više ne postoji.</p>
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className="text-base font-semibold text-slate-800">Sesija više ne postoji.</p>
+        <p className="text-sm text-slate-500 leading-relaxed">
           Sesija je obrisana ili nije dostupna.
         </p>
         <button
           onClick={() => navigiraj({ ime: "povijest" })}
-          className="px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold active:scale-[0.98] transition-transform"
+          className="px-5 py-2.5 rounded-xl bg-teal-700 text-white text-sm font-semibold active:scale-[0.98] transition-transform"
         >
           Povratak na povijest
         </button>
@@ -106,13 +106,13 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
   if (!podsesija) {
     return (
       <div className="flex flex-col items-center justify-center flex-1 gap-4 px-6 text-center">
-        <p className="text-base font-semibold text-foreground">Sesija više ne postoji.</p>
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className="text-base font-semibold text-slate-800">Sesija više ne postoji.</p>
+        <p className="text-sm text-slate-500 leading-relaxed">
           Podsesija nije pronađena.
         </p>
         <button
           onClick={() => navigiraj({ ime: "povijest" })}
-          className="px-5 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold active:scale-[0.98] transition-transform"
+          className="px-5 py-2.5 rounded-xl bg-teal-700 text-white text-sm font-semibold active:scale-[0.98] transition-transform"
         >
           Povratak na povijest
         </button>
@@ -187,12 +187,12 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
     : null;
 
   return (
-    <div className="flex flex-col flex-1 bg-background">
+    <div className="flex flex-col flex-1 bg-white">
       {/* Header */}
-      <header className="bg-primary text-primary-foreground px-4 py-5">
+      <header className="bg-teal-700 text-white px-4 py-5">
         <div className="flex items-center gap-3 mb-3">
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-primary-foreground/60 uppercase tracking-widest font-medium truncate">
+            <p className="text-xs text-white/60 uppercase tracking-widest font-medium truncate">
               {sesija.naziv_objekta}
             </p>
             <h1 className="text-xl font-bold leading-tight truncate">{podsesija.naziv}</h1>
@@ -200,15 +200,15 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
           <StatusBadge status={podsesija.status} size="md" />
         </div>
 
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-primary-foreground/80">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-white/80">
           <MetaItem label="Dio sustava" value={podsesija.dio_sustava} />
           <MetaItem label="Materijal" value={podsesija.materijal} />
           <MetaItem label="Vol." value={`~${podsesija.procijenjeni_volumen} L`} />
           <MetaItem label="Ciklusa" value={`${podsesija.ciklusi.length}`} />
           {sesija.cleaningMode && (
             <div className="col-span-2 flex items-center gap-2 pt-0.5">
-              <span className="text-primary-foreground/60 uppercase tracking-widest font-medium">Vrsta:</span>
-              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide rounded-lg px-2 py-0.5 bg-primary-foreground/15 text-primary-foreground border border-primary-foreground/25">
+              <span className="text-white/60 uppercase tracking-widest font-medium">Vrsta:</span>
+              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide rounded-lg px-2 py-0.5 bg-white/15 text-white border border-white/25">
                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M12 2C12 2 5 9.5 5 14a7 7 0 0 0 14 0c0-4.5-7-12-7-12z" />
                 </svg>
@@ -269,17 +269,17 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
                 </svg>
               </div>
               <div className="flex-1">
-                <p className="text-sm font-bold text-foreground">
+                <p className="text-sm font-bold text-slate-800">
                   Referentno mjerenje (nakon ~3 min cirkulacije)
                 </p>
                 <details className="mt-1 group">
-                  <summary className="text-xs text-primary cursor-pointer list-none flex items-center gap-1">
+                  <summary className="text-xs text-teal-700 cursor-pointer list-none flex items-center gap-1">
                     <span>Upute</span>
-                    <svg className="w-3 h-3 transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg className="w-3 h-3 transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                       <path d="M6 9l6 6 6-6" />
                     </svg>
                   </summary>
-                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                     Pokrenite cirkulaciju i pričekajte približno 3 minute da se sredstvo ravnomjerno izmiješa. Zatim unesite referentno mjerenje.
                   </p>
                 </details>
@@ -373,7 +373,7 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
         {/* Full measurement log — shown when active cycle has measurements */}
         {akt && akt.mjerenja.length > 0 && (
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 px-0.5">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2 px-0.5">
               Log mjerenja — Ciklus #{akt.cycleNumber ?? akt.broj}
             </p>
             <MjerenjeLogTabela ciklus={akt} />
@@ -415,8 +415,8 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
 
         {/* Povijest zavrsenih ciklusa */}
         {podsesija.ciklusi.filter((c) => c.status === "zavrsen" || c.status === "prekinut").length > 0 && (
-          <div className="bg-card border border-border rounded-xl p-4">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">
               Povijest ciklusa
             </h3>
             <div className="flex flex-col gap-3">
@@ -448,7 +448,7 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
             {(nema_ciklusa || sve_zavrseno) && (
               <button
                 onClick={() => setModal({ tip: "novi_ciklus" })}
-                className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
+                className="w-full bg-teal-700 text-white rounded-xl py-3.5 font-semibold text-sm hover:bg-teal-800 active:scale-[0.98] transition-all"
               >
                 {nema_ciklusa ? "Pokreni ciklus" : "Pokreni novi ciklus"}
               </button>
@@ -483,7 +483,7 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
             {akt && !cekaPocetnoMjerenje && akt.mjerenja.length === 0 && (
               <button
                 onClick={() => setModal({ tip: "mjerenje", type: "regular" })}
-                className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
+                className="w-full bg-teal-700 text-white rounded-xl py-3.5 font-semibold text-sm hover:bg-teal-800 active:scale-[0.98] transition-all"
               >
                 Unesi mjerenje
               </button>
@@ -493,19 +493,19 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
               <>
                 <button
                   onClick={() => setModal({ tip: "nadopuna" })}
-                  className="w-full bg-secondary text-secondary-foreground rounded-xl py-3.5 font-semibold text-sm hover:bg-secondary/80 active:scale-[0.98] transition-all"
+                  className="w-full bg-slate-100 text-slate-700 rounded-xl py-3.5 font-semibold text-sm hover:bg-slate-200 active:scale-[0.98] transition-all"
                 >
                   Dodaj nadopunu sredstva
                 </button>
                 <button
                   onClick={() => setModal({ tip: "novi_ciklus" })}
-                  className="w-full border border-border rounded-xl py-3.5 font-medium text-sm text-foreground hover:bg-muted/50 active:scale-[0.98] transition-all"
+                  className="w-full border border-slate-200 rounded-xl py-3.5 font-medium text-sm text-slate-700 hover:bg-slate-50 active:scale-[0.98] transition-all"
                 >
                   Pokreni novi ciklus
                 </button>
                 <button
                   onClick={() => zavrsiCiklus(sesijaId, podsesijaId, akt.id)}
-                  className="w-full border border-border rounded-xl py-3 font-medium text-sm text-muted-foreground hover:bg-muted/50 active:scale-[0.98] transition-all"
+                  className="w-full border border-slate-200 rounded-xl py-3 font-medium text-sm text-slate-500 hover:bg-slate-50 active:scale-[0.98] transition-all"
                 >
                   Završi ciklus #{akt.cycleNumber ?? akt.broj}
                 </button>
@@ -525,14 +525,14 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
             {completionBlockersB && !completionBlockersB.canFinishJob ? (
               <div className="flex flex-col gap-3">
                 {/* Upozorenje — što nedostaje */}
-                <div className="rounded-xl border border-amber-500/30 bg-amber-50/60 dark:bg-amber-950/20 px-4 py-3 flex flex-col gap-2">
-                  <p className="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wide">
+                <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 flex flex-col gap-2">
+                  <p className="text-xs font-bold text-amber-700 uppercase tracking-wide">
                     Podsesija nije potpuno dovršena
                   </p>
                   {completionBlockersB.blockers.map((b, i) => (
                     <div key={i} className="flex items-start gap-2">
                       <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5" />
-                      <p className="text-xs text-foreground leading-snug">{b}</p>
+                      <p className="text-xs text-slate-700 leading-snug">{b}</p>
                     </div>
                   ))}
                 </div>
@@ -549,7 +549,7 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
             ) : (
               <button
                 onClick={() => zavrsiPodsesiju(sesijaId, podsesijaId)}
-                className="w-full border border-destructive text-destructive rounded-xl py-3.5 font-medium text-sm hover:bg-destructive/5 active:scale-[0.98] transition-all"
+                className="w-full border border-red-400 text-red-600 rounded-xl py-3.5 font-medium text-sm hover:bg-red-50 active:scale-[0.98] transition-all"
               >
                 Završi podsesiju
               </button>
@@ -720,7 +720,7 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
             type: "zavrsi_posao",
             label: CYCLE_DECISION_LABELS["zavrsi_posao"],
             description: "Sav posao je završen na ovom dijelu sustava.",
-            color: "text-foreground bg-card border-border",
+            color: "text-slate-800 bg-white border-slate-200",
           },
         ];
 
@@ -750,12 +750,12 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
               className="absolute inset-0 bg-black/40"
               onClick={() => setShowDecisionSheet(false)}
             />
-            <div className="relative bg-background rounded-t-3xl px-4 pt-5 pb-10 flex flex-col gap-3 shadow-xl max-h-[85vh] overflow-y-auto">
-              <div className="w-10 h-1 rounded-full bg-border mx-auto mb-1" />
+            <div className="relative bg-white rounded-t-3xl px-4 pt-5 pb-10 flex flex-col gap-3 shadow-xl max-h-[85vh] overflow-y-auto">
+              <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-1" />
               <div className="mb-1">
-                <h2 className="text-base font-bold text-foreground">Odabir odluke o ciklusu</h2>
+                <h2 className="text-base font-bold text-slate-900">Odabir odluke o ciklusu</h2>
                 {suggestedDecision && (
-                  <p className="text-xs text-muted-foreground mt-0.5">
+                  <p className="text-xs text-slate-500 mt-0.5">
                     Preporučeno: <strong>{CYCLE_DECISION_LABELS[suggestedDecision]}</strong>
                   </p>
                 )}
@@ -773,7 +773,7 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-bold leading-tight">{opt.label}</p>
                         {isSuggested && (
-                          <span className="text-[9px] font-semibold uppercase tracking-widest px-1.5 py-0.5 rounded bg-primary text-primary-foreground">
+                          <span className="text-[9px] font-semibold uppercase tracking-widest px-1.5 py-0.5 rounded bg-teal-700 text-white">
                             Preporučeno
                           </span>
                         )}
@@ -789,7 +789,7 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
               <button
                 type="button"
                 onClick={() => setShowDecisionSheet(false)}
-                className="w-full text-center text-sm text-muted-foreground py-2 mt-1"
+                className="w-full text-center text-sm text-slate-500 py-2 mt-1"
               >
                 Odustani
               </button>
@@ -824,17 +824,17 @@ function TrenutniStatusKartica({
   const phChange = zadnjeMjerenje?.phChange;
 
   return (
-    <div className="bg-card border border-border rounded-2xl overflow-hidden">
+    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
       {/* Top row — 4 metrics */}
-      <div className="grid grid-cols-4 divide-x divide-border border-b border-border">
+      <div className="grid grid-cols-4 divide-x divide-slate-100 border-b border-slate-200">
         {/* pH */}
         <div className="p-3 flex flex-col gap-0.5">
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">pH</span>
-          <span className={`text-xl font-bold leading-none ${phHighlight ? "text-orange-600" : "text-foreground"}`}>
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">pH</span>
+          <span className={`text-xl font-bold leading-none ${phHighlight ? "text-orange-600" : "text-slate-900"}`}>
             {pH !== null ? pH.toFixed(1) : "—"}
           </span>
           {phChange !== undefined && (
-            <span className={`text-[10px] font-medium ${phChange > 0 ? "text-orange-500" : phChange < 0 ? "text-green-600" : "text-muted-foreground"}`}>
+            <span className={`text-[10px] font-medium ${phChange > 0 ? "text-orange-500" : phChange < 0 ? "text-green-600" : "text-slate-400"}`}>
               {phChange > 0 ? "+" : ""}{phChange.toFixed(2)}
             </span>
           )}
@@ -842,22 +842,22 @@ function TrenutniStatusKartica({
 
         {/* Reaction */}
         <div className="p-3 flex flex-col gap-0.5">
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Reakcija</span>
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Reakcija</span>
           <StatusBadge status={statusReakcije} size="sm" />
         </div>
 
         {/* Flow */}
         <div className="p-3 flex flex-col gap-0.5">
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Protok</span>
-          <span className="text-sm font-bold text-foreground leading-tight">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Protok</span>
+          <span className="text-sm font-bold text-slate-800 leading-tight">
             {flowLMin !== null ? `${flowLMin} L/m` : "—"}
           </span>
         </div>
 
         {/* Cycle */}
         <div className="p-3 flex flex-col gap-0.5">
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Ciklus</span>
-          <span className="text-sm font-bold text-foreground leading-tight">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Ciklus</span>
+          <span className="text-sm font-bold text-slate-800 leading-tight">
             {ciklus ? `#${ciklus.cycleNumber ?? ciklus.broj}` : "—"}
           </span>
         </div>
@@ -871,18 +871,18 @@ function TrenutniStatusKartica({
           "Dodaj kemiju": "bg-amber-100 text-amber-800",
           "Ispiranje": "bg-blue-100 text-blue-800",
           "Novi ciklus": "bg-orange-100 text-orange-800",
-          "Gotovo": "bg-muted text-muted-foreground",
+          "Gotovo": "bg-slate-100 text-slate-600",
         };
-        const badgeClass = prp.scaleBadge ? (badgeColors[prp.scaleBadge] ?? "bg-muted text-muted-foreground") : null;
+        const badgeClass = prp.scaleBadge ? (badgeColors[prp.scaleBadge] ?? "bg-slate-100 text-slate-600") : null;
         return (
-          <div className="px-3 py-2 border-b border-border flex flex-col gap-0.5">
+          <div className="px-3 py-2 border-b border-slate-200 flex flex-col gap-0.5">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground">Stanje kamenca</span>
+              <span className="text-[9px] font-semibold uppercase tracking-widest text-slate-500">Stanje kamenca</span>
               {badgeClass && prp.scaleBadge && (
                 <span className={`text-[9px] font-bold rounded-full px-1.5 py-0.5 ${badgeClass}`}>{prp.scaleBadge}</span>
               )}
             </div>
-            <span className="text-xs font-semibold text-foreground">{prp.scaleStatus}</span>
+            <span className="text-xs font-semibold text-slate-800">{prp.scaleStatus}</span>
             {prp.scaleAddWarning && (
               <span className="text-[10px] text-red-600 font-semibold leading-tight">{prp.scaleAddWarning}</span>
             )}
@@ -1095,12 +1095,12 @@ function NadopunaRedak({ nadopuna }: { nadopuna: NadopunaKemikalije }) {
           <span className="text-[10px] font-bold bg-amber-100 text-amber-700 rounded px-1.5 py-0.5">
             Nadopuna #{nadopuna.topUpNumber}
           </span>
-          <span className="text-sm font-semibold text-foreground">{naziv}</span>
+          <span className="text-sm font-semibold text-slate-800">{naziv}</span>
           <span className="text-xs font-medium text-amber-700">{kol}</span>
         </div>
-        <span className="text-[10px] text-muted-foreground/60">{ts ? formatTime(ts) : ""}</span>
+        <span className="text-[10px] text-slate-400">{ts ? formatTime(ts) : ""}</span>
       </div>
-      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
+      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-slate-500">
         {nadopuna.reason && (
           <span>Razlog: {RAZLOZI_NADOPUNE_KRATKO[nadopuna.reason] ?? nadopuna.reason}</span>
         )}
@@ -1115,7 +1115,7 @@ function NadopunaRedak({ nadopuna }: { nadopuna: NadopunaKemikalije }) {
         )}
       </div>
       {(nadopuna.note ?? nadopuna.napomena) && (
-        <p className="text-xs text-muted-foreground italic">{nadopuna.note ?? nadopuna.napomena}</p>
+        <p className="text-xs text-slate-400 italic">{nadopuna.note ?? nadopuna.napomena}</p>
       )}
     </div>
   );
@@ -1136,7 +1136,7 @@ const RAZLOZI_NADOPUNE_KRATKO: Record<string, string> = {
 function CleaningEffectivenessKartica({ eff }: { eff: CleaningEffectiveness }) {
   if (eff.cleaningEffectivenessStatus === null) {
     return (
-      <p className="text-xs text-muted-foreground italic">{eff.effectivenessExplanation}</p>
+      <p className="text-xs text-slate-500 italic">{eff.effectivenessExplanation}</p>
     );
   }
 
@@ -1146,7 +1146,7 @@ function CleaningEffectivenessKartica({ eff }: { eff: CleaningEffectiveness }) {
     "Umjeren učinak": "bg-amber-50 border-amber-200 text-amber-800",
     "Slab učinak": "bg-red-50 border-red-200 text-red-800",
   };
-  const colorClass = statusColors[eff.cleaningEffectivenessStatus] ?? "bg-muted border-border text-foreground";
+  const colorClass = statusColors[eff.cleaningEffectivenessStatus] ?? "bg-slate-50 border-slate-200 text-slate-800";
 
   return (
     <div className={`rounded-xl border px-3 py-2.5 flex flex-col gap-1.5 ${colorClass}`}>
@@ -1192,42 +1192,42 @@ function ZavrsenCiklusKartica({ ciklus }: { ciklus: Ciklus }) {
     ciklus.cleaningEffectiveness ?? calcCleaningEffectiveness(ciklus.mjerenja);
 
   return (
-    <div className="border border-border rounded-xl p-3.5 flex flex-col gap-3">
+    <div className="border border-slate-200 rounded-xl p-3.5 flex flex-col gap-3 bg-white shadow-sm">
       <div className="flex items-center justify-between">
         <div>
-          <span className="text-sm font-semibold text-foreground">
+          <span className="text-sm font-semibold text-slate-800">
             Ciklus #{ciklus.cycleNumber ?? ciklus.broj}
           </span>
           {ciklus.name && (
-            <span className="text-xs text-muted-foreground ml-2">{ciklus.name}</span>
+            <span className="text-xs text-slate-500 ml-2">{ciklus.name}</span>
           )}
         </div>
         <StatusBadge status={ciklus.status} />
       </div>
 
-      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted-foreground">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-500">
         <span>
           {ciklus.chemicalProductName ?? ciklus.kemikalija}{" "}
-          <strong className="text-foreground">
+          <strong className="text-slate-800">
             {ciklus.chemicalAmount} {ciklus.chemicalUnit}
           </strong>
         </span>
-        <span>Voda: <strong className="text-foreground">{ciklus.waterVolumeL ?? ciklus.volumen_vode} L</strong></span>
+        <span>Voda: <strong className="text-slate-800">{ciklus.waterVolumeL ?? ciklus.volumen_vode} L</strong></span>
         {ciklus.chemicalPercent != null && (
-          <span>Postotak: <strong className="text-foreground">{ciklus.chemicalPercent.toFixed(2)} %</strong></span>
+          <span>Postotak: <strong className="text-slate-800">{ciklus.chemicalPercent.toFixed(2)} %</strong></span>
         )}
         <span>{ciklus.mjerenja.length} mjerenja · {ciklus.nadopune.length} nadopuna</span>
       </div>
 
-      <div className="flex gap-4 text-xs pt-2 border-t border-border">
+      <div className="flex gap-4 text-xs pt-2 border-t border-slate-100">
         {pocetno && (
           <span className="text-violet-600">
             Poc. pH: <strong>{getMjerenjePH(pocetno).toFixed(2)}</strong>
           </span>
         )}
         {zadnjiPHval !== null && (
-          <span className="text-muted-foreground">
-            Zadnji pH: <strong className="text-foreground">{zadnjiPHval.toFixed(2)}</strong>
+          <span className="text-slate-500">
+            Zadnji pH: <strong className="text-slate-800">{zadnjiPHval.toFixed(2)}</strong>
           </span>
         )}
       </div>
@@ -1236,7 +1236,7 @@ function ZavrsenCiklusKartica({ ciklus }: { ciklus: Ciklus }) {
       <CleaningEffectivenessKartica eff={eff} />
 
       {ciklus.recommendation && (
-        <p className="text-xs text-muted-foreground italic pt-2 border-t border-border">
+        <p className="text-xs text-slate-500 italic pt-2 border-t border-slate-100">
           {ciklus.recommendation}
         </p>
       )}
@@ -1244,7 +1244,7 @@ function ZavrsenCiklusKartica({ ciklus }: { ciklus: Ciklus }) {
   );
 }
 
-// ─── Completion helpers ───────────────────────────────────────────────────────
+// ─── Completion helpers ────────────────────────────────────────────��──────────
 
 import type { ReactionStabilityResult, CompletionPhases } from "@/lib/types";
 
@@ -1300,20 +1300,20 @@ function CompletionPhasesPanelB({
     label: string; done: boolean; buttonLabel: string; onAction: () => void; disabled?: boolean;
   }) {
     return (
-      <div className={`flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 ${done ? "bg-green-50 border border-green-200" : "bg-card border border-border"}`}>
+      <div className={`flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 ${done ? "bg-green-50 border border-green-200" : "bg-white border border-slate-200"}`}>
         <div className="flex items-center gap-2 min-w-0">
-          <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${done ? "bg-green-500" : "bg-muted"}`}>
+          <span className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${done ? "bg-green-500" : "bg-slate-100"}`}>
             {done ? (
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
             ) : (
-              <span className="w-2 h-2 rounded-full bg-muted-foreground/40 block" />
+              <span className="w-2 h-2 rounded-full bg-slate-400 block" />
             )}
           </span>
-          <span className={`text-sm font-medium truncate ${done ? "text-green-800" : "text-foreground"}`}>{label}</span>
+          <span className={`text-sm font-medium truncate ${done ? "text-green-800" : "text-slate-700"}`}>{label}</span>
         </div>
         {!done && (
           <button onClick={onAction} disabled={disabled}
-            className="shrink-0 text-xs font-semibold text-primary hover:opacity-70 transition-opacity disabled:opacity-30">
+            className="shrink-0 text-xs font-semibold text-teal-700 hover:opacity-70 transition-opacity disabled:opacity-30">
             {buttonLabel}
           </button>
         )}
@@ -1322,10 +1322,10 @@ function CompletionPhasesPanelB({
   }
 
   return (
-    <div className="border border-border rounded-2xl overflow-hidden">
-      <div className="bg-muted px-4 py-3 border-b border-border">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Obavezne faze završetka</p>
-        <p className="text-sm font-semibold text-foreground mt-0.5">Kemijsko čišćenje završeno — slijedi ispiranje i neutralizacija.</p>
+    <div className="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Obavezne faze završetka</p>
+        <p className="text-sm font-semibold text-slate-800 mt-0.5">Kemijsko čišćenje završeno — slijedi ispiranje i neutralizacija.</p>
       </div>
       <div className="px-4 py-3 flex flex-col gap-2">
         <PhaseRow label="Ispiranje sustava" done={ispiranjeOk} buttonLabel="Evidentiraj ispiranje" onAction={onIspiranje} />
@@ -1376,16 +1376,16 @@ function ModalWrapper({
 }) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-foreground/30 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-background rounded-t-2xl p-5 pb-8 flex flex-col gap-4 shadow-xl"
+        className="w-full max-w-lg bg-white rounded-t-2xl p-5 pb-8 flex flex-col gap-4 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-semibold text-foreground">{title}</h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1">
+          <h2 className="text-base font-semibold text-slate-900">{title}</h2>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-700 p-1">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M18 6 6 18M6 6l12 12" />
             </svg>
@@ -1422,7 +1422,7 @@ function ModalField({
 }) {
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium text-muted-foreground" htmlFor={name}>
+      <label className="text-xs font-medium text-slate-600" htmlFor={name}>
         {label}
       </label>
       <input
@@ -1435,7 +1435,7 @@ function ModalField({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full border border-input rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+        className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
       />
     </div>
   );

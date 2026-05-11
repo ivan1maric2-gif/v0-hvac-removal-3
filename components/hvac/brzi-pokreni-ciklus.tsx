@@ -153,7 +153,7 @@ export function BrziPokreniCiklus({
     ? (defaultUnitForForm(selectedProduct!.form) as JedinicaKemikalije)
     : manualUnit;
 
-  // ── Product warning (derived, no state) ─────────────�����────────────────────
+  // ── Product warning (derived, no state) ─────────────�������────────────────────
   const produktUpozorenje = selectedProduct
     ? evaluirajUpozorenjeProizvoda(selectedProduct, systemCategory)
     : null;
@@ -602,7 +602,7 @@ export function BrziPokreniCiklus({
             calculatedAmount !== null
               ? "border-teal-500 bg-teal-50"
               : "border-slate-200 bg-slate-50"
-            }
+            }`}>
             <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
 
               Potrebno dodati sredstva

@@ -1184,7 +1184,7 @@ function TabIndikatorBoje({ product }: { product: Product }) {
           <div>
             <div className="flex items-center gap-2 mb-2.5">
               <span className="w-1 h-5 rounded-full bg-green-500 shrink-0" />
-              <p className="text-[11px] font-black uppercase tracking-widest text-foreground">Reakcija kamenca</p>
+              <p className="text-[11px] font-black uppercase tracking-widest text-slate-800">Reakcija kamenca</p>
             </div>
             <div className="flex flex-col gap-1.5">
               {[
@@ -1201,30 +1201,30 @@ function TabIndikatorBoje({ product }: { product: Product }) {
           </div>
 
           {/* Kapacitet otapanja */}
-          <div className="bg-card border border-border rounded-2xl overflow-hidden">
-            <div className="bg-muted/60 px-4 py-2.5 border-b border-border">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Kapacitet otapanja</p>
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-slate-50 px-4 py-2.5 border-b border-slate-200">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Kapacitet otapanja</p>
             </div>
             <div className="px-4 py-4 flex items-end justify-between gap-4">
               <div>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl font-black text-foreground tabular-nums">0.5–0.6</span>
-                  <span className="text-sm font-bold text-foreground">kg CaCO₃</span>
+                  <span className="text-2xl font-black text-slate-900 tabular-nums">0.5–0.6</span>
+                  <span className="text-sm font-bold text-slate-700">kg CaCO₃</span>
                 </div>
-                <span className="text-[11px] text-muted-foreground">po 1 kg proizvoda</span>
+                <span className="text-[11px] text-slate-500">po 1 kg proizvoda</span>
               </div>
-              <span className="text-[10px] text-muted-foreground/70 text-right leading-relaxed max-w-28">
+              <span className="text-[10px] text-slate-400 text-right leading-relaxed max-w-28">
                 Servisna procjena u optimalnim uvjetima
               </span>
             </div>
           </div>
 
           {/* Temperatura reakcije */}
-          <div className="bg-card border border-border rounded-2xl overflow-hidden">
-            <div className="bg-muted/60 px-4 py-2.5 border-b border-border">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Temperatura reakcije</p>
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-slate-50 px-4 py-2.5 border-b border-slate-200">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Temperatura reakcije</p>
             </div>
-            <div className="divide-y divide-border">
+            <div className="divide-y divide-slate-100">
               {([
                 { range: "10 °C",    label: "Vrlo spora reakcija",             bar: "w-[15%]", barColor: "bg-blue-400",  labelColor: "text-blue-700"   },
                 { range: "20–30 °C", label: "Normalna reakcija",               bar: "w-[40%]", barColor: "bg-sky-400",   labelColor: "text-sky-700"    },
@@ -1234,10 +1234,10 @@ function TabIndikatorBoje({ product }: { product: Product }) {
               ] as const).map((row) => (
                 <div key={row.range} className="px-4 py-3 flex flex-col gap-1.5">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-bold tabular-nums text-foreground w-16 shrink-0">{row.range}</span>
+                    <span className="text-[11px] font-bold tabular-nums text-slate-800 w-16 shrink-0">{row.range}</span>
                     <span className={`text-[11px] font-medium ${row.labelColor}`}>{row.label}</span>
                   </div>
-                  <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                  <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
                     <div className={`h-full rounded-full ${row.bar} ${row.barColor}`} />
                   </div>
                 </div>
@@ -1246,13 +1246,13 @@ function TabIndikatorBoje({ product }: { product: Product }) {
           </div>
 
           {/* Cirkulacija */}
-          <div className="bg-card border border-border rounded-2xl px-4 py-3 flex flex-col gap-2.5">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Cirkulacija</p>
+          <div className="bg-white border border-slate-200 rounded-xl px-4 py-3 flex flex-col gap-2.5 shadow-sm">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Cirkulacija</p>
             <div className="flex items-start gap-2.5">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-green-600 shrink-0 mt-0.5">
                 <path d="M20 6 9 17l-5-5" />
               </svg>
-              <p className="text-xs text-foreground/90 leading-relaxed">
+              <p className="text-xs text-slate-700 leading-relaxed">
                 Stalna cirkulacija značajno povećava učinkovitost sredstva.
               </p>
             </div>
@@ -1267,7 +1267,7 @@ function TabIndikatorBoje({ product }: { product: Product }) {
           </div>
 
           {/* Završetak čišćenja */}
-          <div className="bg-card border border-border rounded-2xl overflow-hidden">
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
             <div className="bg-blue-600 px-4 py-2.5">
               <p className="text-[10px] font-bold uppercase tracking-widest text-white">Čišćenje završeno kada</p>
             </div>
@@ -1279,19 +1279,19 @@ function TabIndikatorBoje({ product }: { product: Product }) {
                 "Stanje stabilno najmanje 20 minuta",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2.5">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-blue-600 shrink-0">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-blue-600 shrink-0" aria-hidden="true">
                     <path d="M20 6 9 17l-5-5" />
                   </svg>
-                  <span className="text-xs text-foreground/90">{item}</span>
+                  <span className="text-xs text-slate-700">{item}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Neutralizacija */}
-          <div className="bg-card border border-border rounded-2xl overflow-hidden">
-            <div className="bg-muted/60 px-4 py-2.5 border-b border-border">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Neutralizacija</p>
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-slate-50 px-4 py-2.5 border-b border-slate-200">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Neutralizacija</p>
             </div>
             <div className="px-4 py-3 flex flex-col gap-2">
               {[
@@ -1301,8 +1301,8 @@ function TabIndikatorBoje({ product }: { product: Product }) {
                 "Preporučena pasivizacija sustava",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40 shrink-0" />
-                  <span className="text-xs text-foreground/80">{item}</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+                  <span className="text-xs text-slate-700">{item}</span>
                 </div>
               ))}
               <div className="mt-1 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5">
@@ -1395,23 +1395,23 @@ function TabSigurnost({ product }: { product: Product }) {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-rose-500 shrink-0">
             <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
-          <p className="text-[9px] font-black uppercase tracking-widest text-rose-800 dark:text-rose-200">Uvijek</p>
+          <p className="text-[9px] font-black uppercase tracking-widest text-red-800">Uvijek</p>
         </div>
-        <p className="text-sm font-semibold text-rose-900 dark:text-rose-100 leading-relaxed">{s.generalNote}</p>
+        <p className="text-sm font-semibold text-red-900 leading-relaxed">{s.generalNote}</p>
       </div>
       <InfoGroup label="Osobna zaštita" value={s.personalProtection} multiline />
       <InfoGroup label="Ventilacija" value={s.ventilation} multiline />
       <div className="flex gap-3">
         {s.maxTemperatureC !== undefined && (
-          <div className="flex-1 bg-card border border-border rounded-2xl px-4 py-3">
-            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Max temp</p>
-            <p className="text-2xl font-black tabular-nums text-foreground">{s.maxTemperatureC} °C</p>
+          <div className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 shadow-sm">
+            <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Max temp</p>
+            <p className="text-2xl font-black tabular-nums text-slate-900">{s.maxTemperatureC} °C</p>
           </div>
         )}
         {s.minTemperatureC !== undefined && (
-          <div className="flex-1 bg-card border border-border rounded-2xl px-4 py-3">
-            <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Min temp</p>
-            <p className="text-2xl font-black tabular-nums text-foreground">{s.minTemperatureC} °C</p>
+          <div className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 shadow-sm">
+            <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Min temp</p>
+            <p className="text-2xl font-black tabular-nums text-slate-900">{s.minTemperatureC} °C</p>
           </div>
         )}
       </div>
