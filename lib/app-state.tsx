@@ -70,6 +70,8 @@ export type Ekran =
 interface AppState {
   sesije: Sesija[];
   ucitavaSe: boolean;
+  /** Poruka o grešci pri učitavanju sesija iz Supabase-a. Null = bez greške. */
+  loadError: string | null;
   ekran: Ekran;
   history: Ekran[];
   forwardStack: Ekran[];
@@ -149,6 +151,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Pocinjemo s demo sesijama kao placeholder dok se Supabase ne ucita.
   const [sesije, setSesije] = useState<Sesija[]>(DEMO_SESIJE);
   const [ucitavaSe, setUcitavaSe] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   // ── Navigation state ─────────────────────────────────────────────────────────
   // VAŽNO: uvijek počinjemo s { ime: "pocetni" } da server i klijent
   // renderiraju identično (izbjegavamo hydration mismatch).
@@ -220,7 +223,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           setForwardStack([]);
         }
       }
-    }).catch(() => {
+    }).catch((err: unknown) => {
+      const msg = err instanceof Error ? err.message : "Nepoznata greška pri učitavanju.";
+      console.warn("[storage] getSesije greška:", msg);
+      setLoadError(msg);
       setUcitavaSe(false);
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -801,7 +807,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [updateSesije, mapCiklusSesije]
   );
 
-  // ── Session level ─────────────────────────────────��───────────────────────
+  // ── Session level ─────────────────────────────────��─���─────────────────────
 
   const postaviStatusSesije = useCallback(
     (sesijaId: string, status: StatusSesije) =>
@@ -974,6 +980,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       value={{
         sesije,
         ucitavaSe,
+        loadError,
         ekran,
         history,
         forwardStack,

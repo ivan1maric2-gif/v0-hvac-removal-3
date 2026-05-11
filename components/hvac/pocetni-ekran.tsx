@@ -719,7 +719,7 @@ function SecondaryButton({ label, onClick, disabled, variant = "default", icon }
 // ─── PocetniEkran ─────────────────────────────────────────────────────────────
 
 export function PocetniEkran() {
-  const { sesije, navigiraj } = useApp();
+  const { sesije, navigiraj, loadError } = useApp();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -738,6 +738,24 @@ export function PocetniEkran() {
   const istaknuta = sesije
     .filter((s) => !s.isDeleted && !s.isDemo && s.status === "u_radu")
     .sort((a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime())[0] ?? null;
+
+  if (loadError) {
+    return (
+      <div className="flex flex-col flex-1 bg-background items-center justify-center px-6 text-center">
+        <div className="text-4xl mb-4">⚠️</div>
+        <p className="text-base font-bold text-foreground mb-2">Greška pri učitavanju podataka</p>
+        <p className="text-sm text-muted-foreground mb-6 max-w-xs leading-relaxed break-words overflow-hidden">
+          {loadError}
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="bg-primary text-primary-foreground rounded-xl px-5 py-3 font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
+        >
+          Osvježi stranicu
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col flex-1 bg-background">
