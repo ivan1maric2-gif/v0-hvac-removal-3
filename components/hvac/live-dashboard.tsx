@@ -643,50 +643,13 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
     const tOut_ = lastMj.tempOutC ?? null;
     const refTOut_ = baseline?.tempOutC ?? null;
 
-    const dFlow_ = currFlow_ != null && baseFlow_ != null ? currFlow_ - baseFlow_ : null;
-    const dTout_ = tOut_ != null && refTOut_ != null ? tOut_ - refTOut_ : null;
-
-    // Izracunaj stanje za TTS
-    const napreduje_ = dFlow_ != null && dFlow_ > 0.5;
-    const trebaNadopuna_ = currPh_ != null && currPh_ > 4.5;
-    const trebaNoviciklus_ = currPh_ != null && currPh_ > 6.0;
-
-    // TTS — tocno prema specifikaciji dokumenta
+    // TTS — koristi rs engine podatke direktno
     const phTekst = currPh_ != null ? currPh_.toFixed(2) : "nepoznat";
-
-    const flowTekst = dFlow_ != null && dFlow_ > 0.5
-      ? "raste"
-      : dFlow_ != null && dFlow_ < -0.5
-      ? "pada"
-      : "stabilan, nema daljnjeg poboljsanja";
-
-    const tempOutTekst = dTout_ != null && Math.abs(dTout_) > 0.3
-      ? (dTout_ > 0 ? "raste" : "pada")
-      : "bez promjene, reakcija stagnira";
-
-    const uputaTekst = trebaNoviciklus_
-      ? "Ciklus je pri kraju. Pripremi zavrsetak, ispusti otopinu, isperi sustav i pokreni novi ciklus."
-      : trebaNadopuna_
-      ? "Dodaj nadopunu kemijskog sredstva."
-      : napreduje_
-      ? "Nastavi cirkulaciju. Ciscenje aktivno napreduje."
-      : "Nastavi cirkulaciju kratko vrijeme i prati promjene. Ako protok i Temp OUT ne mijenjaju vrijednosti, a pH ostaje nizak, reakcija je aktivna, ali napredak stagnira.";
-
-    const sljedeciKorakTekst = trebaNoviciklus_
-      ? "Pripremi zavrsetak ciklusa."
-      : trebaNadopuna_
-      ? "Dodaj nadopunu kemijskog sredstva."
-      : napreduje_
-      ? "Nastavi cirkulaciju, nema intervencije."
-      : "Promijeni smjer cirkulacije, ili pripremi zavrsetak ciklusa.";
-
     const glasovnaTekst =
-      "Cirkulacija aktivna. Status cirkulacije u tijeku. " +
-      "pH " + phTekst + ". Paziti na materijal. " +
-      "Protok " + flowTekst + ". " +
-      "Temp OUT " + tempOutTekst + ". " +
-      "Uputa serviseru: " + uputaTekst + " " +
-      "Sljedeci korak: " + sljedeciKorakTekst;
+      uputa.label + ". " +
+      "pH " + phTekst + ". " +
+      rs.explanation + " " +
+      "Sljedeci korak: " + rs.nextStep + (rs.nextStepReason ? ". " + rs.nextStepReason : "");
 
     // Govori samo ako TTS NIJE pauziran
     if (!ttsPauziranRef.current) {
@@ -800,81 +763,41 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         const deltaTOut = tOut !== null && refTOut !== null ? parseFloat((tOut - refTOut).toFixed(1)) : null;
         const tempOutStagnira = deltaTOut === null || (deltaTOut > -0.3 && deltaTOut < 0.3);
 
-        // ── Header status labels ────────────────────────────────────────────
-        // pH — naslov + podnaslov
-        const phStatusNaslov =
-          snagaSredstva === "jako"      ? `pH ${ph.toFixed(2)} — izrazito kisela otopina`
-          : snagaSredstva === "aktivno" ? `pH ${ph.toFixed(2)} — sredstvo aktivno`
-          : snagaSredstva === "slabi"   ? `pH ${ph.toFixed(2)} — sredstvo slabi`
-          :                               `pH ${ph.toFixed(2)} — sredstvo iscrpljeno`;
-        const phStatusPodnaslov: string | null =
-          snagaSredstva === "jako"      ? "Paziti na materijal."
-          : snagaSredstva === "aktivno" ? null
-          : snagaSredstva === "slabi"   ? "Razmotri nadopunu kemijskog sredstva."
-          :                               "Pripremi završetak ciklusa.";
-
-        // Protok — naslov + podnaslov
-        const protokStatusNaslov =
-          napreduje                                   ? `Protok raste +${deltaFlowPct!.toFixed(1)}% — čišćenje napreduje`
-          : deltaFlowPct !== null && deltaFlowPct > 0 ? `Protok blago raste +${deltaFlowPct.toFixed(1)}%`
-          : protokStagnira                            ? "Protok stabilan — nema daljnjeg poboljšanja"
-          :                                             `Protok pada ${deltaFlowPct!.toFixed(1)}%`;
-        const protokStatusPodnaslov: string | null =
-          napreduje ? null
-          : protokStagnira ? null
-          : "Pratiti stanje sustava.";
-
-        // Temp OUT — naslov + podnaslov
-        const tempOutStatusNaslov =
-          deltaTOut !== null && deltaTOut >= 0.5 ? `Temp OUT +${deltaTOut.toFixed(1)} °C — izmjena topline raste`
-          : tempOutStagnira                       ? "Temp OUT bez promjene — reakcija stagnira"
-          :                                         `Temp OUT ${deltaTOut!.toFixed(1)} °C — pada`;
-        const tempOutStatusPodnaslov: string | null =
-          deltaTOut !== null && deltaTOut >= 0.5 ? null
-          : tempOutStagnira                       ? null
-          : "Pratiti trend.";
+        // Boja kartice prema rs severity
+        const cardBg =
+          rs.severity === "critical" ? "bg-red-600 border-red-500" :
+          rs.severity === "warn"     ? "bg-amber-500 border-amber-400" :
+          rs.primaryAction === "novi_ciklus" ? "bg-red-600 border-red-500" :
+          rs.primaryAction === "nadopuna"    ? "bg-amber-500 border-amber-400" :
+          "bg-teal-600 border-teal-500";
 
         return (
           <div className="flex flex-col gap-3">
 
-            {/* ── CIRKULACIJA AKTIVNA kartica ───────────────────────────────── */}
-            <div className="bg-teal-600 rounded-xl overflow-hidden border border-teal-500">
+            {/* ── Glavna status kartica ─────────────────────────────────────── */}
+            <div className={`rounded-xl overflow-hidden border ${cardBg}`}>
 
               {/* Naslov */}
               <div className="px-4 pt-4 pb-3 flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-teal-200 mb-0.5">Status cirkulacije</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-0.5">Status cirkulacije</p>
                   <h2 className="text-lg font-black text-white leading-tight">
-                    CIRKULACIJA AKTIVNA
+                    {uputa.label}
                   </h2>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-teal-500/50 border border-teal-400/40 flex items-center justify-center shrink-0">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <polyline points="17 1 21 5 17 9" /><path d="M3 11V9a4 4 0 0 1 4-4h14" />
-                    <polyline points="7 23 3 19 7 15" /><path d="M21 13v2a4 4 0 0 1-4 4H3" />
-                  </svg>
+                <div className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shrink-0 text-white">
+                  {uputa.icon}
                 </div>
               </div>
 
-              {/* Status redovi */}
-              <div className="px-4 pb-4 flex flex-col gap-2.5">
-                <div className="flex flex-col">
-                  <p className="text-sm font-bold text-white leading-snug">{phStatusNaslov}</p>
-                  {phStatusPodnaslov && <p className="text-xs text-teal-100 mt-0.5">{phStatusPodnaslov}</p>}
-                </div>
-                <div className="flex flex-col">
-                  <p className="text-sm font-bold text-white leading-snug">{protokStatusNaslov}</p>
-                  {protokStatusPodnaslov && <p className="text-xs text-teal-100 mt-0.5">{protokStatusPodnaslov}</p>}
-                </div>
-                <div className="flex flex-col">
-                  <p className="text-sm font-bold text-white leading-snug">{tempOutStatusNaslov}</p>
-                  {tempOutStatusPodnaslov && <p className="text-xs text-teal-100 mt-0.5">{tempOutStatusPodnaslov}</p>}
-                </div>
+              {/* rs.explanation — direktno iz enginea */}
+              <div className="px-4 pb-4">
+                <p className="text-sm text-white/90 leading-relaxed">{rs.explanation}</p>
               </div>
 
               {/* TTS gumb */}
-              <div className="px-4 py-2.5 border-t border-teal-500/40 flex items-center justify-between bg-teal-700/40">
-                <span className="text-xs text-teal-200/70 font-medium">
+              <div className="px-4 py-2.5 border-t border-white/10 flex items-center justify-between bg-black/10">
+                <span className="text-xs text-white/50 font-medium">
                   {ttsPauziran ? "Glasovne upute pauzirane" : "Glasovne upute aktivne"}
                 </span>
                 <button
@@ -882,8 +805,8 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
                   onClick={() => setTtsPauziran((v) => !v)}
                   className={`min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
                     ttsPauziran
-                      ? "bg-white text-teal-700 border-white"
-                      : "bg-teal-500/30 border-teal-400/40 text-teal-100 hover:bg-teal-500/50"
+                      ? "bg-white text-slate-700 border-white"
+                      : "bg-white/10 border-white/20 text-white hover:bg-white/20"
                   }`}
                 >
                   {ttsPauziran ? "Nastavi glasovne upute" : "Pauziraj glasovne upute"}
@@ -891,39 +814,24 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
               </div>
             </div>
 
-            {/* ── Uputa serviseru ───────────────────────────────────────────── */}
+            {/* ── Uputa serviseru — rs.explanation ─────────────────────────── */}
             <div className="bg-white rounded-xl border border-slate-100 shadow-sm px-4 py-4">
               <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
                 Uputa serviseru
               </p>
               <p className="text-sm font-medium text-slate-700 leading-relaxed">
-                {trebaNoviciklus
-                  ? "Ciklus je pri kraju. Pripremi završetak — ispusti otopinu, isperi sustav i pokreni novi ciklus."
-                  : trebaNadopuna
-                  ? "Dodaj nadopunu kemijskog sredstva."
-                  : napreduje
-                  ? "Nastavi cirkulaciju. Čišćenje aktivno napreduje."
-                  : "Nastavi cirkulaciju kratko vrijeme i prati promjene."}
+                {rs.explanation}
               </p>
             </div>
 
-            {/* ── Sljedeći korak ───────────────────────────────────────────── */}
+            {/* ── Sljedeći korak — rs.nextStep + rs.nextStepReason ─────────── */}
             <div className="bg-white rounded-xl border border-slate-100 shadow-sm px-4 py-4">
               <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
                 Sljedeći korak
               </p>
-              {trebaNoviciklus ? (
-                <p className="text-sm font-bold text-slate-800">Pripremi završetak ciklusa.</p>
-              ) : trebaNadopuna ? (
-                <p className="text-sm font-bold text-slate-800">Dodaj nadopunu kemijskog sredstva.</p>
-              ) : napreduje ? (
-                <p className="text-sm font-bold text-slate-800">Nastavi cirkulaciju — nema intervencije.</p>
-              ) : (
-                <div className="flex flex-col gap-1.5">
-                  <p className="text-sm font-bold text-slate-800">Promijeni smjer cirkulacije</p>
-                  <p className="text-xs text-slate-400 font-semibold">ILI</p>
-                  <p className="text-sm font-bold text-slate-800">Pripremi završetak ciklusa.</p>
-                </div>
+              <p className="text-sm font-bold text-slate-800 mb-1">{rs.nextStep}</p>
+              {rs.nextStepReason && (
+                <p className="text-xs text-slate-500 leading-relaxed">{rs.nextStepReason}</p>
               )}
             </div>
 
