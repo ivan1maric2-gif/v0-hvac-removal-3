@@ -1197,7 +1197,7 @@ export function MjerenjeModal({
                 id="measurementType"
                 value={form.measurementType}
                 onChange={(e) => setField("measurementType", e.target.value as MeasurementType)}
-                className="w-full border border-input rounded-lg px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
               >
                 {(Object.entries(MEASUREMENT_TYPE_LABELS) as [MeasurementType, string][]).map(
                   ([val, label]) => (
@@ -1211,17 +1211,17 @@ export function MjerenjeModal({
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <FieldLabel htmlFor="measuredAt">Vrijeme uzimanja uzorka</FieldLabel>
-                <div className="flex items-center rounded-lg border border-input overflow-hidden text-xs font-semibold">
+                <div className="flex items-center rounded-lg border border-slate-200 overflow-hidden text-xs font-semibold">
                   <button
                     type="button"
                     onClick={() => {
                       setField("measuredAt", toLocalDatetimeValue(new Date().toISOString()));
                     }}
-                    className="px-2.5 py-1 bg-primary text-primary-foreground hover:opacity-90 transition-colors"
+                    className="px-2.5 py-1 bg-teal-700 text-white hover:bg-teal-800 transition-colors"
                   >
                     Sad
                   </button>
-                  <span className="px-2.5 py-1 text-muted-foreground bg-background">
+                  <span className="px-2.5 py-1 text-slate-500 bg-slate-50">
                     Ručno
                   </span>
                 </div>
@@ -1230,13 +1230,13 @@ export function MjerenjeModal({
                 id="measuredAt" name="measuredAt" type="datetime-local"
                 value={form.measuredAt} onChange={handleTextChange}
               />
-              <p className="text-[10px] text-muted-foreground/70 leading-tight">
+              <p className="text-[10px] text-slate-400 leading-tight">
                 Pritisnite &quot;Sad&quot; za automatski trenutni timestamp, ili uredite polje za ručni unos.
               </p>
             </div>
 
             {/* Auto-calculated time fields */}
-            <div className="bg-muted/40 rounded-xl px-4 py-3 flex flex-col gap-2">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 flex flex-col gap-2">
               <ReadOnlyRow
                 label="Broj mjerenja"
                 value={isInitial ? "Referentno mjerenje" : `#${ciklus.mjerenja.filter(m => m.measurementType !== "initial_cycle_measurement").length + 1}`}
@@ -1245,7 +1245,7 @@ export function MjerenjeModal({
               {/* Initial measurement: editable time field */}
               {isInitial ? (
                 <div className="flex flex-col gap-1">
-                  <label htmlFor="minutesOverride" className="text-[11px] font-semibold text-muted-foreground">
+                  <label htmlFor="minutesOverride" className="text-[11px] font-semibold text-slate-600">
                     Vrijeme nakon ulijevanja sredstva (min)
                   </label>
                   <div className="flex items-center gap-2">
@@ -1258,9 +1258,9 @@ export function MjerenjeModal({
                       value={form.minutesOverride}
                       onChange={(e) => setField("minutesOverride", e.target.value)}
                       placeholder={minutesFromCycleStart !== undefined ? String(minutesFromCycleStart) : "npr. 3"}
-                      className="w-24 border border-input rounded-lg px-3 py-1.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring tabular-nums"
+                      className="w-24 border border-slate-200 rounded-lg px-3 py-1.5 text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 tabular-nums"
                     />
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-slate-500">
                       {form.minutesOverride !== ""
                         ? `Uneseno: ${form.minutesOverride} min`
                         : minutesFromCycleStart !== undefined
@@ -1341,11 +1341,11 @@ export function MjerenjeModal({
                   type="button"
                   onClick={() => isListening ? stopListening() : startListening("pH")}
                   className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-lg border transition-all active:scale-95 ${
-                    isListening ? "border-red-500 bg-red-500/20 text-red-500 animate-pulse" : "border-border bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
-                  aria-label="Glasovni unos pH"
+                    isListening ? "border-red-500 bg-red-100 text-red-600 animate-pulse" : "border-slate-200 bg-white text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                    }
+                  `}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
                     <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
                     <line x1="12" y1="19" x2="12" y2="23" />
@@ -1353,7 +1353,7 @@ export function MjerenjeModal({
                   </svg>
                 </button>
               </div>
-              <p className="text-[11px] text-muted-foreground leading-snug">
+              <p className="text-[11px] text-slate-500 leading-snug">
                 {form.measurementType === "initial_cycle_measurement"
                   ? "Mjeri se nakon približno 3 minute cirkulacije/miješanja. Ovo je početna vrijednost za praćenje ciklusa."
                   : form.measurementType === "after_top_up"
@@ -1364,7 +1364,7 @@ export function MjerenjeModal({
               </p>
             </div>
 
-            <div className="bg-muted/40 rounded-xl px-4 py-3 flex flex-col gap-1.5">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 flex flex-col gap-1.5">
               <ReadOnlyRow
                 label="pH prethodnog mjerenja"
                 value={prethodniPH !== undefined ? prethodniPH.toFixed(2) : "Nema prethodnog mjerenja"}
@@ -1424,11 +1424,11 @@ export function MjerenjeModal({
                   type="button"
                   onClick={() => isListening ? stopListening() : startListening("temperatura")}
                   className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-lg border transition-all active:scale-95 ${
-                    isListening ? "border-red-500 bg-red-500/20 text-red-500 animate-pulse" : "border-border bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
-                  aria-label="Glasovni unos temperature"
+                    isListening ? "border-red-500 bg-red-100 text-red-600 animate-pulse" : "border-slate-200 bg-white text-slate-500 hover:bg-slate-100 hover:text-slate-700"
+                    }
+                  `}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
                     <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
                     <line x1="12" y1="19" x2="12" y2="23" />
@@ -1436,49 +1436,21 @@ export function MjerenjeModal({
                   </svg>
                 </button>
               </div>
-            </div>
-          </div>
 
-          {/* ── 4. Indikatori reakcije ────��───────────────────────── */}
-          <div className="flex flex-col gap-3">
-            <SectionTitle>Indikatori reakcije</SectionTitle>
-
-            <div className="flex flex-col gap-1">
-              <FieldLabel>Pjena</FieldLabel>
-              <SelectField<FoamLevel>
-                name="foamLevel"
-                value={form.foamLevel}
-                onChange={(v) => setField("foamLevel", v)}
-                options={["nema", "slaba", "srednja", "jaka", "vrlo_jaka"]}
-                labels={FOAM_LABELS}
-              />
-              <FoamHelper />
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <FieldLabel>Boja sredstva</FieldLabel>
-              <SelectField<ColorIndicator>
-                name="colorIndicator"
-                value={form.colorIndicator}
-                onChange={(v) => setField("colorIndicator", v)}
-                options={["plava", "plavo_zelena", "zelena", "zuta", "smeda", "bez_boje", "nije_primjenjivo"]}
-                labels={COLOR_LABELS}
-              />
-              {/* Colour stage reference guide — shown only when product has colour indicator */}
-              {ciklus.productSnapshot?.hasColorIndicator && ciklus.productSnapshot.colorIndicators?.length > 0 && (
-                <div className="bg-muted/40 border border-border rounded-xl px-3 py-2 flex flex-col gap-1.5">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+              {/* Color legend card */}
+                <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 flex flex-col gap-1.5">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
                     Faze boje — {ciklus.productSnapshot.name}
                   </p>
                   {ciklus.productSnapshot.colorIndicators.map((ci) => (
                     <div key={ci.id} className="flex items-start gap-2">
                       <span
-                        className="mt-0.5 shrink-0 w-3 h-3 rounded-full border border-border"
+                        className="mt-0.5 shrink-0 w-3 h-3 rounded-full border border-slate-300"
                         style={{ backgroundColor: ci.colorHex ?? "#888" }}
                       />
                       <div className="min-w-0">
-                        <span className="text-[11px] font-semibold text-foreground">{ci.colorName}</span>
-                        <span className="text-[11px] text-muted-foreground"> — {ci.meaning}</span>
+                        <span className="text-[11px] font-semibold text-slate-800">{ci.colorName}</span>
+                        <span className="text-[11px] text-slate-500"> — {ci.meaning}</span>
                       </div>
                     </div>
                   ))}
@@ -1498,14 +1470,14 @@ export function MjerenjeModal({
             </div>
           </div>
 
-          {/* ── 5. Mjerenje protoka ────────────��─────────────────── */}
+          {/* ── 5. Mjerenje protoka ────────────����─────────────────── */}
           <div className="flex flex-col gap-3">
             <SectionTitle>
               {isInitial ? "Protok nakon ulijevanja sredstva" : "Mjerenje protoka"}
             </SectionTitle>
 
             {isInitial && (
-              <p className="text-[11px] text-muted-foreground leading-snug -mt-1">
+              <p className="text-[11px] text-slate-500 leading-snug -mt-1">
                 Unijeti ako je protok izmjeren nakon početne cirkulacije.
               </p>
             )}
@@ -1533,7 +1505,7 @@ export function MjerenjeModal({
                     type="button"
                     onClick={() => isListening ? stopListening() : startListening("protok")}
                     className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-lg border transition-all active:scale-95 ${
-                      isListening ? "border-red-500 bg-red-500/20 text-red-500 animate-pulse" : "border-border bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
+                      isListening ? "border-red-500 bg-red-100 text-red-600 animate-pulse" : "border-slate-200 bg-white text-slate-500 hover:bg-slate-100 hover:text-slate-700"
                     }`}
                     aria-label="Glasovni unos protoka"
                   >
@@ -1552,7 +1524,8 @@ export function MjerenjeModal({
                   id="flowInputUnit"
                   value={form.flowInputUnit}
                   onChange={(e) => setField("flowInputUnit", e.target.value as JedinicaProtoka)}
-                  className="w-full border border-input rounded-lg px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
+
                 >
                   <option value="l_min">L/min</option>
                   <option value="sec_10l">sek za 10 L</option>
@@ -1561,7 +1534,7 @@ export function MjerenjeModal({
             </div>
 
             {flowLMin !== null && (
-              <div className="bg-muted/40 rounded-xl px-4 py-3 flex flex-col gap-1.5">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 flex flex-col gap-1.5">
                 <ReadOnlyRow
                   label="Izračunati protok"
                   value={`${flowLMin} L/min`}
@@ -1637,7 +1610,7 @@ export function MjerenjeModal({
               <textarea
                 id="note" name="note" value={form.note} onChange={handleTextChange}
                 rows={2} placeholder="Opažanja, vidljiva reakcija, posebnosti..."
-                className="w-full border border-input rounded-lg px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none leading-relaxed"
+                className="w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all resize-none leading-relaxed"
               />
             </div>
 
@@ -1647,7 +1620,7 @@ export function MjerenjeModal({
                 id="servisnaOcjena" name="servisnaOcjena" value={form.servisnaOcjena}
                 onChange={handleTextChange} rows={2}
                 placeholder="Procjena stanja sustava, preporuka..."
-                className="w-full border border-input rounded-lg px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none leading-relaxed"
+                className="w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all resize-none leading-relaxed"
               />
             </div>
           </div>
@@ -1655,7 +1628,7 @@ export function MjerenjeModal({
       </div>
 
       {/* Fixed footer */}
-      <div className="shrink-0 border-t border-border bg-background px-4 pt-4 pb-5 flex flex-col gap-3 max-w-lg mx-auto w-full">
+      <div className="shrink-0 border-t border-slate-200 bg-white px-4 pt-4 pb-5 flex flex-col gap-3 max-w-lg mx-auto w-full">
         {/* Live recommendation card — shown as soon as pH is entered */}
         {/* Warning when cycle has no product defined */}
         {!ciklus.productSnapshot && (
@@ -1686,13 +1659,13 @@ export function MjerenjeModal({
             
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
               {voiceConfirm.values.ph && (
-                <span className="text-foreground">pH: <strong>{voiceConfirm.values.ph}</strong></span>
+                <span className="text-slate-700">pH: <strong>{voiceConfirm.values.ph}</strong></span>
               )}
               {voiceConfirm.values.protok && (
-                <span className="text-foreground">Protok: <strong>{voiceConfirm.values.protok}</strong> L/min</span>
+                <span className="text-slate-700">Protok: <strong>{voiceConfirm.values.protok}</strong> L/min</span>
               )}
               {voiceConfirm.values.temperatura && (
-                <span className="text-foreground">Temp: <strong>{voiceConfirm.values.temperatura}</strong> °C</span>
+                <span className="text-slate-700">Temp: <strong>{voiceConfirm.values.temperatura}</strong> °C</span>
               )}
             </div>
 
@@ -1707,14 +1680,14 @@ export function MjerenjeModal({
               <button
                 type="button"
                 onClick={handleVoiceEditManually}
-                className="flex-1 bg-muted border border-border text-foreground rounded-lg py-2 text-xs font-medium hover:bg-muted/80 active:scale-[0.98] transition-all"
+                className="flex-1 bg-slate-100 border border-slate-200 text-slate-700 rounded-lg py-2 text-xs font-medium hover:bg-slate-200 active:scale-[0.98] transition-all"
               >
                 Uredi rucno
               </button>
               <button
                 type="button"
                 onClick={handleVoiceRetry}
-                className="flex-1 bg-muted border border-border text-foreground rounded-lg py-2 text-xs font-medium hover:bg-muted/80 active:scale-[0.98] transition-all"
+                className="flex-1 bg-slate-100 border border-slate-200 text-slate-700 rounded-lg py-2 text-xs font-medium hover:bg-slate-200 active:scale-[0.98] transition-all"
               >
                 Ponovi
               </button>
@@ -1729,8 +1702,8 @@ export function MjerenjeModal({
             onClick={() => isListening ? stopListening() : startListening()}
             className={`w-full flex items-center justify-center gap-2 border rounded-xl py-3 font-medium text-sm active:scale-[0.98] transition-all ${
               isListening
-                ? "bg-red-500/20 border-red-500 text-red-500 animate-pulse"
-                : "bg-muted border-border text-foreground hover:bg-muted/80"
+                ? "bg-red-100 border-red-500 text-red-600 animate-pulse"
+                : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
             }`}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -1746,7 +1719,7 @@ export function MjerenjeModal({
         <button
           type="submit"
           form="mjerenje-form"
-          className="w-full bg-primary text-primary-foreground rounded-2xl py-4 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all shadow-sm"
+          className="w-full bg-teal-700 text-white rounded-xl py-4 font-bold text-sm hover:bg-teal-800 active:scale-[0.98] transition-all shadow-sm"
           style={{ minHeight: 56 }}
         >
           {isInitial ? "Spremi referentno mjerenje" : "Spremi mjerenje"}
@@ -1754,7 +1727,7 @@ export function MjerenjeModal({
         <button
           type="button"
           onClick={onClose}
-          className="w-full border border-border text-muted-foreground rounded-2xl py-3.5 font-semibold text-sm hover:bg-muted/50 active:scale-[0.98] transition-all"
+          className="w-full border border-slate-200 text-slate-500 rounded-xl py-3.5 font-semibold text-sm hover:bg-slate-100 active:scale-[0.98] transition-all"
           style={{ minHeight: 48 }}
         >
           Odustani

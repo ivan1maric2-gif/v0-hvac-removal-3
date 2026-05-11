@@ -498,22 +498,22 @@ export function NadopunaModal({
               {/* Grid vrijednosti */}
               <div className="grid grid-cols-2 gap-x-4 gap-y-1 pt-1">
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">pH</span>
-                  <span className="text-2xl font-black text-blue-700 dark:text-blue-300 tabular-nums leading-tight">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">pH</span>
+                  <span className="text-2xl font-black text-blue-700 tabular-nums leading-tight">
                     {getMjerenjePH(zadnjeMjer).toFixed(2)}
                   </span>
                 </div>
                 {zadnjeMjer.flowLMin !== undefined && (
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Protok</span>
-                    <span className="text-2xl font-black text-foreground tabular-nums leading-tight">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Protok</span>
+                    <span className="text-2xl font-black text-slate-800 tabular-nums leading-tight">
                       {zadnjeMjer.flowLMin.toFixed(1)} <span className="text-sm font-semibold">L/min</span>
                     </span>
                   </div>
                 )}
                 {zadnjeMjer.tempOutC !== undefined && (
                   <div className="flex flex-col mt-1">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Temperatura</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Temperatura</span>
                     <span className="text-lg font-black text-orange-600 tabular-nums leading-tight">
                       {zadnjeMjer.tempOutC.toFixed(1)} °C
                     </span>
@@ -521,16 +521,16 @@ export function NadopunaModal({
                 )}
                 {zadnjeMjer.colorIndicator && (
                   <div className="flex flex-col mt-1">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Boja indikatora</span>
-                    <span className="text-lg font-bold text-foreground leading-tight">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Boja indikatora</span>
+                    <span className="text-lg font-bold text-slate-800 leading-tight">
                       {COLOR_LABELS[zadnjeMjer.colorIndicator] ?? zadnjeMjer.colorIndicator}
                     </span>
                   </div>
                 )}
                 {zadnjeMjer.foamLevel && (
                   <div className="flex flex-col mt-1">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Pjena / reakcija</span>
-                    <span className="text-lg font-bold text-foreground leading-tight">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Pjena / reakcija</span>
+                    <span className="text-lg font-bold text-slate-800 leading-tight">
                       {FOAM_LABELS[zadnjeMjer.foamLevel] ?? zadnjeMjer.foamLevel}
                     </span>
                   </div>
@@ -539,7 +539,7 @@ export function NadopunaModal({
 
               {zadnjeMjer.interpretation && (
                 <div className="pt-2 border-t border-blue-200 dark:border-blue-700/40">
-                  <p className="text-xs text-muted-foreground leading-relaxed italic">{zadnjeMjer.interpretation}</p>
+                  <p className="text-xs text-slate-500 leading-relaxed italic">{zadnjeMjer.interpretation}</p>
                 </div>
               )}
             </div>
@@ -563,14 +563,14 @@ export function NadopunaModal({
 
           {/* Cycle product — "Sredstvo u ovom ciklusu" label + explicit change button */}
           {cycleSnapshot && productMode === "reuse" && (
-            <div className="bg-card border border-border rounded-xl px-3 py-2.5 flex items-center gap-3">
+            <div className="bg-white border border-slate-200 rounded-xl px-3 py-2.5 flex items-center gap-3 shadow-sm">
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-0.5">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-0.5">
                   Sredstvo u ovom ciklusu
                 </p>
-                <p className="text-sm font-semibold text-foreground truncate">{cycleSnapshot.name}</p>
+                <p className="text-sm font-semibold text-slate-800 truncate">{cycleSnapshot.name}</p>
                 {cycleSnapshot.brand && (
-                  <p className="text-[10px] text-muted-foreground">{cycleSnapshot.brand}</p>
+                  <p className="text-[10px] text-slate-500">{cycleSnapshot.brand}</p>
                 )}
               </div>
               <button
@@ -581,7 +581,7 @@ export function NadopunaModal({
                   set("chemicalProductName", "");
                   set("densityKgL", "");
                 }}
-                className="shrink-0 text-xs text-primary font-medium hover:underline"
+                className="shrink-0 text-xs text-teal-700 font-medium hover:underline"
               >
                 Koristi drugo sredstvo
               </button>
@@ -607,7 +607,7 @@ export function NadopunaModal({
               <button
                 type="button"
                 onClick={() => setShowProductPicker(true)}
-                className="w-full flex items-center gap-2 border border-dashed border-border rounded-xl px-4 py-3 text-sm text-muted-foreground hover:border-primary/50 hover:text-foreground transition-all text-left"
+                className="w-full flex items-center gap-2 border border-dashed border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-500 hover:border-teal-400 hover:text-slate-700 transition-all text-left"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M20 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z" /><path d="M16 3H8L4 7h16l-4-4Z" />
@@ -788,7 +788,7 @@ export function NadopunaModal({
               </p>
             )}
             {volumen?.isApproximate && !volumen.needsDensity && (
-              <p className="text-[10px] text-muted-foreground/60 italic mt-1">
+              <p className="text-[10px] text-slate-400 italic mt-1">
                 * Priblizni postotak temeljen na gustoci {form.densityKgL} kg/L.
               </p>
             )}
@@ -807,7 +807,7 @@ export function NadopunaModal({
               <div className="shrink-0 w-4 h-4 rounded-full bg-orange-100 flex items-center justify-center mt-0.5">
                 <span className="text-[9px] font-bold text-orange-600">{i + 1}</span>
               </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">{txt}</p>
+              <p className="text-xs text-slate-600 leading-relaxed">{txt}</p>
             </div>
           ))}
         </div>

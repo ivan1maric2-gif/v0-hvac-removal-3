@@ -153,7 +153,7 @@ export function BrziPokreniCiklus({
     ? (defaultUnitForForm(selectedProduct!.form) as JedinicaKemikalije)
     : manualUnit;
 
-  // ── Product warning (derived, no state) ─────────────���────────────────────
+  // ── Product warning (derived, no state) ─────────────�����────────────────────
   const produktUpozorenje = selectedProduct
     ? evaluirajUpozorenjeProizvoda(selectedProduct, systemCategory)
     : null;
@@ -391,7 +391,7 @@ export function BrziPokreniCiklus({
             )}
 
             {touched && !selectedProduct && svaAktivna.length > 0 && (
-              <p className="text-xs text-destructive font-medium">Odaberi kemijsko sredstvo.</p>
+              <p className="text-xs text-red-600 font-medium">Odaberi kemijsko sredstvo.</p>
             )}
 
             {/* Sigurnosne informacije — safeFor / notFor */}
