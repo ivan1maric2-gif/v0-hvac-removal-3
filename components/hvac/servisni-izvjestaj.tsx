@@ -424,7 +424,7 @@ export function ServisniIzvjestaj({ sesija, onClose }: ServisniIzvjestajProps) {
       <div className="shrink-0 flex items-center justify-between px-4 py-3 border-b border-border bg-card gap-2 flex-wrap">
         <div>
           <h1 className="text-sm font-bold text-foreground">Servisni izvještaj</h1>
-          <p className="text-xs text-muted-foreground">{sesija.naziv_objekta} · {fDate(sesija.datum)}</p>
+          <p className="text-xs text-muted-foreground truncate max-w-[200px]">{sesija.naziv_objekta} · {fDate(sesija.datum)}</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <CopyButton report={report} />
@@ -458,8 +458,8 @@ export function ServisniIzvjestaj({ sesija, onClose }: ServisniIzvjestajProps) {
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">Servisni izvještaj</p>
-                <h2 className="text-xl font-bold text-foreground leading-tight">{sesija.naziv_objekta}</h2>
-                <p className="text-sm text-muted-foreground mt-0.5">{sesija.lokacija}</p>
+                <h2 className="text-xl font-bold text-foreground leading-tight break-words">{sesija.naziv_objekta}</h2>
+                <p className="text-sm text-muted-foreground mt-0.5 break-words">{sesija.lokacija}</p>
               </div>
               <div className="text-right shrink-0">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Datum</p>
