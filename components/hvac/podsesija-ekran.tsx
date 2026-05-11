@@ -35,6 +35,7 @@ import { genId, nowISO } from "@/lib/utils";
 import { CycleStatusKartica, BlockedNewCycleBanner } from "./session-cycle-status";
 import { ProductCard, ChemistryCard, MaterialSafetyCard, CompatibilityWarnings } from "./product-chemistry-safety-cards";
 import { getProductEngine } from "@/lib/product-engine";
+import { AlertsCompliancePanel } from "./alerts-compliance-panel";
 
 function formatTime(iso: string): string {
   try {
@@ -235,6 +236,13 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
         {akt && podsesija.status !== "zavrseno" && (
           <LiveTimer />
         )}
+
+        {/* Alerts + Compliance Panel — engine output display */}
+        <AlertsCompliancePanel
+          sesija={sesija}
+          allCiklusi={allCiklusi}
+          podsesija={podsesija}
+        />
 
         {/* Cycle status card — engine output display */}
         {akt && (
@@ -1355,7 +1363,7 @@ function CompletionPhasesPanelB({
   );
 }
 
-// ─── Modals ────────────────────────────────────────────────────────────���──────
+// ─── Modals ───────────��────────────────────────────────────────────────���──────
 
 function ModalWrapper({
   title,

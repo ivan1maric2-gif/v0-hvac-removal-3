@@ -47,6 +47,7 @@ import {
 import { NoviCiklusWorkflow } from "./novi-ciklus-workflow";
 import { toast } from "sonner";
 import { SessionStatusKartica, SessionHierarchyView } from "./session-cycle-status";
+import { AlertsCompliancePanel } from "./alerts-compliance-panel";
 import { getUzUpozorenjeLabel } from "@/lib/types";
 
 function formatDate(iso: string) {
@@ -421,6 +422,12 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
             }}
           />
         )}
+
+        {/* Alerts + Compliance Panel — engine output display */}
+        <AlertsCompliancePanel
+          sesija={sesija}
+          allCiklusi={allCiklusi}
+        />
 
         {/* Demo data warning */}
         {sesija.isDemo && (
@@ -1202,7 +1209,7 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
         </div>
       )}
 
-      {/* ── Service report overlay ─────���──────────────────────────────────── */}
+      {/* ── Service report overlay ─────�����──────────────────────────────────── */}
       {showIzvjestaj && (
         <ServisniIzvjestaj
           sesija={sesija}
