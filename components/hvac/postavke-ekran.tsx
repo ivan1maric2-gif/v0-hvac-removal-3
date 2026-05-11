@@ -2,6 +2,7 @@
 
 import { useFontScale, FontScale } from "@/hooks/use-font-scale";
 import { useApp } from "@/lib/app-state";
+import { EngineOrchestrationPanel } from "./engine-orchestration-panel";
 
 const SCALE_OPTIONS: { value: FontScale; label: string; desc: string }[] = [
   { value: "sm",  label: "S",  desc: "Malo"      },
@@ -85,6 +86,19 @@ export function PostavkeEkran() {
               Referentno mjerenje · 17:30
             </p>
           </div>
+        </section>
+
+        {/* Engine Admin — collapsible, hidden by default */}
+        <section className="flex flex-col gap-3">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+              Engine Dijagnostika
+            </span>
+            <span className="text-xs text-muted-foreground/60">
+              Tehničke informacije — samo za administratore
+            </span>
+          </div>
+          <EngineOrchestrationPanel />
         </section>
 
       </div>
