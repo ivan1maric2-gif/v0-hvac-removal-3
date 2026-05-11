@@ -894,25 +894,25 @@ function TrenutniStatusKartica({
       })()}
 
       {/* Chemical status row */}
-      <div className="px-3 py-2 border-b border-border">
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Kemijsko sredstvo</span>
-        <p className="text-xs font-medium text-foreground mt-0.5 truncate">{kemijskiStatus}</p>
+      <div className="px-3 py-2 border-b border-slate-200">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Kemijsko sredstvo</span>
+        <p className="text-xs font-medium text-slate-800 mt-0.5 truncate">{kemijskiStatus}</p>
       </div>
 
       {/* Cycle decision banner */}
       {zadnjeMjerenje?.preporuka?.cycleDecision && (
-        <div className="px-3 py-2.5 border-t border-border bg-muted/40 flex items-center justify-between gap-3">
+        <div className="px-3 py-2.5 border-t border-slate-200 bg-slate-50 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0">
-            <svg className="shrink-0 text-primary" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg className="shrink-0 text-teal-700" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
               <path d="M9 12l2 2 4-4" /><circle cx="12" cy="12" r="10" />
             </svg>
             <div className="min-w-0">
-              <p className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground">Preporučena odluka</p>
-              <p className="text-xs font-bold text-foreground leading-tight truncate">
+              <p className="text-[9px] font-semibold uppercase tracking-widest text-slate-500">Preporučena odluka</p>
+              <p className="text-xs font-bold text-slate-800 leading-tight truncate">
                 {zadnjeMjerenje.preporuka.cycleDecision}
               </p>
               {zadnjeMjerenje.preporuka.cycleDecisionReason && (
-                <p className="text-[10px] text-muted-foreground leading-tight">
+                <p className="text-[10px] text-slate-500 leading-tight">
                   {zadnjeMjerenje.preporuka.cycleDecisionReason}
                 </p>
               )}
@@ -922,7 +922,7 @@ function TrenutniStatusKartica({
             <button
               type="button"
               onClick={onDecision}
-              className="shrink-0 text-xs font-semibold text-primary border border-primary/30 rounded-lg px-2.5 py-1.5 hover:bg-primary/10 transition-colors"
+              className="shrink-0 text-xs font-semibold text-teal-700 border border-teal-300 rounded-lg px-2.5 py-1.5 hover:bg-teal-50 transition-colors"
             >
               Odaberi
             </button>
@@ -943,7 +943,7 @@ function TrenutniStatusKartica({
 function MetaItem({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <span className="text-primary-foreground/50">{label}: </span>
+      <span className="text-white/50">{label}: </span>
       <span>{value}</span>
     </div>
   );
@@ -958,9 +958,9 @@ function CiklusKarticaAktivna({ ciklus, sesija }: { ciklus: Ciklus; sesija: Sesi
     : null;
 
   return (
-    <div className="bg-card border border-border rounded-xl p-4">
+    <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-500">
           Ciklus #{ciklus.cycleNumber ?? ciklus.broj}
           {ciklus.name ? ` — ${ciklus.name}` : ""}
         </h3>
@@ -968,25 +968,25 @@ function CiklusKarticaAktivna({ ciklus, sesija }: { ciklus: Ciklus; sesija: Sesi
       </div>
 
       {/* Key metrics grid */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs text-muted-foreground mb-3">
-        <span>Voda: <strong className="text-foreground">{ciklus.waterVolumeL ?? ciklus.volumen_vode} L</strong></span>
-        <span>Sredstvo: <strong className="text-foreground">{ciklus.chemicalProductName ?? ciklus.kemikalija}</strong></span>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs text-slate-500 mb-3">
+        <span>Voda: <strong className="text-slate-800">{ciklus.waterVolumeL ?? ciklus.volumen_vode} L</strong></span>
+        <span>Sredstvo: <strong className="text-slate-800">{ciklus.chemicalProductName ?? ciklus.kemikalija}</strong></span>
         <span>
-          Količina: <strong className="text-foreground">
+          Količina: <strong className="text-slate-800">
             {ciklus.chemicalAmount} {ciklus.chemicalUnit}
           </strong>
         </span>
         {ciklus.totalSolutionVolumeL && (
-          <span>Ukupno: <strong className="text-foreground">{ciklus.totalSolutionVolumeL.toFixed(1)} L</strong></span>
+          <span>Ukupno: <strong className="text-slate-800">{ciklus.totalSolutionVolumeL.toFixed(1)} L</strong></span>
         )}
         {ciklus.chemicalPercent != null && (
-          <span>Postotak: <strong className="text-foreground">{ciklus.chemicalPercent.toFixed(2)} %</strong></span>
+          <span>Postotak: <strong className="text-slate-800">{ciklus.chemicalPercent.toFixed(2)} %</strong></span>
         )}
         {ciklus.waterPh && (
-          <span>pH vode: <strong className="text-foreground">{ciklus.waterPh}</strong></span>
+          <span>pH vode: <strong className="text-slate-800">{ciklus.waterPh}</strong></span>
         )}
-        <span>Nadopune: <strong className="text-foreground">{ciklus.nadopune.length}</strong></span>
-        <span>Mjerenja: <strong className="text-foreground">{ciklus.mjerenja.length}</strong></span>
+        <span>Nadopune: <strong className="text-slate-800">{ciklus.nadopune.length}</strong></span>
+        <span>Mjerenja: <strong className="text-slate-800">{ciklus.mjerenja.length}</strong></span>
       </div>
 
       {/* Initial measurement */}
@@ -1008,15 +1008,15 @@ function CiklusKarticaAktivna({ ciklus, sesija }: { ciklus: Ciklus; sesija: Sesi
 
       {/* Unified measurement + top-up timeline */}
       {(ciklus.mjerenja.length > 0 || ciklus.nadopune.length > 0) && (
-        <div className="border-t border-border pt-3 mt-1">
+        <div className="border-t border-slate-100 pt-3 mt-1">
           <CiklusVremenskiSlijed ciklus={ciklus} sesija={sesija} showTitle={false} />
         </div>
       )}
 
       {/* Legacy nadopune fallback — hidden when timeline is shown, kept for type safety */}
       {false && ciklus.nadopune.length > 0 && (
-        <div className="border-t border-border pt-3 mt-3">
-          <p className="text-xs text-muted-foreground font-medium mb-2">Nadopune:</p>
+        <div className="border-t border-slate-100 pt-3 mt-3">
+          <p className="text-xs text-slate-500 font-medium mb-2">Nadopune:</p>
           <div className="flex flex-col gap-1.5">
             {ciklus.nadopune.map((n) => (
               <NadopunaRedak key={n.id} nadopuna={n} />
@@ -1044,22 +1044,22 @@ function MjerenjeRedak({ mjerenje, broj }: { mjerenje: Mjerenje; broj: number })
   const ph = getMjerenjePH(mjerenje);
   const ts = getMjerenjeTimestamp(mjerenje);
   return (
-    <div className="border border-border rounded-xl p-3 flex flex-col gap-1.5">
+    <div className="border border-slate-200 rounded-xl p-3 flex flex-col gap-1.5 bg-white">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-bold text-muted-foreground bg-muted rounded px-1.5 py-0.5">
+          <span className="text-[10px] font-bold text-slate-500 bg-slate-100 rounded px-1.5 py-0.5">
             #{broj} {TYPE_SHORT[mjerenje.measurementType] ?? "Mj."}
           </span>
-          <span className="font-bold text-sm text-foreground">pH {ph.toFixed(2)}</span>
+          <span className="font-bold text-sm text-slate-800">pH {ph.toFixed(2)}</span>
           {mjerenje.phChange !== undefined && (
-            <span className={`text-xs font-medium ${mjerenje.phChange > 0 ? "text-orange-600" : mjerenje.phChange < 0 ? "text-green-600" : "text-muted-foreground"}`}>
+            <span className={`text-xs font-medium ${mjerenje.phChange > 0 ? "text-orange-600" : mjerenje.phChange < 0 ? "text-green-600" : "text-slate-400"}`}>
               {mjerenje.phChange > 0 ? "+" : ""}{mjerenje.phChange.toFixed(2)}
             </span>
           )}
         </div>
-        <span className="text-[10px] text-muted-foreground/60">{formatTime(ts)}</span>
+        <span className="text-[10px] text-slate-400">{formatTime(ts)}</span>
       </div>
-      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
+      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-slate-500">
         {mjerenje.temperatureC !== undefined && <span>{mjerenje.temperatureC}°C</span>}
         {mjerenje.foamLevel && mjerenje.foamLevel !== "nema" && (
           <span>Pjena: {FOAM_SHORT[mjerenje.foamLevel]}</span>
@@ -1071,12 +1071,12 @@ function MjerenjeRedak({ mjerenje, broj }: { mjerenje: Mjerenje; broj: number })
         )}
       </div>
       {mjerenje.interpretation && (
-        <p className="text-xs text-muted-foreground/80 italic leading-relaxed">
+        <p className="text-xs text-slate-500 italic leading-relaxed">
           {mjerenje.interpretation}
         </p>
       )}
       {(mjerenje.note ?? mjerenje.napomena) && (
-        <p className="text-xs text-muted-foreground italic">{mjerenje.note ?? mjerenje.napomena}</p>
+        <p className="text-xs text-slate-400 italic">{mjerenje.note ?? mjerenje.napomena}</p>
       )}
     </div>
   );

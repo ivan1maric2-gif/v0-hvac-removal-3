@@ -468,6 +468,7 @@ function TabOsnovno({ product }: { product: Product }) {
                   <span className="text-[10px] text-slate-500">
                     {SOURCE_DOCUMENT_TYPE_LABELS[product.sourceDocumentType]}
                   </span>
+                )}
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[10px] text-slate-500">
