@@ -33,6 +33,8 @@ import { generirajPreporuku as _generirajPreporuku, analyseReactionStability, ge
 
 import { genId, nowISO } from "@/lib/utils";
 import { CycleStatusKartica, BlockedNewCycleBanner } from "./session-cycle-status";
+import { ProductCard, ChemistryCard, MaterialSafetyCard, CompatibilityWarnings } from "./product-chemistry-safety-cards";
+import { getProductEngine } from "@/lib/product-engine";
 
 function formatTime(iso: string): string {
   try {
@@ -374,6 +376,27 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
         {akt && akt.mjerenja.length === 0 && (
           <CiklusKarticaAktivna ciklus={akt} sesija={sesija} />
         )}
+
+        {/* Product / Chemistry / Material Safety kartice — prikazati kad je productSnapshot dostupan */}
+        {akt?.productSnapshot && (() => {
+          const engine = getProductEngine(akt.productSnapshot);
+          const zadnjiPh = zadnjiPH(akt.mjerenja);
+          const zadnjaMjerenja = zadnjeMjerenje(akt.mjerenja);
+          const currentColor = zadnjaMjerenja && "colorIndicator" in zadnjaMjerenja ? (zadnjaMjerenja as { colorIndicator?: string }).colorIndicator : undefined;
+          return (
+            <div className="flex flex-col gap-3">
+              <CompatibilityWarnings
+                productSnapshot={akt.productSnapshot}
+                engine={engine}
+                currentTempC={zadnjaMjerenja && "tOut" in zadnjaMjerenja ? (zadnjaMjerenja as { tOut?: number }).tOut : undefined}
+                currentConcentration={akt.chemicalPercent ?? undefined}
+              />
+              <MaterialSafetyCard productSnapshot={akt.productSnapshot} engine={engine} />
+              <ChemistryCard engine={engine} currentPh={zadnjiPh} currentColorName={currentColor} />
+              <ProductCard productSnapshot={akt.productSnapshot} engine={engine} />
+            </div>
+          );
+        })()}
 
         {/* Prekinut ciklus */}
         {sve_zavrseno && podsesija.ciklusi.some(c => c.status === "prekinut") && (
