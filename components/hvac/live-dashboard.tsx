@@ -763,38 +763,68 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         const deltaTOut = tOut !== null && refTOut !== null ? parseFloat((tOut - refTOut).toFixed(1)) : null;
         const tempOutStagnira = deltaTOut === null || (deltaTOut > -0.3 && deltaTOut < 0.3);
 
-        // Boja kartice prema rs severity
+        // Flow visual state — direktno iz flowImprovement engine outputa
+        const flowCardBg =
+          flowImprovement == null ? "bg-slate-50 border-slate-200" :
+          flowImprovement.stagnation && flowImprovement.deltaFlowPercent > 3 ? "bg-amber-50 border-amber-200" :
+          flowImprovement.deltaFlowPercent >= 10 ? "bg-teal-50 border-teal-300" :
+          flowImprovement.deltaFlowPercent >= 3  ? "bg-teal-50 border-teal-200" :
+          flowImprovement.deltaFlowPercent < -3  ? "bg-red-50 border-red-200" :
+          flowImprovement.deltaFlowPercent < 0   ? "bg-amber-50 border-amber-200" :
+          "bg-slate-50 border-slate-200";
+
+        const flowLabelColor =
+          flowImprovement == null ? "text-slate-500" :
+          flowImprovement.stagnation && flowImprovement.deltaFlowPercent > 3 ? "text-amber-700" :
+          flowImprovement.deltaFlowPercent >= 3  ? "text-teal-700" :
+          flowImprovement.deltaFlowPercent < -3  ? "text-red-700" :
+          flowImprovement.deltaFlowPercent < 0   ? "text-amber-700" :
+          "text-slate-600";
+
+        // Contradiction — rs.explanation sadrži contradiction tekst ako ga ima.
+        // Detektiramo ga po rs.statusLabel koji engine generira za contradiction stanja.
+        const hasContradiction =
+          rs.statusLabel === "pH visok, ali protok raste" ||
+          rs.statusLabel === "Sredstvo slabi, ali protok raste";
+
+        // Plateau after improvement
+        const isPlateauAfterImprovement =
+          flowImprovement?.stagnation === true &&
+          (flowImprovement?.deltaFlowPercent ?? 0) > 3;
+
+        // Main card bg
         const cardBg =
           rs.severity === "critical" ? "bg-red-600 border-red-500" :
           rs.severity === "warn"     ? "bg-amber-500 border-amber-400" :
-          rs.primaryAction === "novi_ciklus" ? "bg-red-600 border-red-500" :
-          rs.primaryAction === "nadopuna"    ? "bg-amber-500 border-amber-400" :
+          isGotovo                   ? "bg-slate-800 border-slate-700" :
           "bg-teal-600 border-teal-500";
 
         return (
           <div className="flex flex-col gap-3">
 
-            {/* ── Glavna status kartica ─────────────────────────────────────── */}
+            {/* ── 1. GLAVNA PREPORUKA (PRIMARY) ────────────────────────────── */}
             <div className={`rounded-xl overflow-hidden border ${cardBg}`}>
-
-              {/* Naslov */}
               <div className="px-4 pt-4 pb-3 flex items-center justify-between">
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-0.5">Status cirkulacije</p>
-                  <h2 className="text-lg font-black text-white leading-tight">
-                    {uputa.label}
-                  </h2>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-0.5">Glavna preporuka</p>
+                  <h2 className="text-base font-black text-white leading-tight">{uputa.label}</h2>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shrink-0 text-white">
+                <div className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shrink-0 text-white ml-3">
                   {uputa.icon}
                 </div>
               </div>
-
-              {/* rs.explanation — direktno iz enginea */}
-              <div className="px-4 pb-4">
+              <div className="px-4 pb-3">
                 <p className="text-sm text-white/90 leading-relaxed">{rs.explanation}</p>
               </div>
-
+              {rs.nextStep && (
+                <div className="px-4 pb-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-0.5">Sljedeći korak</p>
+                  <p className="text-sm font-bold text-white">{rs.nextStep}</p>
+                  {rs.nextStepReason && (
+                    <p className="text-xs text-white/70 mt-0.5 leading-relaxed">{rs.nextStepReason}</p>
+                  )}
+                </div>
+              )}
               {/* TTS gumb */}
               <div className="px-4 py-2.5 border-t border-white/10 flex items-center justify-between bg-black/10">
                 <span className="text-xs text-white/50 font-medium">
@@ -814,26 +844,68 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
               </div>
             </div>
 
-            {/* ── Uputa serviseru — rs.explanation ─────────────────────────── */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm px-4 py-4">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
-                Uputa serviseru
-              </p>
-              <p className="text-sm font-medium text-slate-700 leading-relaxed">
-                {rs.explanation}
-              </p>
-            </div>
+            {/* ── 2. CONTRADICTION BANNER ──────────────────────────────────── */}
+            {hasContradiction && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-start gap-3">
+                <div className="shrink-0 w-8 h-8 rounded-full bg-amber-100 border border-amber-300 flex items-center justify-center mt-0.5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-amber-700" aria-hidden="true">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700 mb-0.5">Proturječnost</p>
+                  <p className="text-sm font-medium text-amber-800 leading-relaxed">{rs.explanation}</p>
+                </div>
+              </div>
+            )}
 
-            {/* ── Sljedeći korak — rs.nextStep + rs.nextStepReason ─────────── */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm px-4 py-4">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">
-                Sljedeći korak
-              </p>
-              <p className="text-sm font-bold text-slate-800 mb-1">{rs.nextStep}</p>
-              {rs.nextStepReason && (
-                <p className="text-xs text-slate-500 leading-relaxed">{rs.nextStepReason}</p>
-              )}
-            </div>
+            {/* ── 3. PLATEAU BANNER ────────────────────────────────────────── */}
+            {isPlateauAfterImprovement && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700 mb-0.5">Poboljšanje stabilizirano</p>
+                <p className="text-sm text-amber-800 leading-relaxed">
+                  Protok se poboljšao za{" "}
+                  <strong>{flowImprovement!.deltaFlowPercent.toFixed(1)}%</strong>, ali više ne raste.{" "}
+                  {flowImprovement!.statusLabel}
+                </p>
+              </div>
+            )}
+
+            {/* ── 4. FLOW CARD ─────────────────────────────────────────────── */}
+            {flowImprovement != null && (
+              <div className={`rounded-xl border px-4 py-3 ${flowCardBg}`}>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Protok</p>
+                <div className="flex items-end justify-between gap-3">
+                  <div>
+                    <p className={`text-base font-black leading-tight ${flowLabelColor}`}>
+                      {flowImprovement.statusLabel}
+                    </p>
+                    {currFlow != null && (
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Trenutno: <strong className="text-slate-700">{currFlow.toFixed(1)} L/min</strong>
+                        {baseFlow != null && (
+                          <span className="ml-1 text-slate-400">
+                            (ref: {baseFlow.toFixed(1)} L/min)
+                          </span>
+                        )}
+                      </p>
+                    )}
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className={`text-xl font-black tabular-nums ${
+                      flowImprovement.deltaFlowPercent >= 3 ? "text-teal-600" :
+                      flowImprovement.deltaFlowPercent < 0  ? "text-red-600" :
+                      "text-slate-500"
+                    }`}>
+                      {flowImprovement.deltaFlowPercent > 0 ? "+" : ""}
+                      {flowImprovement.deltaFlowPercent.toFixed(1)}%
+                    </p>
+                    <p className="text-[10px] text-slate-400">vs referentno</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
           </div>
         );
