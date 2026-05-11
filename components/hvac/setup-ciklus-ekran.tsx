@@ -37,7 +37,7 @@ function NacinRadaField({
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-sm font-semibold text-foreground">Način rada *</span>
+      <span className="text-sm font-semibold text-slate-800">Način rada *</span>
       <div className="flex flex-col gap-2">
         {NACIN_RADA_OPTIONS.map((opt) => {
           const selected = value === opt.value;
@@ -46,15 +46,15 @@ function NacinRadaField({
           return (
             <div
               key={opt.value}
-              className={`rounded-xl border-2 overflow-hidden transition-all duration-200 ${
+              className={`rounded-xl border-2 overflow-hidden transition-all duration-200 shadow-sm ${
                 selected
-                  ? "border-primary bg-primary/10"
-                  : "border-border bg-card"
+                  ? "border-teal-500 bg-teal-50"
+                  : "border-slate-200 bg-white hover:border-slate-300"
               }`}
             >
               {/* Gornji red — uvijek vidljiv, klik = odabir */}
               <div
-                className="flex items-center gap-4 px-5 py-4 cursor-pointer"
+                className="flex items-center gap-3 px-4 py-3.5 cursor-pointer"
                 onClick={() => onChange(opt.value)}
               >
                 <input
@@ -65,44 +65,37 @@ function NacinRadaField({
                   onChange={() => onChange(opt.value)}
                   className="sr-only"
                 />
-                <div className="flex flex-col gap-0 flex-1">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                    Način rada
-                  </span>
-                  <span className={`text-2xl font-black uppercase leading-tight ${selected ? "text-primary" : "text-foreground"}`}>
+                {/* Radio circle */}
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                  selected ? "border-teal-600 bg-teal-600" : "border-slate-300 bg-white"
+                }`}>
+                  {selected && <div className="w-2 h-2 rounded-full bg-white" aria-hidden="true" />}
+                </div>
+                <div className="flex flex-col gap-0 flex-1 min-w-0">
+                  <span className={`text-sm font-bold leading-tight ${selected ? "text-teal-800" : "text-slate-800"}`}>
                     {opt.label}
                   </span>
-                  {!open && (
-                    <span className="text-xs text-muted-foreground mt-0.5">Klikni za detalje</span>
-                  )}
+                  <span className="text-xs text-slate-500 mt-0.5">{opt.opis}</span>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  {selected && (
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  )}
-                  {/* Strelica za expand — klik samo expand, ne mijenja odabir */}
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); setExpanded(open ? null : opt.value); }}
-                    className="p-1 rounded-lg text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label={open ? "Sakrij detalje" : "Prikaži detalje"}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setExpanded(open ? null : opt.value); }}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 transition-colors shrink-0"
+                  aria-label={open ? "Sakrij detalje" : "Prikaži detalje"}
+                >
+                  <svg
+                    width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+                    className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
                   >
-                    <svg
-                      width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
-                      className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-                    >
-                      <path d="M6 9l6 6 6-6" />
-                    </svg>
-                  </button>
-                </div>
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </button>
               </div>
 
               {/* Expand sadrzaj */}
               {open && (
-                <div className="px-5 pb-4 pt-0 border-t border-border/40">
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                <div className="px-4 pb-3.5 pt-0 border-t border-slate-100">
+                  <p className="text-xs text-slate-600 leading-relaxed pt-3">
                     {opt.opis}
                   </p>
                 </div>
@@ -239,30 +232,30 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
   // ── "Sesija zapoceta" confirmation view ───────────────────────────────────
   if (view === "zapoceto") {
     return (
-      <div className="flex flex-col flex-1 bg-background">
-        <header className="bg-secondary text-secondary-foreground px-4 py-5">
-          <p className="text-xs text-secondary-foreground/60 uppercase tracking-widest font-medium mb-1">
+      <div className="flex flex-col flex-1 bg-slate-50">
+        <header className="bg-teal-700 text-white px-4 py-5">
+          <p className="text-[9px] font-black uppercase tracking-widest text-white/60 mb-1">
             {sesija.naziv_objekta}
           </p>
-          <h1 className="text-xl font-bold">{form.nazivUredaja}</h1>
+          <h1 className="text-xl font-black">{form.nazivUredaja}</h1>
         </header>
 
-        <main className="flex-1 overflow-y-auto px-4 py-8 max-w-lg mx-auto w-full flex flex-col gap-6">
+        <main className="flex-1 overflow-y-auto px-4 py-6 max-w-lg mx-auto w-full flex flex-col gap-4">
           {/* Status card */}
-          <div className="rounded-2xl border border-border bg-card px-5 py-5 flex flex-col gap-3">
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 flex flex-col gap-3 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary">
+              <div className="w-9 h-9 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-emerald-700">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-bold text-foreground">Sesija je započeta.</p>
-                <p className="text-xs text-muted-foreground">{form.tipSustava === "TPV" ? "PTV / TPV" : "Tehnička voda"} — {VRSTA_PROBLEMA_OPTIONS.find(o => o.value === form.vrstaProblem)?.label}</p>
+                <p className="text-sm font-bold text-emerald-800">Sesija je započeta.</p>
+                <p className="text-xs text-emerald-700">{form.tipSustava === "TPV" ? "PTV / TPV" : "Tehnička voda"} — {VRSTA_PROBLEMA_OPTIONS.find(o => o.value === form.vrstaProblem)?.label}</p>
               </div>
             </div>
 
-            <div className="border-t border-border pt-3 flex flex-col gap-1.5">
+            <div className="border-t border-emerald-200 pt-3 flex flex-col gap-1.5">
               <SummaryRow label="Uređaj" value={form.nazivUredaja} />
               <SummaryRow label="Način rada" value={NACIN_RADA_OPTIONS.find(o => o.value === form.nacinRada)?.label ?? form.nacinRada} />
               {form.materijal && (
@@ -275,14 +268,14 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
           </div>
 
           {/* Next step card */}
-          <div className="rounded-2xl border border-border bg-muted/40 px-5 py-4 flex flex-col gap-2">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Sljedeci korak
+          <div className="rounded-xl border border-slate-200 bg-white px-4 py-3.5 flex flex-col gap-1.5 shadow-sm">
+            <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">
+              Sljedeći korak
             </p>
-            <p className="text-sm text-foreground font-medium leading-snug">
+            <p className="text-sm font-bold text-slate-800 leading-snug">
               Pokreni ciklus i odaberi kemijsko sredstvo.
             </p>
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <p className="text-xs text-slate-500 leading-relaxed">
               Sredstvo se odabire prilikom pokretanja ciklusa.
             </p>
           </div>
@@ -291,8 +284,8 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
           <button
             type="button"
             onClick={() => setView("ciklus")}
-            className="w-full bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
-            style={{ minHeight: 48, paddingTop: 12, paddingBottom: 12 }}
+            className="w-full bg-teal-600 text-white rounded-xl font-bold text-sm hover:bg-teal-700 active:scale-[0.98] transition-all shadow-sm"
+            style={{ minHeight: 52, paddingTop: 14, paddingBottom: 14 }}
           >
             Pokreni ciklus
           </button>
@@ -300,7 +293,7 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
           <button
             type="button"
             onClick={nazad}
-            className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+            className="w-full text-center text-sm text-slate-500 hover:text-slate-700 transition-colors py-2"
           >
             Natrag na početak
           </button>
@@ -311,27 +304,27 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
 
   // ── Setup form view ───────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col flex-1 bg-background">
+    <div className="flex flex-col flex-1 bg-slate-50">
       {/* Header */}
-      <header className="bg-secondary text-secondary-foreground px-4 py-5">
-        <p className="text-xs text-secondary-foreground/60 uppercase tracking-widest font-medium mb-1">
+      <header className="bg-teal-700 text-white px-4 py-5">
+        <p className="text-[9px] font-black uppercase tracking-widest text-white/60 mb-1">
           {sesija.naziv_objekta}
         </p>
-        <h1 className="text-xl font-bold">Postavljanje uređaja</h1>
-        <p className="text-sm text-secondary-foreground/70 mt-1">
+        <h1 className="text-xl font-black">Postavljanje uređaja</h1>
+        <p className="text-sm text-white/70 mt-1">
           Unesite podatke o poslu. Kemijsko sredstvo odabirete pri pokretanju ciklusa.
         </p>
       </header>
 
       <main className="flex-1 overflow-y-auto px-4 py-6 max-w-lg mx-auto w-full">
-        <form onSubmit={handleProceed} className="flex flex-col gap-6">
+        <form onSubmit={handleProceed} className="flex flex-col gap-5">
 
           {/* 1. Naziv uređaja */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-foreground" htmlFor="nazivUredaja">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col gap-1.5">
+            <label className="text-sm font-bold text-slate-800" htmlFor="nazivUredaja">
               Naziv objekta / uređaja *
             </label>
-            <p className="text-xs text-muted-foreground -mt-0.5">
+            <p className="text-xs text-slate-500">
               npr. Izmjenjivač, Spiralni izmjenjivač, Spremnik 1
             </p>
             <input
@@ -340,26 +333,26 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
               value={form.nazivUredaja}
               onChange={(e) => setField("nazivUredaja", e.target.value)}
               placeholder="npr. Spremnik TPV – 3. kat"
-              className="w-full border border-input rounded-lg px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
             />
             {touched && !form.nazivUredaja.trim() && (
-              <p className="text-xs text-destructive">Naziv je obavezan.</p>
+              <p className="text-xs text-red-600 font-medium">Naziv je obavezan.</p>
             )}
           </div>
 
           {/* 2. Tip sustava */}
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-foreground">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col gap-2">
+            <label className="text-sm font-bold text-slate-800">
               Tip sustava *
             </label>
             <div className="flex flex-col gap-1.5">
               {TIP_SUSTAVA_OPTIONS.map((opt) => (
                 <label
                   key={opt.value}
-                  className={`flex items-center gap-3 rounded-xl border px-4 py-3 cursor-pointer transition-colors ${
+                  className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 cursor-pointer transition-colors ${
                     form.tipSustava === opt.value
-                      ? "border-primary bg-primary/10 text-foreground"
-                      : "border-border bg-card text-foreground hover:border-muted-foreground/40"
+                      ? "border-teal-500 bg-teal-50 text-teal-800"
+                      : "border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300"
                   }`}
                 >
                   <input
@@ -368,30 +361,30 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
                     value={opt.value}
                     checked={form.tipSustava === opt.value}
                     onChange={() => setField("tipSustava", opt.value)}
-                    className="accent-primary"
+                    className="accent-teal-600"
                   />
                   <span className="text-sm font-medium">{opt.label}</span>
                 </label>
               ))}
             </div>
             {touched && !form.tipSustava && (
-              <p className="text-xs text-destructive">Odaberite tip sustava.</p>
+              <p className="text-xs text-red-600 font-medium">Odaberite tip sustava.</p>
             )}
           </div>
 
           {/* 3. Vrsta problema */}
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-foreground">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col gap-2">
+            <label className="text-sm font-bold text-slate-800">
               Vrsta problema *
             </label>
             <div className="grid grid-cols-2 gap-2">
               {VRSTA_PROBLEMA_OPTIONS.map((opt) => (
                 <label
                   key={opt.value}
-                  className={`flex items-center gap-2.5 rounded-xl border px-3 py-2.5 cursor-pointer transition-colors ${
+                  className={`flex items-center gap-2.5 rounded-xl border-2 px-3 py-3 cursor-pointer transition-colors ${
                     form.vrstaProblem === opt.value
-                      ? "border-primary bg-primary/10 text-foreground"
-                      : "border-border bg-card text-foreground hover:border-muted-foreground/40"
+                      ? "border-teal-500 bg-teal-50 text-teal-800"
+                      : "border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300"
                   }`}
                 >
                   <input
@@ -400,7 +393,7 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
                     value={opt.value}
                     checked={form.vrstaProblem === opt.value}
                     onChange={() => setField("vrstaProblem", opt.value)}
-                    className="accent-primary"
+                    className="accent-teal-600"
                   />
                   <span className="text-sm font-medium">{opt.label}</span>
                 </label>
@@ -409,61 +402,63 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
           </div>
 
           {/* 4. Nacin rada */}
-          <NacinRadaField
-            value={form.nacinRada}
-            onChange={(v) => setField("nacinRada", v)}
-          />
-
-          {/* Divider */}
-          <div className="border-t border-border" />
-
-          {/* 5. Materijal sustava (optional) */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-foreground" htmlFor="materijal">
-              Materijal sustava
-              <span className="ml-2 text-[10px] font-normal text-muted-foreground uppercase tracking-widest">Opcijalno</span>
-            </label>
-            <select
-              id="materijal"
-              value={form.materijal}
-              onChange={(e) => setField("materijal", e.target.value)}
-              className="w-full border border-input rounded-lg px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            >
-              {MATERIJAL_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+            <NacinRadaField
+              value={form.nacinRada}
+              onChange={(v) => setField("nacinRada", v)}
+            />
           </div>
 
-          {/* 6. Procijenjeni volumen (optional) */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-foreground" htmlFor="procijenjeniVolumenL">
-              Procijenjeni volumen sustava
-              <span className="ml-2 text-[10px] font-normal text-muted-foreground uppercase tracking-widest">Opcijalno</span>
-            </label>
-            <p className="text-xs text-muted-foreground -mt-0.5">
-              Okvirni volumen za planiranje količine sredstva pri pokretanju ciklusa.
-            </p>
-            <div className="flex items-center gap-2">
-              <input
-                id="procijenjeniVolumenL"
-                type="number"
-                min={1}
-                max={10000}
-                step={0.5}
-                value={form.procijenjeniVolumenL}
-                onChange={(e) => setField("procijenjeniVolumenL", e.target.value)}
-                placeholder="npr. 80"
-                className="w-32 border border-input rounded-lg px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring tabular-nums"
-              />
-              <span className="text-sm text-muted-foreground">L</span>
+          {/* 5. Opcijalna polja */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex flex-col gap-4">
+            <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Opcijalni podaci</p>
+
+            {/* Materijal */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-bold text-slate-800" htmlFor="materijal">
+                Materijal sustava
+              </label>
+              <select
+                id="materijal"
+                value={form.materijal}
+                onChange={(e) => setField("materijal", e.target.value)}
+                className="w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
+              >
+                {MATERIJAL_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Volumen */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-bold text-slate-800" htmlFor="procijenjeniVolumenL">
+                Procijenjeni volumen sustava
+              </label>
+              <p className="text-xs text-slate-500">
+                Okvirni volumen za planiranje količine sredstva.
+              </p>
+              <div className="flex items-center gap-2">
+                <input
+                  id="procijenjeniVolumenL"
+                  type="number"
+                  min={1}
+                  max={10000}
+                  step={0.5}
+                  value={form.procijenjeniVolumenL}
+                  onChange={(e) => setField("procijenjeniVolumenL", e.target.value)}
+                  placeholder="npr. 80"
+                  className="w-32 border border-slate-200 rounded-xl px-3.5 py-3 text-sm bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors tabular-nums"
+                />
+                <span className="text-sm font-medium text-slate-500">L</span>
+              </div>
             </div>
           </div>
 
-          {/* Helper text */}
-          <div className="rounded-xl border border-border bg-muted/40 px-4 py-3">
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Sredstvo se odabire prilikom pokretanja ciklusa.
+          {/* Helper */}
+          <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Kemijsko sredstvo se odabire pri pokretanju ciklusa.
             </p>
           </div>
 
@@ -471,8 +466,8 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
           <button
             type="submit"
             disabled={touched && !isValid}
-            className="w-full bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none"
-            style={{ minHeight: 48, paddingTop: 12, paddingBottom: 12 }}
+            className="w-full bg-teal-600 text-white rounded-xl font-bold text-sm hover:bg-teal-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+            style={{ minHeight: 52, paddingTop: 14, paddingBottom: 14 }}
           >
             Pokreni sesiju
           </button>
@@ -480,7 +475,7 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
           <button
             type="button"
             onClick={nazad}
-            className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+            className="w-full text-center text-sm text-slate-500 hover:text-slate-700 transition-colors py-2"
           >
             Nazad
           </button>
@@ -496,8 +491,8 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between items-baseline gap-3">
-      <span className="text-xs text-muted-foreground shrink-0">{label}</span>
-      <span className="text-xs font-semibold text-foreground text-right">{value}</span>
+      <span className="text-xs text-emerald-700/70 shrink-0">{label}</span>
+      <span className="text-xs font-bold text-emerald-900 text-right">{value}</span>
     </div>
   );
 }

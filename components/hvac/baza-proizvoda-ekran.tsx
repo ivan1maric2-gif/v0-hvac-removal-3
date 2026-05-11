@@ -67,13 +67,13 @@ export function BazaProizvodaEkran() {
   }
 
   return (
-    <div className="flex flex-col flex-1 bg-background">
+    <div className="flex flex-col flex-1 bg-slate-50">
       {/* Header */}
-      <header className="bg-primary text-primary-foreground px-4 py-5">
+      <header className="bg-teal-700 text-white px-4 py-5">
         <div className="flex items-center gap-3">
           <button
             onClick={nazad}
-            className="p-2 rounded-xl hover:bg-primary-foreground/10 transition-colors shrink-0"
+            className="p-2 rounded-xl hover:bg-white/10 transition-colors shrink-0"
             aria-label="Natrag"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -81,7 +81,7 @@ export function BazaProizvodaEkran() {
             </svg>
           </button>
           <div>
-            <p className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-0.5">Katalog</p>
+            <p className="text-[9px] font-black uppercase tracking-widest text-white/60 mb-0.5">Katalog</p>
             <h1 className="text-xl font-black leading-tight">Baza proizvoda</h1>
           </div>
         </div>
@@ -92,7 +92,7 @@ export function BazaProizvodaEkran() {
         <div className="relative">
           <svg
             width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
           >
             <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
           </svg>
@@ -101,7 +101,7 @@ export function BazaProizvodaEkran() {
             placeholder="Pretraži proizvode..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-3.5 text-base border border-border rounded-2xl bg-background text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+            className="w-full pl-9 pr-4 py-3.5 text-sm border border-slate-200 rounded-xl bg-white text-slate-900 placeholder:text-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
           />
         </div>
 
@@ -113,8 +113,8 @@ export function BazaProizvodaEkran() {
               onClick={() => setFilterStatus(f)}
               className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-colors ${
                 filterStatus === f
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "bg-muted text-muted-foreground hover:bg-muted/70"
+                  ? "bg-teal-600 text-white shadow-sm"
+                  : "bg-white border border-slate-200 text-slate-600 hover:border-slate-300"
               }`}
             >
               {f === "sve" ? "Svi" : STATUS_PROIZVODA_LABELS[f]}
@@ -124,13 +124,13 @@ export function BazaProizvodaEkran() {
 
         {/* Product list */}
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center gap-2">
-            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-muted-foreground">
+          <div className="flex flex-col items-center justify-center py-16 text-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-slate-300">
                 <path d="M20 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z" /><path d="M16 3H8L4 7h16l-4-4Z" />
               </svg>
             </div>
-            <p className="text-sm text-muted-foreground">Nema pronađenih proizvoda</p>
+            <p className="text-sm text-slate-500">Nema pronađenih proizvoda</p>
           </div>
         ) : (
           <div className="flex flex-col gap-3">
@@ -154,27 +154,27 @@ function ProizvodKartica({ product, onClick }: { product: Product; onClick: () =
   return (
     <button
       onClick={onClick}
-      className="w-full text-left bg-card border-2 border-border rounded-2xl overflow-hidden hover:border-primary/40 active:scale-[0.99] transition-all"
+      className="w-full text-left bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:border-teal-300 hover:shadow-md active:scale-[0.99] transition-all"
     >
       {/* Card header */}
       <div className="px-4 pt-4 pb-3 flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap mb-1">
-            <span className="font-black text-foreground text-base leading-snug">{product.name}</span>
+          <div className="flex items-center gap-2 flex-wrap mb-0.5">
+            <span className="font-black text-slate-900 text-base leading-snug">{product.name}</span>
             {product.isDemo && (
-              <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded-lg px-2 py-0.5">
+              <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded-md px-1.5 py-0.5">
                 DEMO
               </span>
             )}
           </div>
           {product.brand !== "—" && (
-            <p className="text-xs text-muted-foreground">{product.brand}</p>
+            <p className="text-xs text-slate-500 mb-1.5">{product.brand}</p>
           )}
-          <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-            <span className="text-[9px] font-black uppercase tracking-widest bg-primary/10 text-primary rounded-full px-2.5 py-0.5">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-[9px] font-black uppercase tracking-widest bg-teal-100 text-teal-800 rounded-full px-2.5 py-0.5">
               {TIP_PROIZVODA_LABELS[product.productType]}
             </span>
-            <span className="text-[10px] text-muted-foreground">{OBLIK_PROIZVODA_LABELS[product.form]}</span>
+            <span className="text-[10px] text-slate-500">{OBLIK_PROIZVODA_LABELS[product.form]}</span>
           </div>
         </div>
         <div className="flex flex-col items-end gap-1 shrink-0">
@@ -185,41 +185,43 @@ function ProizvodKartica({ product, onClick }: { product: Product; onClick: () =
 
       {/* Warnings */}
       {product.isDemo && (
-        <div className="mx-4 mb-2 rounded-xl border border-amber-400/30 bg-amber-400/8 px-3 py-2">
-          <p className="text-[10px] font-bold text-amber-800 dark:text-amber-200 leading-snug">
+        <div className="mx-4 mb-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2">
+          <p className="text-[10px] font-bold text-amber-800 leading-snug">
             Demo vrijednosti — provjeriti prema tehničkom listu proizvođača.
           </p>
         </div>
       )}
       {!product.isDemo && product.statusPodataka === "potrebna_dopuna" && (
-        <div className="mx-4 mb-2 rounded-xl border border-amber-400/30 bg-amber-400/8 px-3 py-2">
-          <p className="text-[10px] font-bold text-amber-800 dark:text-amber-200 leading-snug">
+        <div className="mx-4 mb-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2">
+          <p className="text-[10px] font-bold text-amber-700 leading-snug">
             Neki podaci još nisu uneseni iz tehničkog lista proizvođača.
           </p>
         </div>
       )}
       {mainWarning && (
-        <div className="mx-4 mb-2 rounded-xl border border-rose-500/30 bg-rose-500/8 px-3 py-2 flex items-center gap-2">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-rose-500 shrink-0">
+        <div className="mx-4 mb-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 flex items-center gap-2">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-500 shrink-0" aria-hidden="true">
             <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
           </svg>
-          <p className="text-[10px] font-bold text-rose-800 dark:text-rose-200 leading-snug">
-            Upozorenje: nije kompatibilno s — {mainWarning.material}
+          <p className="text-[10px] font-bold text-red-700 leading-snug">
+            Nije kompatibilno s: {mainWarning.material}
           </p>
         </div>
       )}
 
-      <p className="px-4 text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-3">{product.purpose}</p>
+      {product.purpose && (
+        <p className="px-4 text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">{product.purpose}</p>
+      )}
 
       {/* Footer info bar */}
-      <div className="px-4 py-3 bg-muted/20 border-t border-border flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
-        <span className="text-muted-foreground">
-          Doziranje: <strong className="text-foreground font-bold tabular-nums">{product.dosageMin}–{product.dosageMax} {JEDINICA_DOZIRANJA_LABELS[product.dosageUnit]}</strong>
+      <div className="px-4 py-3 bg-slate-50 border-t border-slate-100 flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
+        <span className="text-slate-500">
+          Doziranje: <strong className="text-slate-800 font-bold tabular-nums">{product.dosageMin}–{product.dosageMax} {JEDINICA_DOZIRANJA_LABELS[product.dosageUnit]}</strong>
         </span>
         {product.hasColorIndicator && (
-          <span className="font-bold text-primary">Indikator boje</span>
+          <span className="font-bold text-teal-700">Indikator boje</span>
         )}
-        <span className={`font-bold ${product.topUpAllowed ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"}`}>
+        <span className={`font-bold ${product.topUpAllowed ? "text-emerald-700" : "text-red-600"}`}>
           Nadopuna: {product.topUpAllowed ? "DA" : "NE"}
         </span>
       </div>
@@ -244,14 +246,14 @@ function ProizvodDetalj({
   const [showActions, setShowActions] = useState(false);
 
   return (
-    <div className="flex flex-col flex-1 bg-background">
+    <div className="flex flex-col flex-1 bg-slate-50">
       {/* Header */}
-      <header className="bg-primary text-primary-foreground px-4 py-4">
+      <header className="bg-teal-700 text-white px-4 py-4">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={onBack}
-              className="p-2 rounded-xl hover:bg-primary-foreground/10 transition-colors shrink-0"
+              className="p-2 rounded-xl hover:bg-white/10 transition-colors shrink-0"
               aria-label="Natrag"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -261,30 +263,30 @@ function ProizvodDetalj({
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap mb-0.5">
                 {product.isDemo && (
-                  <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded-lg px-2 py-0.5">
+                  <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded-md px-1.5 py-0.5">
                     DEMO
                   </span>
                 )}
                 {product.indicatorType === "color+foam+sludge" && (
-                  <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-red-700 text-white rounded-lg px-2 py-0.5">
+                  <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-red-700 text-white rounded-md px-1.5 py-0.5">
                     DESCALER / SLUDGE CLEANER
                   </span>
                 )}
                 {product.indicatorType === "color+bubbles+pH" && (
-                  <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-yellow-600 text-white rounded-lg px-2 py-0.5">
+                  <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-yellow-600 text-white rounded-md px-1.5 py-0.5">
                     DESCALER / GEL S.p.A.
                   </span>
                 )}
               </div>
               <h1 className="text-lg font-black leading-tight truncate">{product.name}</h1>
-              <p className="text-xs text-primary-foreground/60 mt-0.5">{product.brand}</p>
+              <p className="text-xs text-white/60 mt-0.5">{product.brand}</p>
               {product.indicatorType === "color+foam+sludge" && (
-                <p className="text-[11px] text-primary-foreground/50 mt-0.5">
+                <p className="text-[11px] text-white/50 mt-0.5">
                   Citric acid based descaler &amp; cleaner
                 </p>
               )}
               {product.indicatorType === "color+bubbles+pH" && (
-                <p className="text-[11px] text-primary-foreground/50 mt-0.5">
+                <p className="text-[11px] text-white/50 mt-0.5">
                   Boiler Cleaner P Descaler — GEL S.p.A.
                 </p>
               )}
@@ -298,7 +300,7 @@ function ProizvodDetalj({
             <div className="relative">
               <button
                 onClick={() => setShowActions(!showActions)}
-                className="p-2 rounded-xl hover:bg-primary-foreground/10 transition-colors"
+                className="p-2 rounded-xl hover:bg-white/10 transition-colors"
                 aria-label="Akcije"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -306,16 +308,16 @@ function ProizvodDetalj({
                 </svg>
               </button>
               {showActions && (
-                <div className="absolute right-0 top-10 bg-card border border-border rounded-xl shadow-lg z-50 min-w-40 overflow-hidden">
+                <div className="absolute right-0 top-10 bg-white border border-slate-200 rounded-xl shadow-xl z-50 min-w-40 overflow-hidden">
                   <button
                     onClick={() => { setShowActions(false); onDuplicate(); }}
-                    className="w-full text-left px-4 py-3 text-sm text-foreground hover:bg-muted/50 transition-colors"
+                    className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                   >
                     Dupliciraj proizvod
                   </button>
                   <button
                     onClick={() => { setShowActions(false); onArchive(); }}
-                    className="w-full text-left px-4 py-3 text-sm text-destructive hover:bg-muted/50 transition-colors border-t border-border"
+                    className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors border-t border-slate-100"
                   >
                     Arhiviraj proizvod
                   </button>
@@ -341,15 +343,15 @@ function ProizvodDetalj({
       )}
 
       {/* Tab bar */}
-      <div className="flex overflow-x-auto border-b border-border bg-card shrink-0">
+      <div className="flex overflow-x-auto border-b border-slate-200 bg-white shadow-smrder bg-card shrink-0">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
             className={`shrink-0 px-4 py-3 text-xs font-bold transition-colors border-b-2 whitespace-nowrap ${
               tab === t.id
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
+                ? "border-teal-600 text-teal-700"
+                : "border-transparent text-slate-500 hover:text-slate-700"
             }`}
           >
             {t.label}
@@ -412,11 +414,11 @@ function TabOsnovno({ product }: { product: Product }) {
 
       {/* Status row */}
       <div className="flex gap-3">
-        <div className="flex-1 border border-border rounded-2xl px-4 py-3 bg-muted/20">
-          <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Status proizvoda</p>
-          <p className="text-sm font-bold text-foreground">{STATUS_PROIZVODA_LABELS[product.status]}</p>
+        <div className="flex-1 border border-slate-200 rounded-xl px-4 py-3 bg-white shadow-sm">
+          <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">Status proizvoda</p>
+          <p className="text-sm font-bold text-slate-800">{STATUS_PROIZVODA_LABELS[product.status]}</p>
         </div>
-        <div className={`flex-1 border rounded-2xl px-4 py-3 ${statusPodatakaStyle[sp]}`}>
+        <div className={`flex-1 border rounded-xl px-4 py-3 shadow-sm ${statusPodatakaStyle[sp]}`}>
           <p className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-1">Status podataka</p>
           <p className="text-sm font-bold">
             {STATUS_PODATAKA_LABELS[sp]}
@@ -1330,13 +1332,13 @@ function TabMaterijali({ product }: { product: Product }) {
     <div className="flex flex-col gap-4">
       {/* Sigurno za */}
       {compatible.length > 0 && (
-        <div className="bg-card border border-emerald-500/25 rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-emerald-500/20 bg-emerald-500/8">
-            <p className="text-[9px] font-black uppercase tracking-widest text-emerald-800 dark:text-emerald-200">Sigurno za</p>
+        <div className="bg-white border border-emerald-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="px-4 py-3 border-b border-emerald-100 bg-emerald-50">
+            <p className="text-[9px] font-black uppercase tracking-widest text-emerald-700">Sigurno za</p>
           </div>
           <div className="px-4 py-3 flex flex-wrap gap-2">
             {compatible.map((m) => (
-              <span key={m.id} className="text-xs font-bold bg-emerald-500/10 border border-emerald-500/25 text-emerald-800 dark:text-emerald-200 rounded-full px-3 py-1">
+              <span key={m.id} className="text-xs font-bold bg-emerald-100 border border-emerald-200 text-emerald-800 rounded-full px-3 py-1">
                 {m.material}
               </span>
             ))}
@@ -1346,15 +1348,15 @@ function TabMaterijali({ product }: { product: Product }) {
 
       {/* Oprez */}
       {caution.length > 0 && (
-        <div className="bg-card border border-amber-400/25 rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-amber-400/20 bg-amber-400/8">
-            <p className="text-[9px] font-black uppercase tracking-widest text-amber-800 dark:text-amber-200">Oprez</p>
+        <div className="bg-white border border-amber-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="px-4 py-3 border-b border-amber-100 bg-amber-50">
+            <p className="text-[9px] font-black uppercase tracking-widest text-amber-700">Oprez</p>
           </div>
-          <div className="flex flex-col divide-y divide-border">
+          <div className="flex flex-col divide-y divide-slate-100">
             {caution.map((m) => (
               <div key={m.id} className="px-4 py-3 flex flex-col gap-1">
-                <span className="text-sm font-bold text-foreground">{m.material}</span>
-                {m.warning && <span className="text-xs text-muted-foreground leading-relaxed">{m.warning}</span>}
+                <span className="text-sm font-bold text-slate-800">{m.material}</span>
+                {m.warning && <span className="text-xs text-slate-500 leading-relaxed">{m.warning}</span>}
               </div>
             ))}
           </div>
@@ -1363,16 +1365,16 @@ function TabMaterijali({ product }: { product: Product }) {
 
       {/* Nije za — always visible, never collapsed */}
       {notRecommended.length > 0 && (
-        <div className="bg-card border-2 border-rose-500/30 rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-rose-500/20 bg-rose-500/8 flex items-center gap-2">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-rose-500 shrink-0">
+        <div className="bg-white border-2 border-red-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="px-4 py-3 border-b border-red-100 bg-red-50 flex items-center gap-2">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-500 shrink-0" aria-hidden="true">
               <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
-            <p className="text-[9px] font-black uppercase tracking-widest text-rose-800 dark:text-rose-200">Nije preporučeno za</p>
+            <p className="text-[9px] font-black uppercase tracking-widest text-red-700">Nije preporučeno za</p>
           </div>
           <div className="px-4 py-3 flex flex-wrap gap-2">
             {notRecommended.map((m) => (
-              <span key={m.id} className="text-xs font-bold bg-rose-500/10 border border-rose-500/30 text-rose-800 dark:text-rose-200 rounded-full px-3 py-1">
+              <span key={m.id} className="text-xs font-bold bg-red-100 border border-red-200 text-red-700 rounded-full px-3 py-1">
                 {m.material}
               </span>
             ))}
@@ -1427,11 +1429,11 @@ function TabSigurnost({ product }: { product: Product }) {
 
 function InfoGroup({ label, value, multiline }: { label: string; value: string; multiline?: boolean }) {
   return (
-    <div className="flex flex-col gap-1">
-      <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">{label}</p>
+    <div className="flex flex-col gap-1 bg-white border border-slate-100 rounded-xl px-4 py-3 shadow-sm">
+      <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">{label}</p>
       {multiline
-        ? <p className="text-sm text-foreground leading-relaxed">{value}</p>
-        : <p className="text-sm font-semibold text-foreground">{value}</p>
+        ? <p className="text-sm text-slate-700 leading-relaxed">{value}</p>
+        : <p className="text-sm font-bold text-slate-800">{value}</p>
       }
     </div>
   );
@@ -1439,12 +1441,12 @@ function InfoGroup({ label, value, multiline }: { label: string; value: string; 
 
 function StatusBadgeP({ status }: { status: Product["status"] }) {
   const styles: Record<string, string> = {
-    aktivan:   "bg-emerald-500/10 text-emerald-800 dark:text-emerald-200 border-emerald-500/30",
-    arhiviran: "bg-muted          text-muted-foreground                  border-border",
-    testni:    "bg-amber-400/10   text-amber-800    dark:text-amber-200  border-amber-400/30",
+    aktivan:   "bg-emerald-100 text-emerald-800 border-emerald-200",
+    arhiviran: "bg-slate-100   text-slate-500   border-slate-200",
+    testni:    "bg-amber-100   text-amber-800   border-amber-200",
   };
   return (
-    <span className={`text-[9px] font-bold uppercase tracking-widest border rounded-full px-2.5 py-0.5 ${styles[status] ?? "bg-muted text-muted-foreground border-border"}`}>
+    <span className={`text-[9px] font-bold uppercase tracking-widest border rounded-full px-2.5 py-0.5 ${styles[status] ?? "bg-slate-100 text-slate-500 border-slate-200"}`}>
       {STATUS_PROIZVODA_LABELS[status]}
     </span>
   );
@@ -1453,11 +1455,11 @@ function StatusBadgeP({ status }: { status: Product["status"] }) {
 function StatusPodatakaBadge({ statusPodataka }: { statusPodataka: StatusPodataka | undefined }) {
   if (!statusPodataka || statusPodataka === "iz_tds") return null;
   const styles: Record<string, string> = {
-    djelomicno_iz_tds: "bg-amber-400/10 text-amber-800 dark:text-amber-200 border-amber-400/30",
-    potrebna_dopuna:   "bg-rose-500/10  text-rose-800  dark:text-rose-200  border-rose-500/30",
+    djelomicno_iz_tds: "bg-amber-100 text-amber-700 border-amber-200",
+    potrebna_dopuna:   "bg-red-100   text-red-700   border-red-200",
   };
   return (
-    <span className={`text-[8px] font-bold uppercase tracking-widest border rounded-full px-2 py-0.5 ${styles[statusPodataka] ?? "bg-muted text-muted-foreground border-border"}`}>
+    <span className={`text-[8px] font-bold uppercase tracking-widest border rounded-full px-2 py-0.5 ${styles[statusPodataka] ?? "bg-slate-100 text-slate-500 border-slate-200"}`}>
       {STATUS_PODATAKA_SHORT[statusPodataka]}
     </span>
   );
