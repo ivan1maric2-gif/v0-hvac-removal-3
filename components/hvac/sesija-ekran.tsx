@@ -46,6 +46,7 @@ import {
 } from "./completion-phases-modal";
 import { NoviCiklusWorkflow } from "./novi-ciklus-workflow";
 import { toast } from "sonner";
+import { SessionStatusKartica, SessionHierarchyView } from "./session-cycle-status";
 import { getUzUpozorenjeLabel } from "@/lib/types";
 
 function formatDate(iso: string) {
@@ -399,6 +400,27 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
       </header>
 
       <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full flex flex-col gap-5">
+
+        {/* Session status card — engine output display */}
+        {!jeZavrsena && (
+          <SessionStatusKartica
+            sesija={sesija}
+            onZavrsiSesiju={handleZavrsiSesiju}
+            onIspiranje={() => setModal({ tip: "ispiranje" })}
+            onNeutralizacija={() => setModal({ tip: "neutralizacija" })}
+          />
+        )}
+
+        {/* Session hierarchy — with_subsessions mode */}
+        {sesija.workMode === "with_subsessions" && (
+          <SessionHierarchyView
+            sesija={sesija}
+            onNavigateToPodsesija={(id) => {
+              const ps = sesija.podsesije.find((p) => p.id === id);
+              if (ps) navigiraj({ ime: "podsesija", sesijaId: sesija.id, podsesijaId: id });
+            }}
+          />
+        )}
 
         {/* Demo data warning */}
         {sesija.isDemo && (
@@ -2728,7 +2750,7 @@ function CompletionPhasesPanel({
   );
 }
 
-// ─── Modals ─────────────────────────────────────────────────────────���──────���──
+// ─── Modals ────────���────────────────────────────────────────────────���──────���──
 
 function ModalWrapper({
   title,

@@ -32,6 +32,7 @@ import {
 import { generirajPreporuku as _generirajPreporuku, analyseReactionStability, getCompletionBlockers, calcScaleEstimate } from "@/lib/preporuka";
 
 import { genId, nowISO } from "@/lib/utils";
+import { CycleStatusKartica, BlockedNewCycleBanner } from "./session-cycle-status";
 
 function formatTime(iso: string): string {
   try {
@@ -231,6 +232,20 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
         {/* Live timer — visible when a cycle is active */}
         {akt && podsesija.status !== "zavrseno" && (
           <LiveTimer />
+        )}
+
+        {/* Cycle status card — engine output display */}
+        {akt && (
+          <CycleStatusKartica
+            ciklus={akt}
+            isActive={true}
+            cycleNumber={akt.cycleNumber}
+          />
+        )}
+
+        {/* Blocked new cycle banner — shown when engine blockers exist */}
+        {completionBlockersB && !completionBlockersB.canFinishJob && completionBlockersB.blockers.length > 0 && (sve_zavrseno) && (
+          <BlockedNewCycleBanner message={completionBlockersB.blockers[0]} />
         )}
 
         {/* CTA: Početno mjerenje */}
