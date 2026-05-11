@@ -428,7 +428,7 @@ function InterpretacijaKartica({ ph, phRate, foam }: {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
+// ─── Main component ──────────────────────────────────────────────���────────────
 
 interface MjerenjeModalInitialValues {
   ph?: number;
@@ -1438,6 +1438,7 @@ export function MjerenjeModal({
               </div>
 
               {/* Color legend card */}
+              {ciklus.productSnapshot?.colorIndicators && ciklus.productSnapshot.colorIndicators.length > 0 && (
                 <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 flex flex-col gap-1.5">
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
                     Faze boje — {ciklus.productSnapshot.name}
