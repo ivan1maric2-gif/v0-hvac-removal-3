@@ -763,94 +763,76 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         const deltaTOut = tOut !== null && refTOut !== null ? parseFloat((tOut - refTOut).toFixed(1)) : null;
         const tempOutStagnira = deltaTOut === null || (deltaTOut > -0.3 && deltaTOut < 0.3);
 
-        // Contradiction — detektira se ISKLJUČIVO iz rs.statusLabel (engine output)
-        const CONTRADICTION_LABELS = new Set([
-          "pH visok, ali protok raste",
-          "Sredstvo slabi, ali protok raste",
-        ]);
-        const hasContradiction = CONTRADICTION_LABELS.has(rs.statusLabel ?? "");
+        // Contradiction — detektira se iz rs.label koji sadrži "ali" (engine generira)
+        const hasContradiction = (rs.label ?? "").toLowerCase().includes(" ali ");
 
         // Plateau — direktno iz flowImprovement.stagnation (engine boolean)
         const isPlateauAfterImprovement = flowImprovement?.stagnation === true;
 
         // Flow visual state — temelji se na scaleLevel koji engine klasificira
         const flowCardBg =
-          flowImprovement == null              ? "bg-slate-50 border-slate-200" :
-          flowImprovement.stagnation           ? "bg-amber-50 border-amber-200" :
-          flowImprovement.scaleLevel === "heavy"   ? "bg-red-50 border-red-200" :
-          flowImprovement.scaleLevel === "medium"  ? "bg-amber-50 border-amber-200" :
-          flowImprovement.scaleLevel === "light"   ? "bg-teal-50 border-teal-200" :
-          flowImprovement.scaleLevel === "none"    ? "bg-emerald-50 border-emerald-200" :
+          flowImprovement == null                    ? "bg-slate-50 border-slate-200" :
+          flowImprovement.stagnation                 ? "bg-amber-50 border-amber-200" :
+          flowImprovement.scaleLevel === "heavy"     ? "bg-red-50 border-red-200" :
+          flowImprovement.scaleLevel === "medium"    ? "bg-amber-50 border-amber-200" :
+          flowImprovement.scaleLevel === "light"     ? "bg-teal-50 border-teal-200" :
+          flowImprovement.scaleLevel === "none"      ? "bg-emerald-50 border-emerald-200" :
           "bg-slate-50 border-slate-200";
 
         const flowLabelColor =
-          flowImprovement == null              ? "text-slate-500" :
-          flowImprovement.stagnation           ? "text-amber-700" :
-          flowImprovement.scaleLevel === "heavy"   ? "text-red-700" :
-          flowImprovement.scaleLevel === "medium"  ? "text-amber-700" :
-          flowImprovement.scaleLevel === "light"   ? "text-teal-700" :
-          flowImprovement.scaleLevel === "none"    ? "text-emerald-700" :
+          flowImprovement == null                    ? "text-slate-500" :
+          flowImprovement.stagnation                 ? "text-amber-700" :
+          flowImprovement.scaleLevel === "heavy"     ? "text-red-700" :
+          flowImprovement.scaleLevel === "medium"    ? "text-amber-700" :
+          flowImprovement.scaleLevel === "light"     ? "text-teal-700" :
+          flowImprovement.scaleLevel === "none"      ? "text-emerald-700" :
           "text-slate-600";
 
         const flowDeltaColor =
-          flowImprovement == null               ? "text-slate-400" :
-          flowImprovement.deltaFlowPercent >= 3 ? "text-emerald-600" :
-          flowImprovement.deltaFlowPercent < 0  ? "text-red-600"    :
+          flowImprovement == null                    ? "text-slate-400" :
+          flowImprovement.deltaFlowPercent >= 3      ? "text-emerald-600" :
+          flowImprovement.deltaFlowPercent < 0       ? "text-red-600" :
           "text-slate-500";
 
-        // Main card bg — prema severity iz enginea
+        // Main action card bg — prema severity iz enginea
         const cardBg =
           rs.severity === "critical" ? "bg-red-600 border-red-500" :
           rs.severity === "warn"     ? "bg-amber-500 border-amber-400" :
           isGotovo                   ? "bg-slate-800 border-slate-700" :
           "bg-teal-600 border-teal-500";
 
+        // TTS status visual mapping prema severity
+        const ttsStatusColor =
+          rs.severity === "critical" ? "text-red-600 bg-red-50 border-red-200" :
+          rs.severity === "warn"     ? "text-amber-600 bg-amber-50 border-amber-200" :
+          rs.severity === "info"     ? "text-sky-600 bg-sky-50 border-sky-200" :
+          "text-slate-600 bg-slate-50 border-slate-200";
+
+        // compactStatus badge — direktno iz rs.statusLabel (engine)
+        const compactStatusBg =
+          rs.severity === "critical" ? "bg-red-100 text-red-700 border-red-200" :
+          rs.severity === "warn"     ? "bg-amber-100 text-amber-700 border-amber-200" :
+          "bg-teal-100 text-teal-700 border-teal-200";
+
         return (
           <div className="flex flex-col gap-3">
 
-            {/* ── 1. GLAVNA PREPORUKA (PRIMARY) ────────────────────────────── */}
-            <div className={`rounded-xl overflow-hidden border ${cardBg}`}>
-              <div className="px-4 pt-4 pb-3 flex items-center justify-between">
-                <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-0.5">Glavna preporuka</p>
-                  <h2 className="text-base font-black text-white leading-tight">{uputa.label}</h2>
+            {/* ── PRIORITET 1: CRITICAL WARNINGS (severity === critical) ────── */}
+            {rs.severity === "critical" && (
+              <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-start gap-3">
+                <div className="shrink-0 w-8 h-8 rounded-full bg-red-100 border border-red-300 flex items-center justify-center mt-0.5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-700" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shrink-0 text-white ml-3">
-                  {uputa.icon}
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-red-700 mb-0.5">Kritično upozorenje</p>
+                  <p className="text-sm font-bold text-red-800">{rs.label}</p>
                 </div>
               </div>
-              <div className="px-4 pb-3">
-                <p className="text-sm text-white/90 leading-relaxed">{rs.explanation}</p>
-              </div>
-              {rs.nextStep && (
-                <div className="px-4 pb-4">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-0.5">Sljedeći korak</p>
-                  <p className="text-sm font-bold text-white">{rs.nextStep}</p>
-                  {rs.nextStepReason && (
-                    <p className="text-xs text-white/70 mt-0.5 leading-relaxed">{rs.nextStepReason}</p>
-                  )}
-                </div>
-              )}
-              {/* TTS gumb */}
-              <div className="px-4 py-2.5 border-t border-white/10 flex items-center justify-between bg-black/10">
-                <span className="text-xs text-white/50 font-medium">
-                  {ttsPauziran ? "Glasovne upute pauzirane" : "Glasovne upute aktivne"}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setTtsPauziran((v) => !v)}
-                  className={`min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
-                    ttsPauziran
-                      ? "bg-white text-slate-700 border-white"
-                      : "bg-white/10 border-white/20 text-white hover:bg-white/20"
-                  }`}
-                >
-                  {ttsPauziran ? "Nastavi glasovne upute" : "Pauziraj glasovne upute"}
-                </button>
-              </div>
-            </div>
+            )}
 
-            {/* ── 2. CONTRADICTION BANNER ──────────────────────────────────── */}
+            {/* ── PRIORITET 2: CONTRADICTION BANNER ───────────────────────── */}
             {hasContradiction && (
               <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-start gap-3">
                 <div className="shrink-0 w-8 h-8 rounded-full bg-amber-100 border border-amber-300 flex items-center justify-center mt-0.5">
@@ -866,17 +848,76 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
               </div>
             )}
 
-            {/* ── 3. PLATEAU BANNER — iz flowImprovement.stagnation (engine) ── */}
+            {/* ── PRIORITET 3: MAIN ACTION CARD ───────────────────────────── */}
+            <div className={`rounded-xl overflow-hidden border ${cardBg}`}>
+              <div className="px-4 pt-4 pb-3 flex items-center justify-between">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-0.5">Sljedeća akcija</p>
+                  <h2 className="text-lg font-black text-white leading-tight">{rs.nextStep}</h2>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shrink-0 text-white ml-3">
+                  {uputa.icon}
+                </div>
+              </div>
+              {rs.nextStepReason && (
+                <div className="px-4 pb-3">
+                  <p className="text-sm text-white/80 leading-relaxed">{rs.nextStepReason}</p>
+                </div>
+              )}
+              {/* Confidence / cycleDecisionType */}
+              {rs.cycleDecisionType && (
+                <div className="px-4 pb-3">
+                  <span className="inline-block text-[10px] font-bold uppercase tracking-widest bg-white/10 text-white/70 border border-white/20 rounded-full px-2.5 py-0.5">
+                    {rs.cycleDecisionType}
+                  </span>
+                </div>
+              )}
+              {/* TTS gumb */}
+              <div className="px-4 py-2.5 border-t border-white/10 flex items-center justify-between bg-black/10">
+                <div className={`flex items-center gap-2 text-xs font-medium border rounded-full px-2.5 py-1 ${ttsStatusColor}`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${ttsPauziran ? "bg-slate-400" : "bg-emerald-500"}`} aria-hidden="true" />
+                  {ttsPauziran ? "Glasovne upute pauzirane" : "Glasovne upute aktivne"}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setTtsPauziran((v) => !v)}
+                  className={`min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
+                    ttsPauziran
+                      ? "bg-white text-slate-700 border-white"
+                      : "bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  }`}
+                >
+                  {ttsPauziran ? "Nastavi" : "Pauziraj glas"}
+                </button>
+              </div>
+            </div>
+
+            {/* ── PRIORITET 4: LIVE SUMMARY CARD ──────────────────────────── */}
+            <div className="bg-white rounded-xl border border-slate-100 shadow-sm px-4 py-4">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Stanje reakcije</p>
+                {rs.statusLabel && (
+                  <span className={`text-[10px] font-bold uppercase tracking-widest border rounded-full px-2.5 py-0.5 ${compactStatusBg}`}>
+                    {rs.statusLabel}
+                  </span>
+                )}
+              </div>
+              <p className="text-sm font-medium text-slate-700 leading-relaxed mb-2">{rs.explanation}</p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Uputa:</p>
+                <p className="text-xs font-bold text-slate-600">{uputa.label}</p>
+              </div>
+            </div>
+
+            {/* ── PRIORITET 5: PLATEAU BANNER ─────────────────────────────── */}
             {isPlateauAfterImprovement && (
               <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700 mb-0.5">Poboljšanje stabilizirano</p>
-                <p className="text-sm text-amber-800 leading-relaxed">
-                  {flowImprovement!.statusLabel}
-                </p>
+                <p className="text-sm text-amber-800 leading-relaxed">{flowImprovement!.statusLabel}</p>
               </div>
             )}
 
-            {/* ── 4. FLOW CARD — iz flowImprovement engine outputa ─────────── */}
+            {/* ── PRIORITET 6: FLOW CARD ───────────────────────────────────── */}
             {flowImprovement != null && (
               <div className={`rounded-xl border px-4 py-3 ${flowCardBg}`}>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Protok</p>
@@ -902,17 +943,6 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
                     <p className="text-[10px] text-slate-400">vs referentno</p>
                   </div>
                 </div>
-              </div>
-            )}
-
-            {/* ── 5. DOMINANT SIGNAL — iz rs.statusLabel (engine output) ─────── */}
-            {rs.statusLabel && (
-              <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" aria-hidden="true" />
-                <p className="text-xs text-slate-500">
-                  <span className="font-bold text-slate-600">Glavni razlog odluke: </span>
-                  {rs.statusLabel}
-                </p>
               </div>
             )}
 
