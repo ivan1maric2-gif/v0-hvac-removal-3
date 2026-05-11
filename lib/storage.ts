@@ -12,6 +12,16 @@ import type { Sesija } from "./types";
 import type { Product } from "./product-types";
 import { nowISO } from "./utils";
 
+/** Returns the Supabase client, or null if env vars are not configured. */
+function getSupabase() {
+  try {
+    return createClient();
+  } catch (err) {
+    console.warn("[storage] Supabase nije konfiguriran:", (err as Error).message);
+    return null;
+  }
+}
+
 // ─── SESIJE — Supabase ────────────────────────────────────────────────────────
 
 /**
@@ -19,7 +29,8 @@ import { nowISO } from "./utils";
  * Vraca null ako baza ne vraca podatke (app ucitava demo).
  */
 export async function getSesije(): Promise<Sesija[] | null> {
-  const supabase = createClient();
+  const supabase = getSupabase();
+  if (!supabase) return null;
   const { data, error } = await supabase
     .from("sesije")
     .select("podaci")
@@ -39,7 +50,8 @@ export async function getSesije(): Promise<Sesija[] | null> {
  * DEMO SESIJE SE NE ČUVAJU U SUPABASE — samo produkcijske sesije!
  */
 export async function spremiSesije(sesije: Sesija[]): Promise<void> {
-  const supabase = createClient();
+  const supabase = getSupabase();
+  if (!supabase) return;
 
   // Filtriraj samo produkcijske sesije — demo se ne čuva
   const productionSesije = sesije.filter((s) => !s.isDemo);
@@ -85,7 +97,8 @@ export async function spremiSesiju(sesija: Sesija): Promise<void> {
     createdAt: sesija.createdAt ?? now,
     updatedAt: now,
   };
-  const supabase = createClient();
+  const supabase = getSupabase();
+  if (!supabase) return;
   const { error } = await supabase
     .from("sesije")
     .upsert({ id: stamped.id, podaci: stamped }, { onConflict: "id" });
@@ -96,7 +109,8 @@ export async function spremiSesiju(sesija: Sesija): Promise<void> {
  * Brise jednu sesiju iz Supabase po ID-u.
  */
 export async function obrisiSesijuIzPohrane(sesijaId: string): Promise<void> {
-  const supabase = createClient();
+  const supabase = getSupabase();
+  if (!supabase) return;
   const { error } = await supabase.from("sesije").delete().eq("id", sesijaId);
   if (error) console.warn("[storage] obrisiSesiju greška:", error.message);
 }
@@ -105,7 +119,8 @@ export async function obrisiSesijuIzPohrane(sesijaId: string): Promise<void> {
  * Brise sve sesije iz baze (reset).
  */
 export async function resetirajSesije(): Promise<void> {
-  const supabase = createClient();
+  const supabase = getSupabase();
+  if (!supabase) return;
   await supabase.from("sesije").delete().neq("id", "");
 }
 
