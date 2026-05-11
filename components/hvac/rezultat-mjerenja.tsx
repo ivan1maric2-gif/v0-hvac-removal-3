@@ -111,12 +111,12 @@ function SljedecaAkcijaBlok({
   }, [akcija, govori]);
 
   return (
-    <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 px-4 py-5 flex flex-col gap-3">
+    <div className="rounded-2xl border-2 border-teal-300 bg-teal-50 px-4 py-5 flex flex-col gap-3">
       {/* Header red: label + TTS gumb */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-lg font-black text-primary leading-none">→</span>
-          <span className="text-[9px] font-black uppercase tracking-widest text-primary/60">Sljedeća akcija</span>
+          <span className="text-lg font-black text-teal-700 leading-none">→</span>
+          <span className="text-[9px] font-black uppercase tracking-widest text-teal-600/70">Sljedeća akcija</span>
         </div>
         {/* TTS gumb */}
         <button
@@ -125,18 +125,18 @@ function SljedecaAkcijaBlok({
           title={govori === "unsupported" ? "Glasovni izlaz nije podržan u ovom pregledniku" : undefined}
           className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all active:scale-90 ${
             govori === "govor"
-              ? "bg-primary text-primary-foreground animate-pulse"
+              ? "bg-teal-700 text-white animate-pulse"
               : govori === "unsupported"
-              ? "bg-muted text-muted-foreground/30 cursor-not-allowed"
-              : "bg-primary/15 text-primary hover:bg-primary/25"
+              ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+              : "bg-teal-700/15 text-teal-700 hover:bg-teal-700/25"
           }`}
         >
           {govori === "govor" ? (
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <rect x="6" y="6" width="12" height="12" rx="2" />
             </svg>
           ) : (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
               <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
               <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
@@ -146,7 +146,7 @@ function SljedecaAkcijaBlok({
       </div>
 
       {/* Akcijski tekst — veći, istaknutiji */}
-      <p className="text-base font-bold text-foreground leading-snug">{akcija}</p>
+      <p className="text-base font-bold text-slate-800 leading-snug">{akcija}</p>
     </div>
   );
 }
@@ -264,22 +264,22 @@ function resolveDeltaTInterpretacija(
 // ─── Color maps ───────────────────────────────────────────────────────────────
 
 const ZONE_BG: Record<"green" | "yellow" | "orange" | "red", string> = {
-  green:  "border-emerald-500/30 bg-emerald-500/8  text-emerald-900 dark:text-emerald-100",
-  yellow: "border-amber-400/30  bg-amber-400/8   text-amber-900  dark:text-amber-100",
-  orange: "border-orange-500/30 bg-orange-500/8  text-orange-900 dark:text-orange-100",
-  red:    "border-rose-500/30   bg-rose-500/8    text-rose-900   dark:text-rose-100",
+  green:  "border-emerald-500/30 bg-emerald-50  text-emerald-900",
+  yellow: "border-amber-400/30  bg-amber-50   text-amber-900",
+  orange: "border-orange-500/30 bg-orange-50  text-orange-900",
+  red:    "border-rose-500/30   bg-rose-50    text-rose-900",
 };
 
 const ZONE_BADGE: Record<"green" | "yellow" | "orange" | "red", string> = {
-  green:  "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
-  yellow: "bg-amber-400/15  text-amber-700   dark:text-amber-400",
-  orange: "bg-orange-500/15 text-orange-700  dark:text-orange-400",
-  red:    "bg-rose-500/15   text-rose-700    dark:text-rose-400",
+  green:  "bg-emerald-100 text-emerald-700",
+  yellow: "bg-amber-100  text-amber-700",
+  orange: "bg-orange-100 text-orange-700",
+  red:    "bg-rose-100   text-rose-700",
 };
 
 const ACTION_BG: Record<PreporukaAkcija, string> = {
-  continue_circulation:     "bg-primary text-primary-foreground",
-  monitor_next_measurement: "bg-primary text-primary-foreground",
+  continue_circulation:     "bg-teal-700 text-white",
+  monitor_next_measurement: "bg-teal-700 text-white",
   add_top_up:               "bg-amber-500 text-white",
   start_new_cycle:          "bg-red-600   text-white",
   finish_cycle:             "bg-green-600 text-white",
@@ -319,28 +319,28 @@ function InitialDetailsSection({ mjerenje }: { mjerenje: Mjerenje }) {
   if (!hasAny) return null;
 
   return (
-    <div className="rounded-2xl border border-border bg-card overflow-hidden">
+    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
       <button
         type="button"
         onClick={() => setOpen((p) => !p)}
-        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-muted/40 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 transition-colors"
       >
-        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
           Detalji mjerenja
         </span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-          className={`text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}>
+          className={`text-slate-400 transition-transform ${open ? "rotate-180" : ""}`} aria-hidden="true">
           <path d="M6 9l6 6 6-6" />
         </svg>
       </button>
 
       {open && (
-        <div className="px-4 pb-4 flex flex-col gap-3 border-t border-border/60">
+        <div className="px-4 pb-4 flex flex-col gap-3 border-t border-slate-200">
           {/* Temp IN — sekundarni */}
           {hasTempIn && (
             <div className="flex items-baseline justify-between pt-3">
-              <span className="text-xs text-muted-foreground">Temp IN (ulaz)</span>
-              <span className="text-base font-bold tabular-nums text-muted-foreground">
+              <span className="text-xs text-slate-500">Temp IN (ulaz)</span>
+              <span className="text-base font-bold tabular-nums text-slate-600">
                 {mjerenje.tempInC!.toFixed(1)} °C
               </span>
             </div>
@@ -349,8 +349,8 @@ function InitialDetailsSection({ mjerenje }: { mjerenje: Mjerenje }) {
           {/* Pjena */}
           {hasFoam && (
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">Pjena</span>
-              <span className="text-sm font-bold text-foreground capitalize">
+              <span className="text-xs text-slate-500">Pjena</span>
+              <span className="text-sm font-bold text-slate-800 capitalize">
                 {mjerenje.foamLevel!.replace(/_/g, " ")}
               </span>
             </div>
@@ -359,8 +359,8 @@ function InitialDetailsSection({ mjerenje }: { mjerenje: Mjerenje }) {
           {/* Boja */}
           {hasColor && (
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">Boja otopine</span>
-              <span className="text-sm font-bold text-foreground capitalize">
+              <span className="text-xs text-slate-500">Boja otopine</span>
+              <span className="text-sm font-bold text-slate-800 capitalize">
                 {mjerenje.colorIndicator!.replace(/_/g, " ")}
               </span>
             </div>
@@ -369,11 +369,11 @@ function InitialDetailsSection({ mjerenje }: { mjerenje: Mjerenje }) {
           {/* Vrijeme */}
           {hasTime && (
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">Vrijeme mjerenja</span>
-              <span className="text-sm font-bold tabular-nums text-foreground">
+              <span className="text-xs text-slate-500">Vrijeme mjerenja</span>
+              <span className="text-sm font-bold tabular-nums text-slate-800">
                 {new Date(mjerenje.measuredAt!).toLocaleTimeString("hr-HR", { hour: "2-digit", minute: "2-digit" })}
                 {mjerenje.minutesFromCycleStart !== undefined && (
-                  <span className="text-muted-foreground font-normal ml-1.5">
+                  <span className="text-slate-400 font-normal ml-1.5">
                     ({mjerenje.minutesFromCycleStart} min)
                   </span>
                 )}
@@ -454,49 +454,49 @@ export function RezultatMjerenja({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-background flex flex-col overflow-hidden"
+      className="fixed inset-0 z-50 bg-white flex flex-col overflow-hidden"
       role="dialog"
       aria-modal="true"
       aria-label="Rezultat mjerenja"
     >
       {/* ── Header ──────────────────────────────────────────────────────────── */}
-      <div className="shrink-0 flex items-center gap-3 px-4 pt-5 pb-3 border-b border-border bg-background">
+      <div className="shrink-0 flex items-center gap-3 px-4 pt-5 pb-3 border-b border-slate-200 bg-white">
         <button
           type="button"
           onClick={onClose}
-          className="p-2 -ml-1.5 rounded-xl hover:bg-muted transition-colors"
+          className="p-2 -ml-1.5 rounded-xl hover:bg-slate-100 transition-colors"
           aria-label="Zatvori"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             <path d="M19 12H5M12 5l-7 7 7 7" />
           </svg>
         </button>
         <div className="flex-1 min-w-0">
           {isInitial ? (
             <>
-              <p className="text-[9px] font-black uppercase tracking-widest text-amber-500/80 mb-0.5">
+              <p className="text-[9px] font-black uppercase tracking-widest text-amber-600 mb-0.5">
                 Referentno mjerenje
               </p>
-              <h1 className="text-xl font-black leading-tight tracking-tight text-foreground">
+              <h1 className="text-xl font-black leading-tight tracking-tight text-slate-900">
                 Rezultat
               </h1>
             </>
           ) : (
             <>
-              <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/50 mb-0.5">
+              <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-0.5">
                 Mjerenje
               </p>
-              <h1 className="text-xl font-black leading-tight tracking-tight text-foreground">
+              <h1 className="text-xl font-black leading-tight tracking-tight text-slate-900">
                 Rezultat
               </h1>
             </>
           )}
         </div>
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-emerald-600 dark:text-emerald-400">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-emerald-600" aria-hidden="true">
             <polyline points="20 6 9 17 4 12" />
           </svg>
-          <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400">Spremljeno</span>
+          <span className="text-[10px] font-black text-emerald-600">Spremljeno</span>
         </div>
       </div>
 
@@ -552,58 +552,58 @@ export function RezultatMjerenja({
               {/* ── PRIMARY: pH + Protok — side by side, veliki */}
               <div className="grid grid-cols-2 gap-3">
                 {/* pH */}
-                <div className="rounded-2xl border-2 border-amber-500/30 bg-card px-4 py-5 flex flex-col gap-1.5">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">pH</span>
-                  <span className="text-4xl font-black tabular-nums text-foreground leading-none">{ph.toFixed(2)}</span>
-                  <span className="text-[11px] font-semibold text-muted-foreground mt-1">{phZonaLabel}</span>
+                <div className="rounded-2xl border-2 border-amber-300 bg-white px-4 py-5 flex flex-col gap-1.5 shadow-sm">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">pH</span>
+                  <span className="text-4xl font-black tabular-nums text-slate-900 leading-none">{ph.toFixed(2)}</span>
+                  <span className="text-[11px] font-semibold text-slate-500 mt-1">{phZonaLabel}</span>
                   <span className={`text-xs font-black px-2.5 py-1 rounded-xl border w-fit mt-0.5 ${snaga.color}`}>{snaga.label}</span>
                 </div>
 
                 {/* Protok */}
-                <div className="rounded-2xl border-2 border-primary/20 bg-card px-4 py-5 flex flex-col gap-1.5">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">Protok</span>
+                <div className="rounded-2xl border-2 border-teal-200 bg-white px-4 py-5 flex flex-col gap-1.5 shadow-sm">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Protok</span>
                   {mjerenje.flowLMin !== undefined ? (
                     <>
-                      <span className="text-4xl font-black tabular-nums text-foreground leading-none">
+                      <span className="text-4xl font-black tabular-nums text-slate-900 leading-none">
                         {mjerenje.flowLMin.toFixed(1)}
                       </span>
-                      <span className="text-[11px] font-semibold text-muted-foreground mt-1">L/min</span>
+                      <span className="text-[11px] font-semibold text-slate-500 mt-1">L/min</span>
                     </>
                   ) : (
-                    <span className="text-2xl font-black text-muted-foreground/30 leading-none mt-1">—</span>
+                    <span className="text-2xl font-black text-slate-300 leading-none mt-1">—</span>
                   )}
-                  <span className="text-[10px] text-muted-foreground/60 mt-1">&Delta; —</span>
+                  <span className="text-[10px] text-slate-400 mt-1">&Delta; —</span>
                 </div>
               </div>
 
               {/* ── PRIMARY: Temp OUT */}
               {mjerenje.tempOutC !== undefined && (
-                <div className="rounded-2xl border border-border bg-card px-4 py-3">
+                <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Temp OUT</span>
-                    <span className="text-[10px] text-muted-foreground/60">izlaz</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Temp OUT</span>
+                    <span className="text-[10px] text-slate-400">izlaz</span>
                   </div>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-4xl font-black tabular-nums text-foreground leading-none">
+                    <span className="text-4xl font-black tabular-nums text-slate-900 leading-none">
                       {mjerenje.tempOutC.toFixed(1)}
                     </span>
-                    <span className="text-base font-bold text-muted-foreground">°C</span>
+                    <span className="text-base font-bold text-slate-500">°C</span>
                   </div>
                 </div>
               )}
 
               {/* ── TREND NOTICE — potrebno još jedno mjerenje */}
-              <div className="rounded-2xl border border-border bg-muted/40 px-4 py-3.5 flex items-start gap-3">
-                <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-primary" aria-hidden="true">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-teal-100 flex items-center justify-center shrink-0 mt-0.5">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-teal-700" aria-hidden="true">
                     <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
                   </svg>
                 </div>
                 <div className="flex flex-col gap-0.5">
-                  <p className="text-sm font-bold text-foreground leading-snug">
+                  <p className="text-sm font-bold text-slate-800 leading-snug">
                     Potrebno još jedno mjerenje
                   </p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <p className="text-xs text-slate-500 leading-relaxed">
                     Trend i ocjena reakcije izračunavaju se tek od sljedećeg mjerenja.
                   </p>
                 </div>
@@ -629,7 +629,7 @@ export function RezultatMjerenja({
                   zc === "orange" ? "border-orange-200" :
                   "border-red-200";
                 return (
-                  <div className={`rounded-2xl border ${borderColor} bg-background px-4 py-4 flex items-start gap-3`}>
+                  <div className={`rounded-xl border ${borderColor} bg-white px-4 py-4 flex items-start gap-3 shadow-sm`}>
                     <div className={`w-9 h-9 rounded-xl ${iconBg} flex items-center justify-center shrink-0 mt-0.5`}>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={iconColor} aria-hidden="true">
                         <circle cx="12" cy="12" r="3" />
@@ -640,11 +640,11 @@ export function RezultatMjerenja({
                       <span className={`text-[10px] font-bold uppercase tracking-widest ${iconColor}`}>
                         Status reakcije
                       </span>
-                      <span className="text-base font-black leading-snug text-foreground">
+                      <span className="text-base font-black leading-snug text-slate-900">
                         {statusLabel}
                       </span>
                       {explanation && (
-                        <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                        <p className="text-xs text-slate-500 leading-relaxed mt-0.5">
                           {explanation}
                         </p>
                       )}
@@ -658,9 +658,9 @@ export function RezultatMjerenja({
 
               {/* Napomena */}
               {mjerenje.note && (
-                <div className="rounded-2xl border border-border bg-card px-4 py-3 flex flex-col gap-1">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Napomena</span>
-                  <p className="text-sm text-foreground leading-relaxed">{mjerenje.note}</p>
+                <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 flex flex-col gap-1 shadow-sm">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Napomena</span>
+                  <p className="text-sm text-slate-800 leading-relaxed">{mjerenje.note}</p>
                 </div>
               )}
             </>
@@ -688,10 +688,10 @@ export function RezultatMjerenja({
                     : "Bez značajne promjene";
 
                   const rezultatColor =
-                    flowImpPct !== null && flowImpPct >= 25 ? "border-emerald-500/40 bg-emerald-50/60 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-300"
-                    : flowImpPct !== null && flowImpPct >= 10 ? "border-sky-500/40 bg-sky-50/60 dark:bg-sky-950/20 text-sky-700 dark:text-sky-300"
-                    : flowImpPct !== null && flowImpPct >= 2 ? "border-amber-500/40 bg-amber-50/60 dark:bg-amber-950/20 text-amber-700 dark:text-amber-300"
-                    : "border-border bg-muted/30 text-muted-foreground";
+                    flowImpPct !== null && flowImpPct >= 25 ? "border-emerald-300 bg-emerald-50 text-emerald-800"
+                    : flowImpPct !== null && flowImpPct >= 10 ? "border-sky-300 bg-sky-50 text-sky-800"
+                    : flowImpPct !== null && flowImpPct >= 2 ? "border-amber-300 bg-amber-50 text-amber-800"
+                    : "border-slate-200 bg-slate-50 text-slate-600";
 
                   const zakljucakTekst =
                     flowImpPct !== null && flowImpPct >= 25
@@ -711,9 +711,9 @@ export function RezultatMjerenja({
                       </div>
 
                       {/* Zaključak */}
-                      <div className="rounded-2xl border border-border bg-muted/30 px-4 py-3.5 flex flex-col gap-1">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">Zaključak</span>
-                        <p className="text-sm font-medium text-foreground leading-relaxed">{zakljucakTekst}</p>
+                      <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 flex flex-col gap-1">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Zaključak</span>
+                        <p className="text-sm font-medium text-slate-800 leading-relaxed">{zakljucakTekst}</p>
                       </div>
 
                       {/* Δ protok i Δ Temp OUT — finalne vrijednosti */}
@@ -759,18 +759,56 @@ export function RezultatMjerenja({
 
               {/* 2. ZASTO — kratko objašnjenje: što se događa, zašto app daje tu uputu */}
               {/* SPEC: Dodaj kratko objašnjenje ispod glavne upute */}
-              <div className="px-1 flex flex-col gap-1">
-                <p className="text-sm font-semibold text-foreground leading-snug">
-                  {/* Prioritet: cleaningDecision.zasto > explanation */}
+              <div className="px-1 flex flex-col gap-1.5">
+                <p className="text-sm font-semibold text-slate-800 leading-snug">
                   {preporuka?.cleaningDecision?.zasto ?? explanation}
                 </p>
-                {/* Dodatni kontekst ako cleaningDecision ima stanjeCiscentaLabel */}
+                {/* CleaningDecision — status čišćenja + snaga + protok, vidljivo */}
                 {preporuka?.cleaningDecision && (
-                  <p className="text-xs text-muted-foreground">
-                    Status: {preporuka.cleaningDecision.stanjeCiscentaLabel}
-                    {preporuka.cleaningDecision.flowStateLabel && (
-                      <span className="ml-2">• {preporuka.cleaningDecision.flowStateLabel}</span>
+                  <div className="flex flex-wrap gap-1.5 mt-0.5">
+                    {/* Stanje čišćenja */}
+                    {preporuka.cleaningDecision.stanjeCiscentaLabel && (
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        preporuka.cleaningDecision.severity === "critical"
+                          ? "bg-red-100 text-red-700"
+                          : preporuka.cleaningDecision.severity === "warn"
+                          ? "bg-amber-100 text-amber-700"
+                          : preporuka.cleaningDecision.severity === "ok"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-slate-100 text-slate-600"
+                      }`}>
+                        {preporuka.cleaningDecision.stanjeCiscentaLabel}
+                      </span>
                     )}
+                    {/* Snaga sredstva (iz cleaningDecision, engine-derived) */}
+                    {preporuka.cleaningDecision.stanjeSredstvaLabel && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                        {preporuka.cleaningDecision.stanjeSredstvaLabel}
+                      </span>
+                    )}
+                    {/* Protok */}
+                    {preporuka.cleaningDecision.flowStateLabel && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700">
+                        {preporuka.cleaningDecision.flowStateLabel}
+                      </span>
+                    )}
+                    {/* Color mismatch upozorenje */}
+                    {preporuka.cleaningDecision.colorMismatch && preporuka.cleaningDecision.colorMismatchMessage && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">
+                        {preporuka.cleaningDecision.colorMismatchMessage}
+                      </span>
+                    )}
+                  </div>
+                )}
+                {/* Confidence indikator */}
+                {preporuka?.cleaningDecision?.confidence && preporuka.cleaningDecision.confidence !== "high" && (
+                  <p className="text-[10px] text-slate-400">
+                    Pouzdanost procjene:{" "}
+                    <span className={`font-semibold ${
+                      preporuka.cleaningDecision.confidence === "low" ? "text-amber-600" : "text-slate-600"
+                    }`}>
+                      {preporuka.cleaningDecision.confidence === "low" ? "Niska — nedovoljno podataka" : "Srednja"}
+                    </span>
                   </p>
                 )}
               </div>
@@ -802,10 +840,10 @@ export function RezultatMjerenja({
                 }
                 if (linije.length === 0) return null;
                 return (
-                  <div className="rounded-2xl border border-border/60 bg-muted/30 px-4 py-3.5 flex flex-col gap-1.5">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">Tumačenje</span>
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 flex flex-col gap-1.5">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Tumačenje</span>
                     {linije.map((l, i) => (
-                      <p key={i} className="text-sm text-foreground leading-relaxed font-medium">{l}</p>
+                      <p key={i} className="text-sm text-slate-700 leading-relaxed font-medium">{l}</p>
                     ))}
                   </div>
                 );
@@ -834,8 +872,8 @@ export function RezultatMjerenja({
                   compact={false}
                 />
               ) : (
-                <div className="rounded-2xl border border-border bg-card px-5 py-4 flex flex-col gap-2">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                <div className="rounded-xl border border-slate-200 bg-white px-5 py-4 flex flex-col gap-2 shadow-sm">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                     Sredstvo
                   </span>
                   <div className="flex items-center gap-3">
@@ -843,14 +881,14 @@ export function RezultatMjerenja({
                       {snaga.label}
                     </span>
                     {mjerenje.colorIndicator && (
-                      <span className="text-sm font-semibold text-muted-foreground capitalize">
+                      <span className="text-sm font-semibold text-slate-500 capitalize">
                         {mjerenje.colorIndicator.replace(/_/g, " ")}
                       </span>
                     )}
                   </div>
                   {foam && foam !== "nema" && (
-                    <p className="text-xs text-muted-foreground">
-                      Pjena: <span className="font-semibold text-foreground capitalize">{foam.replace(/_/g, " ")}</span>
+                    <p className="text-xs text-slate-500">
+                      Pjena: <span className="font-semibold text-slate-800 capitalize">{foam.replace(/_/g, " ")}</span>
                     </p>
                   )}
                 </div>
@@ -879,27 +917,27 @@ export function RezultatMjerenja({
               </div>
 
               {/* 5. PROTOK */}
-              <div className="rounded-2xl border border-border bg-card px-5 py-4 flex flex-col gap-2">
+              <div className="rounded-xl border border-slate-200 bg-white px-5 py-4 flex flex-col gap-2 shadow-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Protok</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Protok</span>
                   {referenceFlowLMin !== null && (
-                    <span className="text-[10px] text-muted-foreground/60">ref. {referenceFlowLMin.toFixed(1)} L/min</span>
+                    <span className="text-[10px] text-slate-400">ref. {referenceFlowLMin.toFixed(1)} L/min</span>
                   )}
                 </div>
                 <div className="flex items-end gap-3">
                   {mjerenje.flowLMin !== undefined ? (
                     <>
-                      <span className="text-4xl font-black tabular-nums leading-none text-foreground">
+                      <span className="text-4xl font-black tabular-nums leading-none text-slate-900">
                         {mjerenje.flowLMin.toFixed(1)}
                       </span>
-                      <span className="text-sm text-muted-foreground pb-0.5">L/min</span>
+                      <span className="text-sm text-slate-500 pb-0.5">L/min</span>
                     </>
                   ) : (
-                    <span className="text-4xl font-black tabular-nums leading-none text-muted-foreground">—</span>
+                    <span className="text-4xl font-black tabular-nums leading-none text-slate-300">—</span>
                   )}
                   {flowChangeSgn && !isInitial && (
                     <div className="flex flex-col items-end gap-0 pb-0.5 ml-auto">
-                      <span className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/50">Δ protok</span>
+                      <span className="text-[9px] font-semibold uppercase tracking-widest text-slate-400">Δ protok</span>
                       <span className={`text-xl font-black tabular-nums leading-tight ${flowChangeColor}`}>
                         {flowChangeSgn}
                       </span>
@@ -917,19 +955,19 @@ export function RezultatMjerenja({
 
               {/* 6. TEMPERATURA — Temp OUT primarni, Temp IN sekundarni */}
               {mjerenje.tempOutC !== undefined && (
-                <div className="rounded-2xl border border-border bg-card px-4 py-3">
+                <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Temp OUT</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Temp OUT</span>
                     {referenceTempOutC !== null && (
-                      <span className="text-[10px] text-muted-foreground/60">ref. {referenceTempOutC.toFixed(1)} °C</span>
+                      <span className="text-[10px] text-slate-400">ref. {referenceTempOutC.toFixed(1)} °C</span>
                     )}
                   </div>
                   <div className="flex items-baseline justify-between">
                     <div className="flex items-baseline gap-1.5">
-                      <span className="text-4xl font-black tabular-nums text-foreground leading-none">
+                      <span className="text-4xl font-black tabular-nums text-slate-900 leading-none">
                         {mjerenje.tempOutC.toFixed(1)}
                       </span>
-                      <span className="text-base font-bold text-muted-foreground">°C</span>
+                      <span className="text-base font-bold text-slate-500">°C</span>
                     </div>
                     {referenceTempOutC !== null && !isInitial && (() => {
                       const dOut = parseFloat((mjerenje.tempOutC! - referenceTempOutC).toFixed(1));
@@ -940,11 +978,11 @@ export function RezultatMjerenja({
                         : dOut < -1 ? "Pada brzo"
                         : "Pada";
                       const tempTrendColor =
-                        Math.abs(dOut) < 0.3 ? "text-muted-foreground/40"
+                        Math.abs(dOut) < 0.3 ? "text-slate-300"
                         : dOut > 0 ? "text-green-500" : "text-red-500";
                       return (
                         <div className="flex flex-col items-end gap-0">
-                          <span className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/50">Δ OUT</span>
+                          <span className="text-[9px] font-semibold uppercase tracking-widest text-slate-400">Δ OUT</span>
                           <span className={`text-xl font-black tabular-nums leading-tight ${tempTrendColor}`}>
                             {dOut > 0 ? "+" : ""}{dOut.toFixed(1)} °C
                           </span>
@@ -959,38 +997,102 @@ export function RezultatMjerenja({
                   </div>
                   {/* Temp IN — sekundarno, manji tekst */}
                   {mjerenje.tempInC !== undefined && (
-                    <div className="mt-2 pt-2 border-t border-border/40 flex items-baseline justify-between">
-                      <span className="text-[10px] text-muted-foreground/60 uppercase tracking-widest">Temp IN</span>
-                      <span className="text-sm text-muted-foreground/60 tabular-nums">{mjerenje.tempInC.toFixed(1)} °C</span>
+                    <div className="mt-2 pt-2 border-t border-slate-100 flex items-baseline justify-between">
+                      <span className="text-[10px] text-slate-400 uppercase tracking-widest">Temp IN</span>
+                      <span className="text-sm text-slate-500 tabular-nums">{mjerenje.tempInC.toFixed(1)} °C</span>
                     </div>
                   )}
                 </div>
               )}
               {/* Fallback ako nema tempOutC ni tempInC ali ima staro temperatureC */}
               {mjerenje.tempOutC === undefined && mjerenje.tempInC === undefined && tempVal !== undefined && (
-                <div className="rounded-2xl border border-border bg-card px-4 py-3">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block mb-1">Temperatura</span>
+                <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1">Temperatura</span>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-4xl font-black tabular-nums text-foreground leading-none">{tempVal}</span>
-                    <span className="text-base font-bold text-muted-foreground">°C</span>
+                    <span className="text-4xl font-black tabular-nums text-slate-900 leading-none">{tempVal}</span>
+                    <span className="text-base font-bold text-slate-500">°C</span>
                   </div>
                 </div>
               )}
 
               {/* 7. NAPOMENA */}
               {mjerenje.note && (
-                <div className="rounded-2xl border border-border bg-card px-5 py-4 flex flex-col gap-1">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Napomena</span>
-                  <p className="text-sm text-foreground leading-relaxed">{mjerenje.note}</p>
+                <div className="rounded-xl border border-slate-200 bg-white px-5 py-4 flex flex-col gap-1 shadow-sm">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Napomena</span>
+                  <p className="text-sm text-slate-800 leading-relaxed">{mjerenje.note}</p>
                 </div>
               )}
 
-              {/* Upozorenja */}
+              {/* 8. CYCLE DECISION — cycleDecisionType + razlog (ako je vidljiv) */}
+              {preporuka?.cycleDecisionType && preporuka.cycleDecisionType !== "continue" && (
+                <div className={`rounded-xl border-2 px-4 py-4 flex flex-col gap-1.5 ${
+                  preporuka.cycleDecisionType === "finish"
+                    ? "border-emerald-300 bg-emerald-50"
+                    : preporuka.cycleDecisionType === "new_cycle"
+                    ? "border-red-200 bg-red-50"
+                    : "border-amber-200 bg-amber-50"
+                }`}>
+                  <span className={`text-[10px] font-black uppercase tracking-widest ${
+                    preporuka.cycleDecisionType === "finish" ? "text-emerald-700"
+                    : preporuka.cycleDecisionType === "new_cycle" ? "text-red-700"
+                    : "text-amber-700"
+                  }`}>
+                    Odluka o ciklusu
+                  </span>
+                  <p className={`text-sm font-bold leading-snug ${
+                    preporuka.cycleDecisionType === "finish" ? "text-emerald-900"
+                    : preporuka.cycleDecisionType === "new_cycle" ? "text-red-900"
+                    : "text-amber-900"
+                  }`}>
+                    {preporuka.cycleDecision ?? "Nema podataka"}
+                  </p>
+                  {preporuka.cycleDecisionReason && (
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      {preporuka.cycleDecisionReason}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* 9. UPOZORENJA — uvijek vidljiva, kritična su visoko kontrastna */}
               {preporuka?.warnings && preporuka.warnings.length > 0 && (
-                <div className="rounded-2xl border border-amber-300 bg-amber-50 px-5 py-4 flex flex-col gap-2">
-                  {preporuka.warnings.map((w, i) => (
-                    <p key={i} className="text-xs font-semibold text-amber-800 leading-relaxed">{w}</p>
-                  ))}
+                <div className="flex flex-col gap-2">
+                  {preporuka.warnings.map((w, i) => {
+                    // Heuristika za critical warnings (flow pad, iscrpljenost, blokada završetka)
+                    const isCritical =
+                      w.toLowerCase().includes("ispust") ||
+                      w.toLowerCase().includes("iscrplj") ||
+                      w.toLowerCase().includes("blokira") ||
+                      w.toLowerCase().includes("neutraliz") ||
+                      w.toLowerCase().includes("zaustavit") ||
+                      w.toLowerCase().includes("opasn");
+                    return (
+                      <div
+                        key={i}
+                        className={`rounded-xl px-4 py-3 flex items-start gap-3 border ${
+                          isCritical
+                            ? "border-red-300 bg-red-50"
+                            : "border-amber-200 bg-amber-50"
+                        }`}
+                      >
+                        <svg
+                          width="16" height="16"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                          className={`shrink-0 mt-0.5 ${isCritical ? "text-red-600" : "text-amber-600"}`}
+                          aria-hidden="true"
+                        >
+                          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                          <line x1="12" y1="9" x2="12" y2="13" />
+                          <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                        <p className={`text-sm font-semibold leading-relaxed ${
+                          isCritical ? "text-red-800" : "text-amber-800"
+                        }`}>
+                          {w}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </>
@@ -1000,13 +1102,13 @@ export function RezultatMjerenja({
       </div>
 
       {/* ── Sticky footer ───────────────────────────────────────────────────── */}
-      <div className="shrink-0 border-t border-border bg-background px-4 py-4 flex flex-col gap-2.5 max-w-lg mx-auto w-full">
+      <div className="shrink-0 border-t border-slate-200 bg-white px-4 py-4 flex flex-col gap-2.5 max-w-lg mx-auto w-full">
         {/* Završeni ciklus — samo zatvori, bez LIVE akcija */}
         {ciklusZavrsen ? (
           <button
             type="button"
             onClick={onClose}
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-secondary text-foreground font-bold text-sm hover:bg-muted active:scale-[0.98] transition-all"
+            className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm hover:bg-slate-200 active:scale-[0.98] transition-all"
             style={{ minHeight: 56 }}
           >
             Zatvori
@@ -1015,7 +1117,7 @@ export function RezultatMjerenja({
           <button
             type="button"
             onClick={onClose}
-            className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl bg-primary text-primary-foreground font-bold text-base hover:bg-primary/90 active:scale-[0.98] transition-all shadow-sm"
+            className="w-full flex items-center justify-center gap-2.5 py-4 rounded-xl bg-teal-700 text-white font-bold text-base hover:bg-teal-800 active:scale-[0.98] transition-all shadow-sm"
             style={{ minHeight: 56 }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -1029,7 +1131,7 @@ export function RezultatMjerenja({
             <button
               type="button"
               onClick={onNovoMjerenje}
-              className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-primary text-primary-foreground font-bold text-base hover:bg-primary/90 active:scale-[0.98] transition-all shadow-sm"
+              className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-teal-700 text-white font-bold text-base hover:bg-teal-800 active:scale-[0.98] transition-all shadow-sm"
               style={{ minHeight: 56 }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -1043,7 +1145,7 @@ export function RezultatMjerenja({
               <button
                 type="button"
                 onClick={onZavrsiCiklus}
-                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-emerald-600 text-white font-bold text-base hover:bg-emerald-700 active:scale-[0.98] transition-all shadow-sm"
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-emerald-600 text-white font-bold text-base hover:bg-emerald-700 active:scale-[0.98] transition-all shadow-sm"
                 style={{ minHeight: 56 }}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -1057,7 +1159,7 @@ export function RezultatMjerenja({
             <button
               type="button"
               onClick={onDodajNadopunu}
-              className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl border border-amber-400/50 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 font-bold text-sm hover:bg-amber-100 active:scale-95 transition-all"
+              className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl border border-amber-300 bg-amber-50 text-amber-800 font-bold text-sm hover:bg-amber-100 active:scale-95 transition-all"
               style={{ minHeight: 48 }}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -1066,13 +1168,12 @@ export function RezultatMjerenja({
               Nadopuna sredstva
             </button>
 
-            {/* TERTIARY: Novi ciklus — prikazuje se SAMO ako onZavrsiCiklus nije proslijeđen
-                (tj. ciklus je već završen ili se radi o edge-case prikazu) */}
+            {/* TERTIARY: Novi ciklus */}
             {!onZavrsiCiklus && (
               <button
                 type="button"
                 onClick={onNoviCiklus}
-                className="w-full flex items-center justify-center gap-1.5 py-3 rounded-2xl border border-border text-muted-foreground font-bold text-sm hover:border-destructive/40 hover:text-destructive active:scale-95 transition-all"
+                className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:border-red-300 hover:text-red-600 active:scale-95 transition-all"
                 style={{ minHeight: 48 }}
               >
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -1087,7 +1188,7 @@ export function RezultatMjerenja({
             <button
               type="button"
               onClick={onClose}
-              className="w-full py-2 text-xs font-semibold text-muted-foreground/60 hover:text-muted-foreground transition-colors text-center"
+              className="w-full py-2 text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors text-center"
             >
               Natrag na sesiju
             </button>
