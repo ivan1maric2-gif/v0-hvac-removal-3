@@ -426,13 +426,13 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
   const isDark = mounted ? resolvedTheme !== "light" : false;
   const lastSpokenRef = useRef<string>("");
   const isFirstLoadRef = useRef(true);
-  const [vodičPauziran, setVodičPauziran] = useState(false);
-  const vodičPauziranRef = useRef(vodičPauziran);
+  const [ttsPauziran, setTtsPauziran] = useState(false);
+  const ttsPauziranRef = useRef(false);
   
   // Sync ref with state
   useEffect(() => {
-    vodičPauziranRef.current = vodičPauziran;
-  }, [vodičPauziran]);
+    ttsPauziranRef.current = ttsPauziran;
+  }, [ttsPauziran]);
 
   // Listen for mic button press from nav-bar
   useEffect(() => {
@@ -688,9 +688,9 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
       "Uputa serviseru: " + uputaTekst + " " +
       "Sljedeci korak: " + sljedeciKorakTekst;
 
-    // Govori samo ako vodič NIJE pauziran
-    console.log("[v0] useEffect TTS - vodičPauziranRef.current:", vodičPauziranRef.current);
-    if (!vodičPauziranRef.current) {
+    // Govori samo ako TTS NIJE pauziran
+    console.log("[v0] useEffect TTS - ttsPauziranRef.current:", ttsPauziranRef.current);
+    if (!ttsPauziranRef.current) {
       console.log("[v0] Pozivam govori() s tekstom:", glasovnaTekst.substring(0, 50) + "...");
       govori(glasovnaTekst);
     } else {
@@ -741,7 +741,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
     dToutPrev > 0.3 ? "raste" :
     dToutPrev < -0.3 ? "pada" : "stabilna";
 
-  // ── Live procjena uklonjenog kamenca ────────────────────────────────────────
+  // ── Live procjena uklonjenog kamenca ──────────────────���─────────────────────
   // Sve varijable (basePh, baseFlow, currFlow, tOut, refTOut) su definirane iznad
   const peakFoamLive = allMjerenja.reduce<Mjerenje["foamLevel"]>((peak, m) => {
     const order: Mjerenje["foamLevel"][] = ["nema", "slaba", "srednja", "jaka", "vrlo_jaka"];
@@ -900,24 +900,24 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
 
 
 
-            {/* ── Gumb Pauziraj / Nastavi vodič (samo TTS) ─────────────── */}
+            {/* ── Gumb Pauziraj / Nastavi TTS ────────────────────────────── */}
             <div className="px-6 py-3 border-t border-emerald-500/20 flex items-center justify-between bg-emerald-800/30">
               <span className="text-xs text-emerald-200/60 font-medium">
-                {vodičPauziran ? "Glasovne upute pauzirane" : "Glasovne upute aktivne"}
+                {ttsPauziran ? "Glasovne upute pauzirane" : "Glasovne upute aktivne"}
               </span>
               <button
                 type="button"
                 onClick={() => {
-                  console.log("[v0] Klik na gumb - trenutno vodičPauziran:", vodičPauziran);
-                  setVodičPauziran((v) => !v);
+                  console.log("[v0] Klik na gumb - trenutno ttsPauziran:", ttsPauziran);
+                  setTtsPauziran((v) => !v);
                 }}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
-                  vodičPauziran
+                  ttsPauziran
                     ? "bg-emerald-600 border-emerald-500 text-white"
                     : "bg-emerald-900/60 border-emerald-600/40 text-emerald-200 hover:bg-emerald-800/60"
                 }`}
               >
-                {vodičPauziran ? "Nastavi glasovne upute" : "Pauziraj glasovne upute"}
+                {ttsPauziran ? "Nastavi glasovne upute" : "Pauziraj glasovne upute"}
               </button>
             </div>
 
