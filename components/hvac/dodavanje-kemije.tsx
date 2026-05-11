@@ -152,9 +152,9 @@ export function DodavanjeKemije({
   // ── Product list ──────────────────────────────────────────────────────────
   const sviProizvodi = useMemo(() => getAktivniProizvodi(), [getAktivniProizvodi]);
 
-  // Filter samo sredstva za uklanjanje kamenca (opisacling mode)
+  // Filter samo sredstva za uklanjanje kamenca (cleaning mode)
   const relevantProducts = useMemo(
-    () => sviProizvodi.filter((p) => p.productType === "sredstvo_uklanjanje_kamenca"),
+    (): Product[] => sviProizvodi.filter((p) => p.productType === "sredstvo_uklanjanje_kamenca"),
     [sviProizvodi]
   );
 
@@ -574,7 +574,7 @@ export function DodavanjeKemije({
           </div>
         </div>
 
-        {/* ── SECTION 4: Količina kemije ───────────────────────────────── */}
+        {/* ── SECTION 4: Količina kemije ─────────��─────────────────────── */}
         <div className="px-4 pb-4">
           <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 block">
             Količina kemije <span className="text-destructive">*</span>

@@ -3307,7 +3307,8 @@ function SummaryBar({ sesija, aktivanCiklus }: SummaryBarProps) {
     sesija.status === "aktivna_reakcija" ? "Aktivna reakcija" :
     sesija.status === "ciklus_zavrsen"   ? "Ciklus završen" :
     sesija.status === "zavrseno"         ? "Završeno" :
-    sesija.status === "uz_upozorenje"    ? getUzUpozorenjeLabel(sesija) :
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    sesija.status === "uz_upozorenje"    ? getUzUpozorenjeLabel(sesija as any) :
     sesija.status === "nedovrseno"       ? "Nedovršeno" : sesija.status;
 
   return (
@@ -3400,7 +3401,7 @@ export function LivePregled({ sesija }: LivePregledProps) {
   return (
     <div className="flex flex-col gap-4 pb-8">
       {/* Top summary */}
-      <SummaryBar sesija={sesija} aktivanCiklus={aktivanCiklus ?? null} />
+      <SummaryBar sesija={sesija} aktivanCiklus={aktivanCiklus ?? undefined} />
 
       {/* Servisna procjena aktivna za cijelo vrijeme sesije */}
       <ServisnaProcjenaPanel sesija={sesija} aktivanCiklus={aktivanCiklus ?? null} />

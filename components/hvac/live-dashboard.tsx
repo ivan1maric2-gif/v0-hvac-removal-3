@@ -771,22 +771,22 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
 
         // Flow visual state — temelji se na scaleLevel koji engine klasificira
         const flowCardBg =
-          flowImprovement == null                    ? "bg-slate-50 border-slate-200" :
-          flowImprovement.stagnation                 ? "bg-amber-50 border-amber-200" :
-          flowImprovement.scaleLevel === "heavy"     ? "bg-red-50 border-red-200" :
-          flowImprovement.scaleLevel === "medium"    ? "bg-amber-50 border-amber-200" :
-          flowImprovement.scaleLevel === "light"     ? "bg-teal-50 border-teal-200" :
-          flowImprovement.scaleLevel === "none"      ? "bg-emerald-50 border-emerald-200" :
-          "bg-slate-50 border-slate-200";
+          flowImprovement == null                                  ? "bg-slate-50 border-slate-200" :
+          flowImprovement.stagnation                               ? "bg-amber-50 border-amber-200" :
+          flowImprovement.scaleLevel === "ekstremno_zaprljano"     ? "bg-red-50 border-red-200" :
+          flowImprovement.scaleLevel === "jak_kamenac"             ? "bg-red-50 border-red-200" :
+          flowImprovement.scaleLevel === "srednji_kamenac"         ? "bg-amber-50 border-amber-200" :
+          flowImprovement.scaleLevel === "slab_kamenac"            ? "bg-teal-50 border-teal-200" :
+          "bg-emerald-50 border-emerald-200";
 
         const flowLabelColor =
-          flowImprovement == null                    ? "text-slate-500" :
-          flowImprovement.stagnation                 ? "text-amber-700" :
-          flowImprovement.scaleLevel === "heavy"     ? "text-red-700" :
-          flowImprovement.scaleLevel === "medium"    ? "text-amber-700" :
-          flowImprovement.scaleLevel === "light"     ? "text-teal-700" :
-          flowImprovement.scaleLevel === "none"      ? "text-emerald-700" :
-          "text-slate-600";
+          flowImprovement == null                                  ? "text-slate-500" :
+          flowImprovement.stagnation                               ? "text-amber-700" :
+          flowImprovement.scaleLevel === "ekstremno_zaprljano"     ? "text-red-700" :
+          flowImprovement.scaleLevel === "jak_kamenac"             ? "text-red-700" :
+          flowImprovement.scaleLevel === "srednji_kamenac"         ? "text-amber-700" :
+          flowImprovement.scaleLevel === "slab_kamenac"            ? "text-teal-700" :
+          "text-emerald-700";
 
         const flowDeltaColor =
           flowImprovement == null                    ? "text-slate-400" :
@@ -864,11 +864,11 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
                   <p className="text-sm text-white/80 leading-relaxed">{rs.nextStepReason}</p>
                 </div>
               )}
-              {/* Confidence / cycleDecisionType */}
-              {rs.cycleDecisionType && (
+              {/* Reaction label — derived from rs.reakcija */}
+              {rs.reakcija && rs.reakcija !== "normalna" && (
                 <div className="px-4 pb-3">
                   <span className="inline-block text-[10px] font-bold uppercase tracking-widest bg-white/10 text-white/70 border border-white/20 rounded-full px-2.5 py-0.5">
-                    {rs.cycleDecisionType}
+                    {rs.reakcija === "jaka" ? "Jaka reakcija" : "Slaba reakcija"}
                   </span>
                 </div>
               )}
@@ -896,9 +896,9 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
             <div className="bg-white rounded-xl border border-slate-100 shadow-sm px-4 py-4">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Stanje reakcije</p>
-                {rs.statusLabel && (
+                {rs.label && (
                   <span className={`text-[10px] font-bold uppercase tracking-widest border rounded-full px-2.5 py-0.5 ${compactStatusBg}`}>
-                    {rs.statusLabel}
+                    {rs.label}
                   </span>
                 )}
               </div>

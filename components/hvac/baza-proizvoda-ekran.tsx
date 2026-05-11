@@ -472,7 +472,7 @@ function TabOsnovno({ product }: { product: Product }) {
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[10px] text-slate-500">
-                    Ažurirano: {product.sourceUpdatedAt ? new Date(product.sourceUpdatedAt).toLocaleDateString("hr-HR") : "—"}
+                    Ažurirano: {product.sourceDate ? new Date(product.sourceDate).toLocaleDateString("hr-HR") : "—"}
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5">

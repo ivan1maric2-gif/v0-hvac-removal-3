@@ -53,9 +53,11 @@ export function buildAlertsFromEngine(
   let idx = 0;
 
   // 1. Session-level status warnings — iz izracunajStatusSesije (engine)
-  const statusSesije = izracunajStatusSesije(sesija);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const statusSesije = izracunajStatusSesije(sesija as any);
   if (statusSesije === "uz_upozorenje") {
-    const uzUpozorenjeLabel = getUzUpozorenjeLabel(sesija);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const uzUpozorenjeLabel = getUzUpozorenjeLabel(sesija as any);
     alerts.push({
       id: `session-warn-${idx++}`,
       severity: "warn",
@@ -100,8 +102,9 @@ export function buildAlertsFromEngine(
     const cycleLabel = `Ciklus #${c.cycleNumber ?? c.broj}`;
     c.mjerenja.forEach((m) => {
       const t = m.timestamp ?? m.createdAt;
-      if (!m.warnings) return;
-      const warns = Array.isArray(m.warnings) ? m.warnings : [];
+      const mAny = m as Record<string, unknown>;
+      if (!mAny.warnings) return;
+      const warns = Array.isArray(mAny.warnings) ? mAny.warnings : [];
       warns.forEach((w: { message?: string; text?: string; level?: string; severity?: string } | string) => {
         const msg = typeof w === "string" ? w : (w.message ?? w.text ?? "");
         const sev: AlertSeverity =
