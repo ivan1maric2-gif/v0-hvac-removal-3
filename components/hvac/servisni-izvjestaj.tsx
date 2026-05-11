@@ -348,6 +348,403 @@ function SubsessionRow({ ps, idx }: { ps: SubsessionReport; idx: number }) {
   );
 }
 
+// ─── Customer Summary Card ────────────────────────────────────────────────────
+
+function CustomerSummaryCard({ report }: { report: FinalReport }) {
+  const flowOk = report.flow.flow_improvement_percent != null && report.flow.flow_improvement_percent > 3;
+  const flowBad = report.flow.flow_improvement_percent != null && report.flow.flow_improvement_percent < 0;
+
+  const badgeColors: Record<ResultBadge, { bg: string; text: string; dot: string }> = {
+    "Uspješno očišćeno":         { bg: "bg-emerald-50 border-emerald-200", text: "text-emerald-800", dot: "bg-emerald-500" },
+    "Djelomično očišćeno":       { bg: "bg-sky-50 border-sky-200",         text: "text-sky-800",     dot: "bg-sky-500" },
+    "Potreban dodatni ciklus":   { bg: "bg-amber-50 border-amber-200",     text: "text-amber-800",   dot: "bg-amber-500" },
+    "Potreban mehanički zahvat": { bg: "bg-red-50 border-red-200",         text: "text-red-800",     dot: "bg-red-500" },
+  };
+  const bc = badgeColors[report.result_badge];
+
+  const customerText =
+    report.result_badge === "Uspješno očišćeno"
+      ? "Vaš sustav je uspješno očišćen. Protočnost je poboljšana i sustav je spreman za normalnu upotrebu."
+      : report.result_badge === "Djelomično očišćeno"
+      ? "Čišćenje je djelomično završeno. Preporučujemo praćenje sustava i ponovni servis po potrebi."
+      : report.result_badge === "Potreban dodatni ciklus"
+      ? "Za potpuno čišćenje preporučujemo još jedan servisni ciklus."
+      : "Naslage su značajne. Preporučujemo mehanički zahvat uz kemijsko čišćenje.";
+
+  return (
+    <div className={`rounded-2xl border px-5 py-4 ${bc.bg}`}>
+      <div className="flex items-center gap-2 mb-3">
+        <div className={`w-2 h-2 rounded-full shrink-0 ${bc.dot}`} aria-hidden="true" />
+        <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Sažetak za klijenta</p>
+      </div>
+      <h3 className={`text-lg font-black leading-tight mb-2 ${bc.text}`}>{report.result_badge}</h3>
+      <p className="text-sm text-slate-700 leading-relaxed mb-3">{customerText}</p>
+      <div className="grid grid-cols-2 gap-3 text-xs">
+        {report.total_work_time_minutes != null && (
+          <div className="bg-white/60 rounded-xl px-3 py-2">
+            <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Trajanje servisa</p>
+            <p className="font-bold text-slate-800">{report.total_work_time_minutes} min</p>
+          </div>
+        )}
+        {report.number_of_cycles > 0 && (
+          <div className="bg-white/60 rounded-xl px-3 py-2">
+            <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Broj ciklusa</p>
+            <p className="font-bold text-slate-800">{report.number_of_cycles}</p>
+          </div>
+        )}
+        {report.flow.flow_improvement_percent != null && (
+          <div className="bg-white/60 rounded-xl px-3 py-2">
+            <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Poboljšanje protoka</p>
+            <p className={`font-black tabular-nums ${flowOk ? "text-emerald-700" : flowBad ? "text-red-700" : "text-slate-700"}`}>
+              {fPct(report.flow.flow_improvement_percent)}
+            </p>
+          </div>
+        )}
+        {report.chemical_products.length > 0 && (
+          <div className="bg-white/60 rounded-xl px-3 py-2">
+            <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Kemijsko sredstvo</p>
+            <p className="font-bold text-slate-800 truncate">{report.chemical_products[0]}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Analytics Dashboard ──────────────────────────────────────────────────────
+
+function EffectivenessScore({ pct }: { pct: number | null }) {
+  if (pct == null) return <span className="text-slate-400 font-mono">—</span>;
+  const color =
+    pct >= 15 ? "text-emerald-600" :
+    pct >= 5  ? "text-teal-600" :
+    pct >= 0  ? "text-amber-600" :
+    "text-red-600";
+  const label =
+    pct >= 15 ? "Odlično" :
+    pct >= 5  ? "Dobro" :
+    pct >= 0  ? "Umjereno" :
+    "Slabo";
+  const labelColor =
+    pct >= 15 ? "bg-emerald-100 text-emerald-700 border-emerald-200" :
+    pct >= 5  ? "bg-teal-100 text-teal-700 border-teal-200" :
+    pct >= 0  ? "bg-amber-100 text-amber-700 border-amber-200" :
+    "bg-red-100 text-red-700 border-red-200";
+  const barW =
+    pct >= 30 ? "w-full" :
+    pct >= 20 ? "w-3/4" :
+    pct >= 10 ? "w-1/2" :
+    pct >= 5  ? "w-1/3" :
+    pct >= 0  ? "w-1/5" :
+    "w-0";
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-end justify-between gap-2">
+        <p className={`text-3xl font-black tabular-nums ${color}`}>
+          {pct > 0 ? "+" : ""}{pct.toFixed(1)}%
+        </p>
+        <span className={`text-[10px] font-bold uppercase tracking-widest border rounded-full px-2.5 py-0.5 mb-1 ${labelColor}`}>
+          {label}
+        </span>
+      </div>
+      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+        <div className={`h-full rounded-full transition-all ${
+          pct >= 15 ? "bg-emerald-500" :
+          pct >= 5  ? "bg-teal-500" :
+          pct >= 0  ? "bg-amber-400" :
+          "bg-red-500"
+        } ${barW}`} />
+      </div>
+    </div>
+  );
+}
+
+function AnalyticsDashboard({ report, allCiklusi }: { report: FinalReport; allCiklusi: Ciklus[] }) {
+  // Effectiveness — iz engine funkcije calcCleaningEffectiveness, ne računati u UI
+  const allMjer = allCiklusi.flatMap((c) => c.mjerenja);
+  const eff = calcCleaningEffectiveness(allMjer);
+
+  // Maintenance recommendation — na temelju result_badge iz enginea
+  const maintenanceLabel =
+    report.result_badge === "Uspješno očišćeno"         ? "Preporučeno godišnje održavanje" :
+    report.result_badge === "Djelomično očišćeno"       ? "Preporučena skorija kontrola" :
+    report.result_badge === "Potreban dodatni ciklus"   ? "Potreban skoriji povratni servis" :
+    "Potreban hitni mehanički zahvat";
+
+  const maintenanceColor =
+    report.result_badge === "Uspješno očišćeno"         ? "bg-emerald-50 border-emerald-200 text-emerald-800" :
+    report.result_badge === "Djelomično očišćeno"       ? "bg-sky-50 border-sky-200 text-sky-800" :
+    report.result_badge === "Potreban dodatni ciklus"   ? "bg-amber-50 border-amber-200 text-amber-800" :
+    "bg-red-50 border-red-200 text-red-800";
+
+  // Chemistry efficiency — omjer kemikalije i poboljšanja
+  const chemEff = report.flow.flow_improvement_percent != null && report.total_chemical_added_liters > 0
+    ? (report.flow.flow_improvement_percent / report.total_chemical_added_liters)
+    : null;
+
+  return (
+    <div className="flex flex-col gap-3">
+      {/* KPI row */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm px-4 py-3 col-span-3">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-2">Ukupno poboljšanje protoka</p>
+          <EffectivenessScore pct={report.flow.flow_improvement_percent} />
+        </div>
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm px-4 py-3">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Ciklusi</p>
+          <p className="text-2xl font-black text-slate-800">{report.number_of_cycles}</p>
+        </div>
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm px-4 py-3">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Kemikalija (L)</p>
+          <p className="text-2xl font-black text-slate-800">{report.total_chemical_added_liters.toFixed(1)}</p>
+        </div>
+        {report.total_work_time_minutes != null && (
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm px-4 py-3">
+            <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Trajanje (min)</p>
+            <p className="text-2xl font-black text-slate-800">{report.total_work_time_minutes}</p>
+          </div>
+        )}
+      </div>
+
+      {/* Effectiveness status */}
+      {eff.cleaningEffectivenessStatus && (
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm px-4 py-3">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-2">Učinkovitost čišćenja</p>
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm font-bold text-slate-700">{eff.cleaningEffectivenessStatus}</p>
+            <span className={`text-[10px] font-bold uppercase tracking-widest border rounded-full px-2.5 py-0.5 ${
+              eff.cleaningEffectivenessStatus === "Vrlo dobar učinak" ? "bg-emerald-100 text-emerald-700 border-emerald-200" :
+              eff.cleaningEffectivenessStatus === "Dobar učinak"      ? "bg-teal-100 text-teal-700 border-teal-200" :
+              eff.cleaningEffectivenessStatus === "Umjeren učinak"    ? "bg-amber-100 text-amber-700 border-amber-200" :
+              "bg-red-100 text-red-700 border-red-200"
+            }`}>
+              {eff.cleaningEffectivenessStatus === "Vrlo dobar učinak" ? "Odlicno" :
+               eff.cleaningEffectivenessStatus === "Dobar učinak"      ? "Dobro" :
+               eff.cleaningEffectivenessStatus === "Umjeren učinak"    ? "Umjereno" : "Slabo"}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Chemistry efficiency */}
+      {chemEff != null && (
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm px-4 py-3">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Efikasnost kemije</p>
+          <p className="text-sm text-slate-600 leading-relaxed">
+            {chemEff > 5 ? "Visoka efikasnost — kemija je postigla značajan učinak uz minimalnu potrošnju." :
+             chemEff > 1 ? "Dobra efikasnost — kemija je djelovala prema očekivanjima." :
+             "Niska efikasnost — naslage su bile zahtjevne, možda je potreban ponavljajući tretman."}
+          </p>
+          <p className="text-xs text-slate-400 mt-0.5 tabular-nums">
+            {chemEff.toFixed(2)}% poboljšanja / L kemikalije
+          </p>
+        </div>
+      )}
+
+      {/* Maintenance recommendation */}
+      <div className={`rounded-2xl border px-4 py-3 ${maintenanceColor}`}>
+        <p className="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-0.5">Preporuka za održavanje</p>
+        <p className="text-sm font-bold">{maintenanceLabel}</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── History Timeline ─────────────────────────────────────────────────────────
+
+type TimelineEvent =
+  | { type: "measurement"; time: string; label: string; ph?: number | null; flow?: number | null; isRef?: boolean }
+  | { type: "topup";       time: string; label: string; amount?: number; unit?: string; reason?: string }
+  | { type: "cycle_start"; time: string; label: string; cycleNum?: number }
+  | { type: "cycle_end";   time: string; label: string; cycleNum?: number; status?: string }
+  | { type: "warning";     time: string; label: string; severity?: string }
+  | { type: "subsession";  time: string; label: string };
+
+function buildTimeline(sesija: Sesija, allCiklusi: Ciklus[]): TimelineEvent[] {
+  const events: TimelineEvent[] = [];
+
+  const isModeB = sesija.workMode !== "no_subsessions" && sesija.podsesije.length > 0;
+
+  if (isModeB) {
+    sesija.podsesije.forEach((ps) => {
+      events.push({
+        type: "subsession",
+        time: ps.createdAt ?? "",
+        label: `Podsesija: ${ps.naziv ?? ps.opis_dijela ?? ps.id.slice(0, 6)}`,
+      });
+      ps.ciklusi.forEach((c) => buildCycleEvents(events, c));
+    });
+  } else {
+    allCiklusi.forEach((c) => buildCycleEvents(events, c));
+  }
+
+  return events.filter((e) => e.time).sort((a, b) => a.time.localeCompare(b.time));
+}
+
+function buildCycleEvents(events: TimelineEvent[], c: Ciklus) {
+  const cycleNum = c.cycleNumber ?? c.broj;
+  const startTime = c.startDateTime ?? c.timestamp_pocetka ?? c.createdAt;
+  const endTime = c.endDateTime ?? c.timestamp_zavrsetka ?? c.updatedAt;
+
+  if (startTime) events.push({ type: "cycle_start", time: startTime, label: `Ciklus #${cycleNum} — start`, cycleNum });
+
+  c.mjerenja.forEach((m) => {
+    const t = m.timestamp ?? m.createdAt;
+    if (!t) return;
+    const isRef = m.measurementType === "initial_cycle_measurement";
+    events.push({
+      type: "measurement",
+      time: t,
+      label: isRef ? `Referentno mjerenje — pH ${m.ph_value?.toFixed(2) ?? "—"}` : `Mjerenje — pH ${m.ph_value?.toFixed(2) ?? "—"}`,
+      ph: m.ph_value,
+      flow: m.flow_lpm,
+      isRef,
+    });
+  });
+
+  c.nadopune.forEach((n) => {
+    const t = n.addedAt ?? n.timestamp ?? n.createdAt;
+    if (!t) return;
+    events.push({
+      type: "topup",
+      time: t,
+      label: `Nadopuna: ${n.amount} ${n.unit} (${n.chemicalProductName ?? n.kemikalija ?? "—"})`,
+      amount: n.amount,
+      unit: n.unit,
+      reason: n.reason ? (RAZLOZI_NADOPUNE[n.reason] ?? n.reason) : undefined,
+    });
+  });
+
+  if (endTime && c.status !== "aktivan") {
+    events.push({ type: "cycle_end", time: endTime, label: `Ciklus #${cycleNum} — ${c.status}`, cycleNum, status: c.status });
+  }
+}
+
+const TIMELINE_STYLES: Record<string, { dot: string; line: string; bg: string; text: string; label: string }> = {
+  measurement: { dot: "bg-teal-500", line: "bg-teal-200", bg: "bg-teal-50 border-teal-200", text: "text-teal-800", label: "Mjerenje" },
+  topup:       { dot: "bg-sky-500",  line: "bg-sky-200",  bg: "bg-sky-50 border-sky-200",   text: "text-sky-800",   label: "Nadopuna" },
+  cycle_start: { dot: "bg-slate-600",line: "bg-slate-200",bg: "bg-slate-50 border-slate-200",text: "text-slate-700", label: "Ciklus" },
+  cycle_end:   { dot: "bg-emerald-500", line: "bg-emerald-200", bg: "bg-emerald-50 border-emerald-200", text: "text-emerald-800", label: "Završetak" },
+  warning:     { dot: "bg-amber-500",line: "bg-amber-200",bg: "bg-amber-50 border-amber-200",text: "text-amber-800", label: "Upozorenje" },
+  subsession:  { dot: "bg-slate-400",line: "bg-slate-100",bg: "bg-slate-50 border-slate-200",text: "text-slate-600", label: "Podsesija" },
+};
+
+function HistoryTimeline({ sesija, allCiklusi }: { sesija: Sesija; allCiklusi: Ciklus[] }) {
+  const [expanded, setExpanded] = useState(false);
+  const events = buildTimeline(sesija, allCiklusi);
+  const displayed = expanded ? events : events.slice(0, 8);
+
+  if (events.length === 0) {
+    return <p className="text-xs text-slate-400 italic">Nema zabilježenih događaja.</p>;
+  }
+
+  return (
+    <div className="flex flex-col gap-0">
+      {displayed.map((ev, i) => {
+        const st = TIMELINE_STYLES[ev.type] ?? TIMELINE_STYLES.measurement;
+        const isLast = i === displayed.length - 1;
+        return (
+          <div key={i} className="flex gap-3">
+            {/* Dot + line */}
+            <div className="flex flex-col items-center">
+              <div className={`w-2.5 h-2.5 rounded-full shrink-0 mt-3 ${st.dot}`} aria-hidden="true" />
+              {!isLast && <div className={`w-0.5 flex-1 my-0.5 ${st.line}`} aria-hidden="true" />}
+            </div>
+            {/* Card */}
+            <div className={`flex-1 mb-1.5 rounded-xl border px-3 py-2 ${st.bg}`}>
+              <div className="flex items-start justify-between gap-2">
+                <p className={`text-xs font-bold leading-snug ${st.text}`}>{ev.label}</p>
+                <p className="text-[10px] text-slate-400 tabular-nums shrink-0 mt-0.5">{fTime(ev.time)}</p>
+              </div>
+              {ev.type === "measurement" && (ev.flow != null) && (
+                <p className="text-[10px] text-slate-500 mt-0.5">Protok: {ev.flow.toFixed(1)} L/min</p>
+              )}
+              {ev.type === "topup" && ev.reason && (
+                <p className="text-[10px] text-slate-500 mt-0.5">Razlog: {ev.reason}</p>
+              )}
+            </div>
+          </div>
+        );
+      })}
+      {events.length > 8 && (
+        <button
+          onClick={() => setExpanded((v) => !v)}
+          className="mt-1 text-xs font-bold text-slate-500 hover:text-slate-700 transition-colors text-left pl-5"
+        >
+          {expanded ? "Prikaži manje" : `Prikaži sve (${events.length} događaja)`}
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ─── Warning + Contradiction History ─────────────────────────────────────────
+
+function WarningHistorySection({ allCiklusi }: { allCiklusi: Ciklus[] }) {
+  const [expanded, setExpanded] = useState(false);
+
+  // Skupi sve warnings iz mjerenja i ciklus decisions
+  const warnings: Array<{ time: string; message: string; severity: string; source: string }> = [];
+
+  allCiklusi.forEach((c) => {
+    c.mjerenja.forEach((m) => {
+      const t = m.timestamp ?? m.createdAt ?? "";
+      if (m.warnings && Array.isArray(m.warnings)) {
+        m.warnings.forEach((w: { message?: string; level?: string; text?: string; severity?: string }) => {
+          warnings.push({
+            time: t,
+            message: w.message ?? w.text ?? String(w),
+            severity: w.level ?? w.severity ?? "warning",
+            source: `Ciklus #${c.cycleNumber ?? c.broj}`,
+          });
+        });
+      }
+    });
+    // Decisions s warningsom
+    if (c.decisions) {
+      c.decisions.forEach((d: { timestamp?: string; createdAt?: string; warning?: string; warningMessage?: string }) => {
+        if (d.warning ?? d.warningMessage) {
+          warnings.push({
+            time: d.timestamp ?? d.createdAt ?? "",
+            message: d.warningMessage ?? d.warning ?? "",
+            severity: "warning",
+            source: `Ciklus #${c.cycleNumber ?? c.broj}`,
+          });
+        }
+      });
+    }
+  });
+
+  if (warnings.length === 0) {
+    return <p className="text-xs text-slate-400 italic">Nema zabilježenih upozorenja.</p>;
+  }
+
+  const displayed = expanded ? warnings : warnings.slice(0, 4);
+
+  return (
+    <div className="flex flex-col gap-2">
+      {displayed.map((w, i) => {
+        const isCritical = w.severity === "critical" || w.severity === "error";
+        return (
+          <div key={i} className={`rounded-xl border px-3 py-2.5 ${isCritical ? "bg-red-50 border-red-200" : "bg-amber-50 border-amber-200"}`}>
+            <div className="flex items-start justify-between gap-2">
+              <p className={`text-xs font-bold ${isCritical ? "text-red-800" : "text-amber-800"}`}>{w.message}</p>
+              <p className="text-[10px] text-slate-400 tabular-nums shrink-0">{fTime(w.time)}</p>
+            </div>
+            <p className="text-[10px] text-slate-500 mt-0.5">{w.source}</p>
+          </div>
+        );
+      })}
+      {warnings.length > 4 && (
+        <button onClick={() => setExpanded((v) => !v)} className="text-xs font-bold text-slate-500 hover:text-slate-700 transition-colors text-left">
+          {expanded ? "Prikaži manje" : `Prikaži sve (${warnings.length})`}
+        </button>
+      )}
+    </div>
+  );
+}
+
 // ─── Copy button ──────────────────────────────────────────────────────────────
 
 function CopyButton({ report }: { report: FinalReport }) {
@@ -520,6 +917,24 @@ export function ServisniIzvjestaj({ sesija, onClose }: ServisniIzvjestajProps) {
             )}
           </div>
 
+          {/* ── 2b. Customer Summary ── */}
+          <SectionHeading>Sažetak za klijenta</SectionHeading>
+          <div className="mb-4">
+            <CustomerSummaryCard report={report} />
+          </div>
+
+          {/* ── 2c. Analytics Dashboard ── */}
+          <SectionHeading>Analitika i učinkovitost</SectionHeading>
+          <div className="mb-4">
+            <AnalyticsDashboard report={report} allCiklusi={allCiklusi} />
+          </div>
+
+          {/* ── 2d. Warning History ── */}
+          <SectionHeading>Upozorenja</SectionHeading>
+          <div className="mb-4">
+            <WarningHistorySection allCiklusi={allCiklusi} />
+          </div>
+
           {/* ── 3. Session summary ── */}
           <SectionHeading>Sažetak sesije</SectionHeading>
           <div className="grid grid-cols-3 gap-3 mb-4">
@@ -603,6 +1018,12 @@ export function ServisniIzvjestaj({ sesija, onClose }: ServisniIzvjestajProps) {
               </div>
             </>
           )}
+
+          {/* ── 6b. History Timeline ── */}
+          <SectionHeading>Vremenski slijed događaja</SectionHeading>
+          <div className="mb-4">
+            <HistoryTimeline sesija={sesija} allCiklusi={allCiklusi} />
+          </div>
 
           {/* ── 7. Detailed cycle blocks ── */}
           {!isModeA
