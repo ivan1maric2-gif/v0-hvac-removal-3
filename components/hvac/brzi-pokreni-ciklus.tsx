@@ -153,7 +153,7 @@ export function BrziPokreniCiklus({
     ? (defaultUnitForForm(selectedProduct!.form) as JedinicaKemikalije)
     : manualUnit;
 
-  // ── Product warning (derived, no state) ──────────────────────────────────
+  // ── Product warning (derived, no state) ─────────────���────────────────────
   const produktUpozorenje = selectedProduct
     ? evaluirajUpozorenjeProizvoda(selectedProduct, systemCategory)
     : null;
@@ -281,14 +281,14 @@ export function BrziPokreniCiklus({
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col flex-1 bg-background min-h-0">
+    <div className="flex flex-col flex-1 bg-slate-50 min-h-0">
 
       {/* Header */}
-      <header className="bg-secondary text-secondary-foreground px-4 pt-5 pb-4 shrink-0">
+      <header className="bg-teal-700 text-white px-4 pt-5 pb-4 shrink-0">
         <button
           type="button"
           onClick={onBack}
-          className="flex items-center gap-1.5 text-secondary-foreground/70 hover:text-secondary-foreground transition-colors mb-3 text-sm"
+          className="flex items-center gap-1.5 text-white/70 hover:text-white transition-colors mb-3 text-sm"
           aria-label="Natrag"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -296,13 +296,13 @@ export function BrziPokreniCiklus({
           </svg>
           Natrag
         </button>
-        <p className="text-xs text-secondary-foreground/60 uppercase tracking-widest font-medium mb-0.5">
+        <p className="text-xs text-white/60 uppercase tracking-widest font-medium mb-0.5">
           {nazivObjekta}{dioSustava ? ` — ${dioSustava}` : ""}
         </p>
-        <h1 className="text-xl font-bold leading-tight">Pokreni ciklus</h1>
+        <h1 className="text-xl font-bold leading-tight text-white">Pokreni ciklus</h1>
         <div className="flex flex-wrap gap-2 mt-2">
-          <span className="text-xs bg-secondary-foreground/10 text-secondary-foreground/80 rounded-full px-2.5 py-1 font-medium">{tipSustava}</span>
-          <span className="text-xs bg-secondary-foreground/10 text-secondary-foreground/80 rounded-full px-2.5 py-1 font-medium">{tipProblema}</span>
+          <span className="text-xs bg-white/15 text-white/80 rounded-full px-2.5 py-1 font-medium">{tipSustava}</span>
+          <span className="text-xs bg-white/15 text-white/80 rounded-full px-2.5 py-1 font-medium">{tipProblema}</span>
         </div>
       </header>
 
@@ -312,22 +312,22 @@ export function BrziPokreniCiklus({
 
           {/* 1. Sredstvo */}
           <div className="flex flex-col gap-2">
-            <label className="text-base font-bold text-foreground" htmlFor="sredstvo">Sredstvo</label>
+            <label className="text-base font-bold text-slate-800" htmlFor="sredstvo">Sredstvo</label>
 
             {/* No products loaded at all */}
             {svaAktivna.length === 0 ? (
               <div className="flex flex-col gap-3">
-                <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3">
-                  <p className="text-sm font-medium text-destructive mb-0.5">
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+                  <p className="text-sm font-medium text-red-700 mb-0.5">
                     Proizvodi nisu učitani iz baze.
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-slate-500">
                     Provjeriti povezivanje s bazom proizvoda ili dodati sredstvo u Bazu proizvoda.
                   </p>
                 </div>
                 <button
                   type="button"
-                  className="self-start text-sm font-medium text-primary underline underline-offset-2"
+                  className="self-start text-sm font-medium text-teal-700 underline underline-offset-2"
                   onClick={() => {
                     setSelectedProductId("manual");
                     setConcentrationPctStr("");
@@ -357,7 +357,7 @@ export function BrziPokreniCiklus({
                     setIsManual(false);
                     setIncompatibilityConfirmed(false);
                   }}
-                  className="w-full border-2 border-input rounded-xl px-4 bg-background text-foreground focus:outline-none focus:border-primary transition-colors font-medium"
+                  className="w-full border-2 border-slate-200 rounded-xl px-4 bg-white text-slate-900 focus:outline-none focus:border-teal-500 transition-colors font-medium"
                   style={{ height: 52, fontSize: 15 }}
                 >
                   {primaryProducts.length > 0 && (
@@ -434,8 +434,8 @@ export function BrziPokreniCiklus({
                 {/* No compatibility data at all */}
                 {(!selectedProduct.safeFor || selectedProduct.safeFor.length === 0) &&
                   (!selectedProduct.notFor || selectedProduct.notFor.length === 0) && (
-                  <div className="rounded-xl border border-border bg-muted/40 px-3 py-2.5">
-                    <p className="text-xs text-muted-foreground">Podaci o kompatibilnosti nisu uneseni.</p>
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
+                    <p className="text-xs text-slate-500">Podaci o kompatibilnosti nisu uneseni.</p>
                   </div>
                 )}
 
@@ -443,10 +443,11 @@ export function BrziPokreniCiklus({
                 {produktUpozorenje?.level === "incompatible" && (
                   <div className="flex flex-col gap-2.5 rounded-xl border-2 border-destructive/40 bg-destructive/5 px-3 py-3">
                     <div className="flex items-start gap-2">
-                      <svg className="shrink-0 mt-0.5 text-destructive" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                      <svg className="shrink-0 mt-0.5 text-red-600" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
                       </svg>
-                      <p className="text-xs font-medium text-destructive">
+                      <p className="text-xs font-medium text-red-700">
                         Nije prikladno za ovaj sustav.
                       </p>
                     </div>
@@ -457,7 +458,7 @@ export function BrziPokreniCiklus({
                         onChange={(e) => setIncompatibilityConfirmed(e.target.checked)}
                         className="w-4 h-4 rounded border-destructive/40 accent-destructive"
                       />
-                      <span className="text-xs font-medium text-destructive">
+                      <span className="text-xs font-medium text-red-700">
                         Razumijem i potvrđujem odabir
                       </span>
                     </label>
@@ -489,7 +490,7 @@ export function BrziPokreniCiklus({
 
           {/* 2. Voda */}
           <div className="flex flex-col gap-2">
-            <label className="text-base font-bold text-foreground" htmlFor="voda">Voda (L)</label>
+            <label className="text-base font-bold text-slate-800" htmlFor="voda">Voda (L)</label>
             <input
               id="voda"
               type="number"
@@ -504,22 +505,22 @@ export function BrziPokreniCiklus({
                   setManualAmount("");
                 }
               }}
-              className="w-full border-2 border-input rounded-xl px-4 bg-background text-foreground focus:outline-none focus:border-primary transition-colors font-semibold tabular-nums"
+                className="w-full border-2 border-slate-200 rounded-xl px-4 bg-white text-slate-900 focus:outline-none focus:border-teal-500 transition-colors font-semibold tabular-nums"
               style={{ height: 56, fontSize: 22 }}
             />
             {waterPrefilled && (
-              <p className="text-xs text-muted-foreground px-1">
+              <p className="text-xs text-slate-500 px-1">
                 Volumen vode preuzet je iz postavljanja uređaja. Možete ga promijeniti za ovaj ciklus.
               </p>
             )}
             {touched && waterNum <= 0 && (
-              <p className="text-xs text-destructive font-medium">Unesite količinu vode.</p>
+              <p className="text-xs text-red-600 font-medium">Unesite količinu vode.</p>
             )}
           </div>
 
           {/* 3. Odaberi koncentraciju */}
           <div className="flex flex-col gap-3">
-            <p className="text-base font-bold text-foreground">Odaberi koncentraciju</p>
+            <p className="text-base font-bold text-slate-800">Odaberi koncentraciju</p>
 
             {/* Preset buttons */}
             <div className="grid grid-cols-5 gap-2">
@@ -537,8 +538,8 @@ export function BrziPokreniCiklus({
                     }}
                     className={`rounded-xl border-2 py-3 font-bold text-sm transition-all active:scale-95 disabled:opacity-30 disabled:pointer-events-none ${
                       active
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border bg-card text-foreground hover:border-primary hover:bg-primary/10"
+                        ? "border-teal-600 bg-teal-600 text-white"
+                        : "border-slate-200 bg-white text-slate-700 hover:border-teal-400 hover:bg-teal-50"
                     }`}
                   >
                     {pct}%
@@ -556,8 +557,8 @@ export function BrziPokreniCiklus({
                 }}
                 className={`rounded-xl border-2 py-3 font-bold text-xs transition-all active:scale-95 disabled:opacity-30 disabled:pointer-events-none ${
                   concentrationPctStr === "free"
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-card text-foreground hover:border-primary hover:bg-primary/10"
+                    ? "border-teal-600 bg-teal-600 text-white"
+                    : "border-slate-200 bg-white text-slate-700 hover:border-teal-400 hover:bg-teal-50"
                 }`}
               >
                 Slobodan unos
@@ -567,7 +568,7 @@ export function BrziPokreniCiklus({
             {/* Free input field */}
             {concentrationPctStr === "free" && (
               <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-muted-foreground" htmlFor="free-pct">
+                <label className="text-sm font-medium text-slate-600" htmlFor="free-pct">
                   Unesi koncentraciju (%)
                 </label>
                 <input
@@ -584,7 +585,7 @@ export function BrziPokreniCiklus({
                     setManualAmount("");
                   }}
                   placeholder="npr. 7.5"
-                  className="w-full border-2 border-input rounded-xl px-4 bg-background text-foreground focus:outline-none focus:border-primary transition-colors font-semibold tabular-nums"
+              className="w-full border-2 border-slate-200 rounded-xl px-4 bg-white text-slate-900 focus:outline-none focus:border-teal-500 transition-colors font-semibold tabular-nums"
                   style={{ height: 52, fontSize: 20 }}
                   autoFocus
                 />
@@ -592,28 +593,29 @@ export function BrziPokreniCiklus({
             )}
 
             {touched && selectedPct === null && (
-              <p className="text-xs text-destructive font-medium">Odaberi ili unesi koncentraciju.</p>
+              <p className="text-xs text-red-600 font-medium">Odaberi ili unesi koncentraciju.</p>
             )}
           </div>
 
           {/* 4. Result card — Potrebno dodati sredstva */}
           <div className={`rounded-2xl border-2 px-5 py-5 transition-colors ${
             calculatedAmount !== null
-              ? "border-primary bg-primary/8"
-              : "border-border bg-muted/40"
-          }`}>
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
+              ? "border-teal-500 bg-teal-50"
+              : "border-slate-200 bg-slate-50"
+            }
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
+
               Potrebno dodati sredstva
             </p>
             <p className={`font-black tabular-nums leading-none ${
-              calculatedAmount !== null ? "text-primary" : "text-muted-foreground/30"
+              calculatedAmount !== null ? "text-teal-700" : "text-slate-400"
             }`} style={{ fontSize: 48, lineHeight: 1 }}>
               {calculatedAmount !== null
                 ? `${calculatedAmount.toLocaleString("hr", { minimumFractionDigits: 1, maximumFractionDigits: 2 })} ${unit}`
                 : `— ${unit}`}
             </p>
             {calculatedAmount !== null && selectedPct !== null && (
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-slate-500 mt-2">
                 Za {waterNum} L vode pri koncentraciji {selectedPct} %.
               </p>
             )}
@@ -622,7 +624,7 @@ export function BrziPokreniCiklus({
           {/* 5. Ručno prilagođavanje */}
           {calculatedAmount !== null && (
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-bold text-foreground" htmlFor="manual-kolicina">
+              <label className="text-sm font-bold text-slate-800" htmlFor="manual-kolicina">
                 Količina sredstva za ovaj ciklus ({unit})
               </label>
               <input
@@ -636,16 +638,16 @@ export function BrziPokreniCiklus({
                   setManualAmount(e.target.value);
                   setIsManual(true);
                 }}
-                className="w-full border-2 border-input rounded-xl px-4 bg-background text-foreground focus:outline-none focus:border-primary transition-colors font-semibold tabular-nums"
+                  className="w-full border-2 border-slate-200 rounded-xl px-4 bg-white text-slate-900 focus:outline-none focus:border-teal-500 transition-colors font-semibold tabular-nums"
                 style={{ height: 52, fontSize: 20 }}
               />
 
               {/* Actual concentration when manually changed */}
               {wasManuallyAdjusted && actualConcentrationPct !== null && (
                 <div className="flex flex-col gap-1.5">
-                  <p className="text-xs font-medium text-muted-foreground px-1">
+                  <p className="text-xs font-medium text-slate-500 px-1">
                     Stvarna koncentracija:{" "}
-                    <strong className="text-foreground">
+                    <strong className="text-slate-800">
                       {Math.round(actualConcentrationPct * 10) / 10} %
                     </strong>
                   </p>
@@ -664,8 +666,8 @@ export function BrziPokreniCiklus({
 
           {/* Product dosage guidance */}
           {selectedProduct?.dosageMin != null && selectedProduct?.dosageMax != null && (
-            <p className="text-xs text-muted-foreground -mt-3 px-1">
-              Preporučeni raspon: <strong className="text-foreground">{selectedProduct.dosageMin}–{selectedProduct.dosageMax} {selectedProduct.dosageUnit ?? "%"}</strong>
+            <p className="text-xs text-slate-500 -mt-3 px-1">
+              Preporučeni raspon: <strong className="text-slate-800">{selectedProduct.dosageMin}–{selectedProduct.dosageMax} {selectedProduct.dosageUnit ?? "%"}</strong>
             </p>
           )}
 
@@ -674,16 +676,16 @@ export function BrziPokreniCiklus({
       </div>
 
       {/* Fixed footer */}
-      <div className="shrink-0 border-t border-border bg-background px-4 py-4 max-w-lg mx-auto w-full">
+      <div className="shrink-0 border-t border-slate-200 bg-white px-4 py-4 max-w-lg mx-auto w-full">
         <button
           type="button"
           onClick={handleSubmit}
-          className="w-full bg-primary text-primary-foreground rounded-2xl font-black tracking-wide hover:opacity-90 active:scale-[0.98] transition-all uppercase"
+          className="w-full bg-teal-700 text-white rounded-xl font-black tracking-wide hover:bg-teal-800 active:scale-[0.98] transition-all uppercase shadow-sm"
           style={{ height: 60, fontSize: 18, letterSpacing: "0.04em" }}
         >
           Pokreni ciklus
         </button>
-        <p className="text-xs text-center text-muted-foreground mt-2">
+        <p className="text-xs text-center text-slate-500 mt-2">
           Nakon pokretanja: Pokreni cirkulaciju i unesi referentno mjerenje za ~3 min
         </p>
       </div>

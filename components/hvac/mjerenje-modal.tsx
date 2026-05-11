@@ -166,7 +166,7 @@ const REACTION_LABELS: Record<VisibleReaction, string> = {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground border-b border-border pb-1.5">
+    <h2 className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 border-b border-slate-200 pb-1.5">
       {children}
     </h2>
   );
@@ -176,7 +176,7 @@ function FieldLabel({ htmlFor, children }: { htmlFor?: string; children: React.R
   return (
     <label
       htmlFor={htmlFor}
-      className="text-[10px] font-black uppercase tracking-widest text-muted-foreground"
+      className="text-[10px] font-black uppercase tracking-widest text-slate-500"
     >
       {children}
     </label>
@@ -198,7 +198,7 @@ function FoamHelper() {
       <button
         type="button"
         onClick={() => setOpen((p) => !p)}
-        className="flex items-center gap-1.5 py-1 text-[11px] font-semibold text-muted-foreground/60 hover:text-muted-foreground/90 transition-colors select-none"
+        className="flex items-center gap-1.5 py-1 text-[11px] font-semibold text-slate-400 hover:text-slate-600 transition-colors select-none"
       >
         <svg
           width="12" height="12" viewBox="0 0 24 24" fill="none"
@@ -216,9 +216,9 @@ function FoamHelper() {
       >
         <ul className="flex flex-col gap-1.5 pl-4">
           {FOAM_HELPER_ITEMS.map((item) => (
-            <li key={item.label} className="flex items-baseline gap-1.5 text-[11px] text-muted-foreground/70 leading-snug">
+            <li key={item.label} className="flex items-baseline gap-1.5 text-[11px] text-slate-500 leading-snug">
               <span className="font-semibold shrink-0">{item.label}</span>
-              <span className="text-muted-foreground/40">—</span>
+              <span className="text-slate-300">—</span>
               <span>{item.desc}</span>
             </li>
           ))}
@@ -240,7 +240,7 @@ function TextInput({
       id={id ?? name} name={name} type={type} value={value} step={step}
       min={min} max={max} readOnly={readOnly} onChange={onChange}
       placeholder={placeholder}
-      className={`w-full border border-input rounded-2xl px-4 py-3.5 text-base font-semibold bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder:text-muted-foreground/30 ${readOnly ? "opacity-50 cursor-default" : ""} ${className ?? ""}`}
+      className={`w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm font-semibold bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all placeholder:text-slate-400 ${readOnly ? "opacity-50 cursor-default" : ""} ${className ?? ""}`}
     />
   );
 }
@@ -255,7 +255,7 @@ function SelectField<T extends string>({
     <select
       id={id ?? name} name={name} value={value}
       onChange={(e) => onChange(e.target.value as T | "")}
-      className="w-full border border-input rounded-2xl px-4 py-3.5 text-base bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+      className="w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
     >
       <option value="">— Odaberi —</option>
       {options.map((opt) => (
@@ -267,9 +267,9 @@ function SelectField<T extends string>({
 
 function ReadOnlyRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between py-1.5 border-b border-border/50 last:border-0">
-      <span className="text-xs text-muted-foreground">{label}</span>
-      <span className="text-xs font-medium text-foreground">{value}</span>
+    <div className="flex items-center justify-between py-1.5 border-b border-slate-100 last:border-0">
+      <span className="text-xs text-slate-500">{label}</span>
+      <span className="text-xs font-medium text-slate-800">{value}</span>
     </div>
   );
 }
@@ -366,18 +366,18 @@ function SharedDataPanel({
   if (rows.length === 0) return null;
 
   return (
-    <div className="bg-card border border-border rounded-2xl overflow-hidden">
-      <div className="px-4 py-2.5 border-b border-border bg-muted/30">
-        <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">
+    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="px-4 py-2.5 border-b border-slate-200 bg-slate-50">
+        <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">
           Kontekst sesije
         </p>
       </div>
-      <div className="divide-y divide-border/50">
+      <div className="divide-y divide-slate-100">
         {rows.map((row) => (
           <div key={row.label} className="flex items-center justify-between px-4 py-2.5 gap-3">
-            <span className="text-xs text-muted-foreground min-w-0">{row.label}</span>
+            <span className="text-xs text-slate-500 min-w-0">{row.label}</span>
             <div className="flex items-center gap-1.5 shrink-0">
-              <span className="text-sm font-bold text-foreground">{row.value}</span>
+              <span className="text-sm font-bold text-slate-800">{row.value}</span>
               <span className={`text-[9px] font-bold border rounded-full px-1.5 py-0.5 leading-none ${SOURCE_COLORS[row.source]}`}>
                 {SOURCE_LABELS[row.source]}
               </span>
@@ -400,16 +400,16 @@ function InterpretacijaKartica({ ph, phRate, foam }: {
   const res = interpretirajMjerenje(ph, phRate, foam);
 
   const colorMap = {
-    green: "border-emerald-500/30 bg-emerald-500/8 text-emerald-800 dark:text-emerald-200",
-    yellow: "border-amber-400/30 bg-amber-400/8 text-amber-800 dark:text-amber-200",
-    orange: "border-orange-500/30 bg-orange-500/8 text-orange-800 dark:text-orange-200",
-    red: "border-rose-500/30 bg-rose-500/8 text-rose-800 dark:text-rose-200",
+    green:  "border-emerald-200 bg-emerald-50 text-emerald-800",
+    yellow: "border-amber-200   bg-amber-50   text-amber-800",
+    orange: "border-orange-200  bg-orange-50  text-orange-800",
+    red:    "border-red-200     bg-red-50     text-red-800",
   };
   const badgeMap = {
-    green: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
-    yellow: "bg-amber-400/15 text-amber-600 dark:text-amber-400",
-    orange: "bg-orange-500/15 text-orange-600 dark:text-orange-400",
-    red: "bg-rose-500/15 text-rose-600 dark:text-rose-400",
+    green:  "bg-emerald-100 text-emerald-700",
+    yellow: "bg-amber-100   text-amber-700",
+    orange: "bg-orange-100  text-orange-700",
+    red:    "bg-red-100     text-red-700",
   };
 
   return (
@@ -947,17 +947,17 @@ export function MjerenjeModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-background flex flex-col overflow-hidden"
+      className="fixed inset-0 z-50 bg-slate-50 flex flex-col overflow-hidden"
       role="dialog"
       aria-modal="true"
       aria-label="Unesi mjerenje"
     >
       {/* Fixed header */}
-      <div className="flex items-center gap-3 px-4 pt-5 pb-4 border-b border-border bg-background shrink-0">
+      <div className="flex items-center gap-3 px-4 pt-5 pb-4 bg-teal-700 text-white shrink-0">
         <button
           type="button"
           onClick={onClose}
-          className="p-2 -ml-1.5 rounded-xl hover:bg-muted transition-colors"
+          className="p-2 -ml-1.5 rounded-xl hover:bg-white/10 transition-colors"
           aria-label="Zatvori"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -965,11 +965,11 @@ export function MjerenjeModal({
           </svg>
         </button>
         <div className="flex-1 min-w-0">
-          <p className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest mb-0.5">
+          <p className="text-[9px] font-black text-white/60 uppercase tracking-widest mb-0.5">
             Ciklus #{ciklus.cycleNumber ?? ciklus.broj}
             {isInitial ? " — Referentno" : ` — Mjerenje #${ciklus.mjerenja.filter(m => m.measurementType !== "initial_cycle_measurement").length + 1}`}
           </p>
-          <h1 className="text-xl font-black leading-tight tracking-tight text-foreground text-balance">
+          <h1 className="text-xl font-black leading-tight tracking-tight text-white text-balance">
             {isInitial
               ? "Referentno mjerenje"
               : form.measurementType === "after_top_up"
@@ -1006,8 +1006,8 @@ export function MjerenjeModal({
                   onClick={() => setShowVoice((v) => !v)}
                   className={`w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-sm border-2 transition-all active:scale-[0.98] ${
                     showVoice
-                      ? "bg-primary/10 border-primary/50 text-primary"
-                      : "bg-card border-border text-foreground hover:border-primary/40 hover:text-primary"
+                      ? "bg-teal-50 border-teal-500 text-teal-700"
+                      : "bg-white border-slate-200 text-slate-700 hover:border-teal-400 hover:text-teal-700"
                   }`}
                   style={{ minHeight: 52 }}
                 >
@@ -1020,7 +1020,7 @@ export function MjerenjeModal({
                   {showVoice ? "Zatvori glasovni unos" : "Glasovni unos"}
                 </button>
                 {!showVoice && (
-                  <p className="text-[10px] text-muted-foreground/50 text-center">
+                  <p className="text-[10px] text-slate-400 text-center">
                     Unesite vrijednosti glasom ili ručno u polja ispod.
                   </p>
                 )}
@@ -1035,18 +1035,18 @@ export function MjerenjeModal({
 
             {/* ── Voice Confirm Panel — obavezna provjera prije primjene ──── */}
             {voiceDraft && (
-              <div className="rounded-2xl border-2 border-primary/40 bg-primary/5 overflow-hidden flex flex-col">
+              <div className="rounded-xl border-2 border-teal-300 bg-teal-50 overflow-hidden flex flex-col shadow-sm">
                 {/* Header */}
-                <div className="px-4 py-3 bg-primary/10 border-b border-primary/20 flex items-center gap-2">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" className="text-primary shrink-0">
+                <div className="px-4 py-3 bg-teal-100 border-b border-teal-200 flex items-center gap-2">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" className="text-teal-700 shrink-0" aria-hidden="true">
                     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
                     <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
                     <line x1="12" y1="19" x2="12" y2="23" />
                     <line x1="8" y1="23" x2="16" y2="23" />
                   </svg>
-                  <span className="text-sm font-black text-primary">Prepoznate vrijednosti — provjeri i ispravi</span>
+                  <span className="text-sm font-black text-teal-800">Prepoznate vrijednosti — provjeri i ispravi</span>
                   {voiceDraft.edited.size > 0 && (
-                    <span className="ml-auto text-[10px] font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full">
+                    <span className="ml-auto text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full border border-amber-200">
                       Ručno ispravljeno
                     </span>
                   )}
@@ -1054,9 +1054,9 @@ export function MjerenjeModal({
 
                 {/* Warnings */}
                 {voiceDraft.warnings.length > 0 && (
-                  <div className="px-4 py-2.5 flex flex-col gap-1.5 border-b border-primary/20">
+                  <div className="px-4 py-2.5 flex flex-col gap-1.5 border-b border-teal-200">
                     {voiceDraft.warnings.map((w, i) => (
-                      <div key={i} className="flex items-start gap-2 text-amber-700 dark:text-amber-300">
+                      <div key={i} className="flex items-start gap-2 text-amber-700">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="shrink-0 mt-0.5">
                           <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                           <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
@@ -1071,7 +1071,7 @@ export function MjerenjeModal({
                 <div className="px-4 py-3 flex flex-col gap-3">
                   {/* pH */}
                   <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                    <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">
                       pH
                       {voiceDraft.edited.has("ph") && <span className="ml-1 text-amber-500">*</span>}
                     </label>
@@ -1081,12 +1081,12 @@ export function MjerenjeModal({
                         value={voiceDraft.phStr}
                         onChange={(e) => handleDraftChange("ph", e.target.value)}
                         placeholder="0.00 – 14.00"
-                        className={`flex-1 border rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
+                        className={`flex-1 border rounded-lg px-3 py-2 text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                           voiceDraft.phStr && (parseFloat(voiceDraft.phStr) < 0 || parseFloat(voiceDraft.phStr) > 14)
-                            ? "border-red-400 bg-red-50 dark:bg-red-950/20"
+                            ? "border-red-400 bg-red-50"
                             : voiceDraft.edited.has("ph")
                               ? "border-amber-400"
-                              : "border-input"
+                              : "border-slate-200"
                         }`}
                       />
                       <MicButton field="ph" label="Glasovni unos pH" onValue={(v) => handleDraftChange("ph", v)} />
@@ -1098,7 +1098,7 @@ export function MjerenjeModal({
 
                   {/* Protok */}
                   <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                    <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">
                       Protok ({voiceDraft.flowUnit === "sec_10l" ? "s / 10 L" : "L/min"})
                       {voiceDraft.edited.has("flow") && <span className="ml-1 text-amber-500">*</span>}
                     </label>
@@ -1108,12 +1108,12 @@ export function MjerenjeModal({
                         value={voiceDraft.flowStr}
                         onChange={(e) => handleDraftChange("flow", e.target.value)}
                         placeholder="npr. 15.5"
-                        className={`flex-1 border rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
+                        className={`flex-1 border rounded-lg px-3 py-2 text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                           voiceDraft.flowStr && parseFloat(voiceDraft.flowStr) <= 0
-                            ? "border-red-400 bg-red-50 dark:bg-red-950/20"
+                            ? "border-red-400 bg-red-50"
                             : voiceDraft.edited.has("flow")
                               ? "border-amber-400"
-                              : "border-input"
+                              : "border-slate-200"
                         }`}
                       />
                       <MicButton field="flow" label="Glasovni unos protoka" onValue={(v) => handleDraftChange("flow", v)} />
@@ -1125,7 +1125,7 @@ export function MjerenjeModal({
 
                   {/* Temperatura */}
                   <div className="flex flex-col gap-1">
-                    <label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                    <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500">
                       Temperatura (°C)
                       {voiceDraft.edited.has("temp") && <span className="ml-1 text-amber-500">*</span>}
                     </label>
@@ -1135,12 +1135,12 @@ export function MjerenjeModal({
                         value={voiceDraft.tempStr}
                         onChange={(e) => handleDraftChange("temp", e.target.value)}
                         placeholder="npr. 45"
-                        className={`flex-1 border rounded-lg px-3 py-2 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
+                        className={`flex-1 border rounded-lg px-3 py-2 text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                           voiceDraft.tempStr && (parseFloat(voiceDraft.tempStr) < 0 || parseFloat(voiceDraft.tempStr) > 100)
-                            ? "border-red-400 bg-red-50 dark:bg-red-950/20"
+                            ? "border-red-400 bg-red-50"
                             : voiceDraft.edited.has("temp")
                               ? "border-amber-400"
-                              : "border-input"
+                              : "border-slate-200"
                         }`}
                       />
                       <MicButton field="temperature" label="Glasovni unos temperature" onValue={(v) => handleDraftChange("temp", v)} />
@@ -1161,7 +1161,7 @@ export function MjerenjeModal({
                       !!(voiceDraft.flowStr && parseFloat(voiceDraft.flowStr) <= 0) ||
                       !!(voiceDraft.tempStr && (parseFloat(voiceDraft.tempStr) < 0 || parseFloat(voiceDraft.tempStr) > 100))
                     }
-                    className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-bold text-sm active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="w-full py-3.5 rounded-xl bg-teal-700 text-white font-bold text-sm active:scale-[0.98] hover:bg-teal-800 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Prihvati mjerenje
                   </button>
@@ -1169,14 +1169,14 @@ export function MjerenjeModal({
                     <button
                       type="button"
                       onClick={() => { setVoiceDraft(null); setShowVoice(true); }}
-                      className="py-2.5 rounded-xl border border-border text-sm font-semibold text-foreground hover:border-primary/50 transition-all active:scale-[0.98]"
+                      className="py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:border-teal-400 transition-all active:scale-[0.98]"
                     >
                       Ponovi glasovni
                     </button>
                     <button
                       type="button"
                       onClick={handleDiscardVoice}
-                      className="py-2.5 rounded-xl border border-border text-sm font-semibold text-muted-foreground hover:text-foreground transition-all active:scale-[0.98]"
+                      className="py-2.5 rounded-xl border border-slate-200 text-sm font-semibold text-slate-500 hover:text-slate-700 transition-all active:scale-[0.98]"
                     >
                       Unesi ručno
                     </button>

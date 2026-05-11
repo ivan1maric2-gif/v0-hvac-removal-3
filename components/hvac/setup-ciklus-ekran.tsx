@@ -177,7 +177,7 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
   if (!sesija) {
     return (
       <div className="flex items-center justify-center flex-1">
-        <p className="text-muted-foreground text-sm">Sesija nije pronađena.</p>
+        <p className="text-slate-500 text-sm">Sesija nije pronađena.</p>
       </div>
     );
   }
