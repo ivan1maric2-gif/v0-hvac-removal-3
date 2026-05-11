@@ -145,7 +145,7 @@ function MjerenjaTable({ mjerenja }: { mjerenja: Mjerenje[] }) {
                 </span>
               </Td>
               <Td mono>{m.timestamp ? new Date(m.timestamp).toLocaleTimeString("hr-HR", { hour: "2-digit", minute: "2-digit" }) : "—"}</Td>
-              <Td mono>{m.phValue != null ? m.phValue.toFixed(2) : "—"}</Td>
+              <Td mono>{m.ph != null ? m.ph.toFixed(2) : "—"}</Td>
               <Td mono>{"—"}</Td>
               <Td mono>{(m.tempOutC ?? m.temperatureC) != null ? (m.tempOutC ?? m.temperatureC)!.toFixed(1) : "—"}</Td>
               <Td mono>{m.flowLMin != null ? m.flowLMin.toFixed(1) : "—"}</Td>
@@ -596,8 +596,8 @@ function buildCycleEvents(events: TimelineEvent[], c: Ciklus) {
     events.push({
       type: "measurement",
       time: t,
-      label: isRef ? `Referentno mjerenje — pH ${m.phValue?.toFixed(2) ?? "—"}` : `Mjerenje — pH ${m.phValue?.toFixed(2) ?? "—"}`,
-      ph: m.phValue,
+      label: isRef ? `Referentno mjerenje — pH ${m.ph?.toFixed(2) ?? "—"}` : `Mjerenje — pH ${m.ph?.toFixed(2) ?? "—"}`,
+      ph: m.ph,
       flow: m.flowLMin,
       isRef,
     });

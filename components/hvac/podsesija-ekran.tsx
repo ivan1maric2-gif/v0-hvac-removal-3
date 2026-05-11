@@ -389,7 +389,8 @@ export function PodsesijaEkran({ sesijaId, podsesijaId }: Props) {
         {/* Product / Chemistry / Material Safety kartice — prikazati kad je productSnapshot dostupan */}
         {akt?.productSnapshot && (() => {
           const engine = getProductEngine(akt.productSnapshot);
-          const zadnjiPh = getMjerenjePH(zadnjeMjerenjeCiklusa(akt) ?? null);
+          const _zadnjeMj = zadnjeMjerenjeCiklusa(akt);
+          const zadnjiPh = _zadnjeMj ? getMjerenjePH(_zadnjeMj) : null;
           const zadnjaMjerenja = zadnjeMjerenjeCiklusa(akt) ?? null;
           const currentColor = zadnjaMjerenja && "colorIndicator" in zadnjaMjerenja ? (zadnjaMjerenja as { colorIndicator?: string }).colorIndicator : undefined;
           return (

@@ -617,8 +617,8 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
                           const d = currFlow - baseFlow;
                           cells.push({ label: "Δprotok od ref.", value: `${d >= 0 ? "+" : ""}${d.toFixed(1)} L/min`, positive: d >= 0 });
                         }
-                        if ((lastMj as Record<string, unknown>)?.flowChange != null) {
-                          const d = (lastMj as unknown as { flowChange: number }).flowChange;
+                        if (lastMj?.flowChangeFromPrevious != null) {
+                          const d = lastMj.flowChangeFromPrevious;
                           cells.push({ label: "Δprotok od zad.", value: `${d >= 0 ? "+" : ""}${d.toFixed(1)} L/min`, positive: d >= 0 });
                         }
 
@@ -3034,7 +3034,7 @@ function PodsesijaFormModal({
           onSubmit={handleSubmit}
           className="max-w-lg mx-auto w-full px-4 py-5 flex flex-col gap-6"
         >
-          {/* ─── 1. Osnovni podaci ─────────────────────────────────────── */}
+          {/* ─── 1. Osnovni podaci ─���───────────────────────────────────── */}
           <FormSection title="Osnovni podaci">
             <div className="grid grid-cols-3 gap-3">
               <div className="col-span-2">

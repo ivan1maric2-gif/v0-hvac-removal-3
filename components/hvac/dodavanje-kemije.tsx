@@ -153,8 +153,9 @@ export function DodavanjeKemije({
   const sviProizvodi = useMemo(() => getAktivniProizvodi(), [getAktivniProizvodi]);
 
   // Filter samo sredstva za uklanjanje kamenca (cleaning mode)
+  // Cast needed: TS exhaustive-narrows filter to never[] when only one TipProizvoda value exists
   const relevantProducts = useMemo(
-    (): Product[] => sviProizvodi.filter((p) => p.productType === "sredstvo_uklanjanje_kamenca"),
+    (): Product[] => (sviProizvodi as Product[]).filter((p) => p.productType === "sredstvo_uklanjanje_kamenca"),
     [sviProizvodi]
   );
 

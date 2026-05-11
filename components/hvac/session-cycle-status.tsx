@@ -407,7 +407,7 @@ export function CycleStatusKartica({ ciklus, isActive, cycleNumber }: CycleStatu
 
   const topUpCount = ciklus.nadopune?.length ?? 0;
   const liveMeasurementCount = ciklus.mjerenja.filter(
-    (m) => m.measurementType === "regular_measurement" || m.measurementType === "post_top_up_measurement"
+    (m) => m.measurementType === "regular" || m.measurementType === "after_top_up"
   ).length;
 
   const phases = ciklus.completionPhases;
