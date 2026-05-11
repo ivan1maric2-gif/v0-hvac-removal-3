@@ -237,7 +237,7 @@ export function BrziPokreniCiklus({
         allowedCleaningModes: selectedProduct.allowedCleaningModes,
         form: selectedProduct.form,
         phZones: selectedProduct.phZones,
-        indicatorZones: selectedProduct.indicatorZones,
+        indicatorZones: selectedProduct.indicatorZones ?? [],
         hasColorIndicator: selectedProduct.hasColorIndicator,
         colorIndicators: selectedProduct.colorIndicators,
         materialCompatibility: selectedProduct.materialCompatibility,
