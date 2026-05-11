@@ -427,6 +427,12 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
   const lastSpokenRef = useRef<string>("");
   const isFirstLoadRef = useRef(true);
   const [vodičPauziran, setVodičPauziran] = useState(false);
+  const vodičPauziranRef = useRef(vodičPauziran);
+  
+  // Sync ref with state
+  useEffect(() => {
+    vodičPauziranRef.current = vodičPauziran;
+  }, [vodičPauziran]);
 
   // Listen for mic button press from nav-bar
   useEffect(() => {
@@ -683,11 +689,11 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
       "Sljedeci korak: " + sljedeciKorakTekst;
 
     // Govori samo ako vodič NIJE pauziran
-    if (!vodičPauziran) {
+    if (!vodičPauziranRef.current) {
       govori(glasovnaTekst);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lastMj, vodičPauziran]);
+  }, [lastMj]);
 
   // ── Derived display values ───────────────────────────────────────────────
   const basePh = baseline ? getMjerenjePH(baseline) : null;
