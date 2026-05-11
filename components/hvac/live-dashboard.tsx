@@ -749,7 +749,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
 
       {/* ── 2. GLAVNI STATUS REAKCIJE ───────────────────────────────────────── */}
       <div className={`rounded-2xl overflow-hidden border-2 shadow-lg ${uputa.border} ${
-        rs.severity === "critical" || rs.severity === "warning" ? "animate-pulse-border" : ""
+        rs.severity === "critical" || rs.severity === "warn" ? "animate-pulse-border" : ""
       }`}>
         <div className={`${uputa.bg} px-5 py-6`}>
           <div className="flex flex-col gap-3">

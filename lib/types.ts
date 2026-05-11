@@ -21,13 +21,12 @@ export type StatusSesije =
  *  "nedovrseno"       — sesija napuštena: aktivni ciklus bez kraja ili bez ijednog mjerenja
  */
 export function izracunajStatusSesije(s: {
-  ciklusi?: Array<{ status: string; mjerenja: unknown[] }>;
+  ciklusi?: Array<{ status: string; mjerenja: unknown[]; completionPhases?: { ispiranje?: unknown; neutralizacija?: unknown } | null }>;
   podsesije?: Array<{
     status: string;
-    ciklusi?: Array<{ status: string; mjerenja: unknown[] }>;
-    completionPhases?: { ispiranje?: { evidentirano?: boolean }; neutralizacija?: { evidentirano?: boolean } } | null;
+    ciklusi?: Array<{ status: string; mjerenja: unknown[]; completionPhases?: { ispiranje?: unknown; neutralizacija?: unknown } | null }>;
+    completionPhases?: { ispiranje?: unknown; neutralizacija?: unknown } | null;
   }>;
-  completionPhases?: { ispiranje?: { evidentirano?: boolean }; neutralizacija?: { evidentirano?: boolean } } | null;
   workMode?: string;
 }): StatusSesije {
   const sviCiklusi =
@@ -42,18 +41,22 @@ export function izracunajStatusSesije(s: {
   const zavrsenihCiklusa  = sviCiklusi.filter((c) => c.status === "zavrsen" || c.status === "prekinut").length;
   const sviZavrseni       = imaBiloKojiCiklus && zavrsenihCiklusa === sviCiklusi.length;
 
-  // Pronađi completion phases (Mode A: na sesiji, Mode B: na podsesijama)
+  // Pronađi completion phases (Mode A: na ciklusima, Mode B: na podsesijama)
+  // Ispiranje/neutralizacija su evidentirani kada postoji odgovarajući IspiranjeData/NeutralizacijaData objekt
   let imaisiranje = false;
   let imaNeutralizaciju = false;
   if (s.workMode === "with_subsessions") {
     const zavrsenePodsesije = (s.podsesije ?? []).filter((p) => p.status === "zavrseno");
     // Uzimamo zadnju završenu podsesiju s completionPhases
     const zadnjaFaza = [...zavrsenePodsesije].reverse().find((p) => p.completionPhases);
-    imaisiranje      = zadnjaFaza?.completionPhases?.ispiranje?.evidentirano ?? false;
-    imaNeutralizaciju = zadnjaFaza?.completionPhases?.neutralizacija?.evidentirano ?? false;
+    imaisiranje      = zadnjaFaza?.completionPhases?.ispiranje != null;
+    imaNeutralizaciju = zadnjaFaza?.completionPhases?.neutralizacija != null;
   } else {
-    imaisiranje      = s.completionPhases?.ispiranje?.evidentirano ?? false;
-    imaNeutralizaciju = s.completionPhases?.neutralizacija?.evidentirano ?? false;
+    // Mode A: completion phases su na zadnjem završenom ciklusu
+    const zavrsenCiklusi = sviCiklusi.filter((c) => c.status === "zavrsen" || c.status === "prekinut");
+    const zadnjiZavrsen = zavrsenCiklusi[zavrsenCiklusi.length - 1];
+    imaisiranje      = zadnjiZavrsen?.completionPhases?.ispiranje != null;
+    imaNeutralizaciju = zadnjiZavrsen?.completionPhases?.neutralizacija != null;
   }
 
   // --- Redoslijed provjere (od najspecifičnijeg prema najopćenitijem) ---
@@ -71,20 +74,23 @@ export function izracunajStatusSesije(s: {
  */
 export function getUzUpozorenjeLabel(s: {
   workMode?: string;
-  completionPhases?: { ispiranje?: { evidentirano?: boolean }; neutralizacija?: { evidentirano?: boolean } } | null;
+  ciklusi?: Array<{ status: string; completionPhases?: { ispiranje?: unknown; neutralizacija?: unknown } | null }>;
   podsesije?: Array<{
-    completionPhases?: { ispiranje?: { evidentirano?: boolean }; neutralizacija?: { evidentirano?: boolean } } | null;
+    completionPhases?: { ispiranje?: unknown; neutralizacija?: unknown } | null;
   }>;
 }): string {
   let imaIspiranje = false;
   let imaNeutralizaciju = false;
 
   if (s.workMode === "with_subsessions") {
-    imaIspiranje      = (s.podsesije ?? []).some((p) => p.completionPhases?.ispiranje?.evidentirano);
-    imaNeutralizaciju = (s.podsesije ?? []).some((p) => p.completionPhases?.neutralizacija?.evidentirano);
+    imaIspiranje      = (s.podsesije ?? []).some((p) => p.completionPhases?.ispiranje != null);
+    imaNeutralizaciju = (s.podsesije ?? []).some((p) => p.completionPhases?.neutralizacija != null);
   } else {
-    imaIspiranje      = s.completionPhases?.ispiranje?.evidentirano ?? false;
-    imaNeutralizaciju = s.completionPhases?.neutralizacija?.evidentirano ?? false;
+    // Mode A: completion phases su na zadnjem završenom ciklusu
+    const zavrsenCiklusi = (s.ciklusi ?? []).filter((c) => c.status === "zavrsen" || c.status === "prekinut");
+    const zadnjiZavrsen = zavrsenCiklusi[zavrsenCiklusi.length - 1];
+    imaIspiranje      = zadnjiZavrsen?.completionPhases?.ispiranje != null;
+    imaNeutralizaciju = zadnjiZavrsen?.completionPhases?.neutralizacija != null;
   }
 
   if (!imaIspiranje && !imaNeutralizaciju) return "Završeno — ispiranje i neutralizacija nisu potvrđeni";

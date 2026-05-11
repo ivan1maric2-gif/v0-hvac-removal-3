@@ -3400,7 +3400,7 @@ export function LivePregled({ sesija }: LivePregledProps) {
   return (
     <div className="flex flex-col gap-4 pb-8">
       {/* Top summary */}
-      <SummaryBar sesija={sesija} aktivanCiklus={aktivanCiklus ?? null} />
+      <SummaryBar sesija={sesija} aktivanCiklus={aktivanCiklus ?? undefined} />
 
       {/* Servisna procjena aktivna za cijelo vrijeme sesije */}
       <ServisnaProcjenaPanel sesija={sesija} aktivanCiklus={aktivanCiklus ?? null} />

@@ -801,7 +801,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [updateSesije, mapCiklusSesije]
   );
 
-  // ── Session level ─────────────────────────────────────────────────────────
+  // ── Session level ─────────────────────────────────��───────────────────────
 
   const postaviStatusSesije = useCallback(
     (sesijaId: string, status: StatusSesije) =>
@@ -856,14 +856,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           }
 
           // Auto-detektiraj: "zavrseno" ili "uz_upozorenje" ovisno o completion phases
+          // Mode A: completionPhases je na zadnjem završenom ciklusu (ne na Sesiji)
+          // Mode B: completionPhases je na podsesiji
           const imaisiranje =
             s.workMode === "with_subsessions"
-              ? (s.podsesije ?? []).some((p) => p.completionPhases?.ispiranje?.evidentirano)
-              : s.completionPhases?.ispiranje?.evidentirano ?? false;
+              ? (s.podsesije ?? []).some((p) => p.completionPhases?.ispiranje != null)
+              : (() => {
+                  const zavrsenCiklusi = (s.ciklusi ?? []).filter((c) => c.status === "zavrsen" || c.status === "prekinut");
+                  const zadnji = zavrsenCiklusi[zavrsenCiklusi.length - 1];
+                  return zadnji?.completionPhases?.ispiranje != null;
+                })();
           const imaNeutralizaciju =
             s.workMode === "with_subsessions"
-              ? (s.podsesije ?? []).some((p) => p.completionPhases?.neutralizacija?.evidentirano)
-              : s.completionPhases?.neutralizacija?.evidentirano ?? false;
+              ? (s.podsesije ?? []).some((p) => p.completionPhases?.neutralizacija != null)
+              : (() => {
+                  const zavrsenCiklusi = (s.ciklusi ?? []).filter((c) => c.status === "zavrsen" || c.status === "prekinut");
+                  const zadnji = zavrsenCiklusi[zavrsenCiklusi.length - 1];
+                  return zadnji?.completionPhases?.neutralizacija != null;
+                })();
 
           const finalStatus: StatusSesije =
             imaisiranje && imaNeutralizaciju ? "zavrseno" : "uz_upozorenje";
