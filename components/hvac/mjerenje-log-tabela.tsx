@@ -132,7 +132,7 @@ function MjerenjeRedak({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {isInitial ? (
-                <span className="text-xs font-bold text-violet-400 uppercase tracking-wide">Poc.</span>
+                <span className="text-xs font-bold text-teal-600 uppercase tracking-wide">Poc.</span>
               ) : (
                 <span className="text-base font-black text-foreground">#{index}</span>
               )}
@@ -323,15 +323,15 @@ export function MjerenjeLogTabela({ ciklus }: MjerenjeLogTabelaProps) {
     <div className="flex flex-col gap-1.5">
       {/* Zero-measurement summary bar */}
       {mjerenja[0] && (
-        <div className="bg-violet-950/50 border border-violet-700/50 rounded-xl px-3 py-2 flex flex-wrap items-center gap-3 text-xs">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-violet-400">Poc. mjer.</span>
-          <span className="font-bold text-violet-200">pH {zeroPh?.toFixed(2)}</span>
+        <div className="bg-teal-950/50 border border-teal-700/50 rounded-xl px-3 py-2 flex flex-wrap items-center gap-3 text-xs">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-teal-400">Poc. mjer.</span>
+          <span className="font-bold text-teal-200">pH {zeroPh?.toFixed(2)}</span>
           {zeroFlow !== null && (
-            <span className="text-violet-300">{zeroFlow.toFixed(1)} L/min</span>
+            <span className="text-teal-300">{zeroFlow.toFixed(1)} L/min</span>
           )}
-          <span className="text-violet-400">{fmtTime(getMjerenjeTimestamp(mjerenja[0]))}</span>
+          <span className="text-teal-400">{fmtTime(getMjerenjeTimestamp(mjerenja[0]))}</span>
           {ciklus.chemicalPercent != null && (
-            <span className="text-violet-300 font-medium">{ciklus.chemicalPercent.toFixed(2)}% kemije</span>
+            <span className="text-teal-300 font-medium">{ciklus.chemicalPercent.toFixed(2)}% kemije</span>
           )}
         </div>
       )}

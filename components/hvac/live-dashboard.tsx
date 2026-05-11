@@ -371,8 +371,8 @@ const FOAM_DOT: Record<FoamLevel, string> = {
   nema: "bg-slate-300",
   slaba: "bg-sky-300",
   srednja: "bg-blue-400",
-  jaka: "bg-indigo-500",
-  vrlo_jaka: "bg-violet-600",
+  jaka: "bg-blue-600",
+  vrlo_jaka: "bg-blue-800",
 };
 
 function fTime(iso: string) {
@@ -689,12 +689,8 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
       "Sljedeci korak: " + sljedeciKorakTekst;
 
     // Govori samo ako TTS NIJE pauziran
-    console.log("[v0] useEffect TTS - ttsPauziranRef.current:", ttsPauziranRef.current);
     if (!ttsPauziranRef.current) {
-      console.log("[v0] Pozivam govori() s tekstom:", glasovnaTekst.substring(0, 50) + "...");
       govori(glasovnaTekst);
-    } else {
-      console.log("[v0] TTS pauziran, preskačem govori()");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastMj]);
@@ -741,7 +737,7 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
     dToutPrev > 0.3 ? "raste" :
     dToutPrev < -0.3 ? "pada" : "stabilna";
 
-  // ── Live procjena uklonjenog kamenca ──────────────────���──────────���──────────
+  // ── Live procjena uklonjenog kamenca ──────────────────���──────────�����──────────
   // Sve varijable (basePh, baseFlow, currFlow, tOut, refTOut) su definirane iznad
   const peakFoamLive = allMjerenja.reduce<Mjerenje["foamLevel"]>((peak, m) => {
     const order: Mjerenje["foamLevel"][] = ["nema", "slaba", "srednja", "jaka", "vrlo_jaka"];

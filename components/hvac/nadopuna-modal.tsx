@@ -313,7 +313,7 @@ export function NadopunaModal({
           {/* Visual distinction labels */}
           <div className="grid grid-cols-3 gap-2 text-center">
             {[
-              { label: "Ciklus", desc: "Nova voda + novo sredstvo", color: "bg-violet-50 border-violet-200 text-violet-700" },
+              { label: "Ciklus", desc: "Nova voda + novo sredstvo", color: "bg-teal-50 border-teal-200 text-teal-700" },
               { label: "Nadopuna", desc: "Sredstvo u postojecu otopinu", color: "bg-amber-50 border-amber-300 text-amber-800", active: true },
               { label: "Mjerenje", desc: "Provjera parametara", color: "bg-blue-50 border-blue-200 text-blue-700" },
             ].map(({ label, desc, color, active }) => (

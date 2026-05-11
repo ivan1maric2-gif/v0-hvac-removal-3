@@ -584,18 +584,18 @@ function RefRow({
     : null;
 
   return (
-    <div className="rounded-2xl border border-violet-500/40 bg-violet-500/5 overflow-hidden">
+    <div className="rounded-2xl border border-teal-500/40 bg-teal-500/5 overflow-hidden">
       {/* Header red */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-violet-500/20">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-teal-500/20">
         <div className="flex items-center gap-2">
           <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${dotColor}`} />
-          <span className="text-[11px] font-black text-violet-400 uppercase tracking-wide">{label}</span>
+          <span className="text-[11px] font-black text-teal-600 uppercase tracking-wide">{label}</span>
         </div>
         <span className="text-[10px] text-muted-foreground tabular-nums">{fTime(ts)}</span>
       </div>
 
       {/* Data: 2×2 kartica grid */}
-      <div className="grid grid-cols-2 divide-x divide-violet-500/10">
+      <div className="grid grid-cols-2 divide-x divide-teal-500/10">
         {/* pH */}
         <div className="px-3 py-2.5 flex flex-col gap-0.5">
           <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/70">pH</span>
@@ -619,7 +619,7 @@ function RefRow({
       </div>
 
       {/* Protok red */}
-      <div className="grid grid-cols-2 divide-x divide-violet-500/10 border-t border-violet-500/10">
+      <div className="grid grid-cols-2 divide-x divide-teal-500/10 border-t border-teal-500/10">
         {/* Protok */}
         <div className="px-3 py-2.5 flex flex-col gap-0.5">
           <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/70">Protok</span>
@@ -653,7 +653,7 @@ function RefRow({
 
       {/* TEMP OUT + Δ TEMP OUT red — samo ako postoje podaci */}
       {m.tempOutC != null && (
-        <div className="grid grid-cols-2 divide-x divide-violet-500/10 border-t border-violet-500/10">
+        <div className="grid grid-cols-2 divide-x divide-teal-500/10 border-t border-teal-500/10">
           {/* TEMP OUT */}
           <div className="px-3 py-2.5 flex flex-col gap-0.5">
             <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/70">TEMP OUT</span>
@@ -674,7 +674,7 @@ function RefRow({
 
       {/* Foam + napomena */}
       {((m.foamLevel && m.foamLevel !== "nema") || m.note || (m as any).napomena) && (
-        <div className="flex items-center gap-3 px-3 py-1.5 border-t border-violet-500/10">
+        <div className="flex items-center gap-3 px-3 py-1.5 border-t border-teal-500/10">
           {m.foamLevel && m.foamLevel !== "nema" && (
             <span className="text-[9px] text-muted-foreground">
               Pjena: {FOAM_LABEL[m.foamLevel] ?? m.foamLevel}
@@ -899,7 +899,7 @@ function MjerenjeRow({
   );
 }
 
-// ─── Summary cell ─────────────────────────────────────────────────────────────
+// ─── Summary cell ─────────────────────────────────���───────────────────────────
 
 function SummaryCell({
   label, value, unit, delta, deltaClass,
