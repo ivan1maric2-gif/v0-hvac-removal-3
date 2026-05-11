@@ -343,7 +343,7 @@ function ProizvodDetalj({
       )}
 
       {/* Tab bar */}
-      <div className="flex overflow-x-auto border-b border-slate-200 bg-white shadow-smrder bg-card shrink-0">
+      <div className="flex overflow-x-auto border-b border-slate-200 bg-white shadow-sm shrink-0">
         {TABS.map((t) => (
           <button
             key={t.id}
@@ -378,9 +378,9 @@ function TabOsnovno({ product }: { product: Product }) {
   const sp: StatusPodataka = product.statusPodataka ?? "potrebna_dopuna";
 
   const statusPodatakaStyle: Record<string, string> = {
-    iz_tds:            "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-200",
-    djelomicno_iz_tds: "bg-amber-400/10  border-amber-400/30  text-amber-800   dark:text-amber-200",
-    potrebna_dopuna:   "bg-rose-500/10   border-rose-500/30   text-rose-800    dark:text-rose-200",
+    iz_tds:            "bg-emerald-50 border-emerald-200 text-emerald-800",
+    djelomicno_iz_tds: "bg-amber-50  border-amber-200  text-amber-800",
+    potrebna_dopuna:   "bg-red-50    border-red-200    text-red-800",
   };
 
   // Determine which "important" fields are entered vs. missing for the TDS section
@@ -432,24 +432,24 @@ function TabOsnovno({ product }: { product: Product }) {
       <div className="flex gap-3 text-xs">
         <div className={`flex-1 rounded-2xl px-3 py-3.5 text-center font-bold border-2 ${
           product.topUpAllowed
-            ? "bg-emerald-500/8 border-emerald-500/25 text-emerald-800 dark:text-emerald-200"
-            : "bg-rose-500/8   border-rose-500/25   text-rose-800    dark:text-rose-200"
+            ? "bg-emerald-50 border-emerald-300 text-emerald-800"
+            : "bg-red-50 border-red-200 text-red-800"
         }`}>
           Nadopuna {product.topUpAllowed ? "dozvoljena" : "nije preporučena"}
         </div>
-        <div className={`flex-1 rounded-2xl px-3 py-3.5 text-center font-bold border-2 ${
+        <div className={`flex-1 rounded-xl px-3 py-3.5 text-center font-bold border-2 ${
           product.hasColorIndicator
-            ? "bg-primary/8 border-primary/25 text-primary"
-            : "bg-muted/50 border-border text-muted-foreground"
+            ? "bg-teal-50 border-teal-300 text-teal-800"
+            : "bg-slate-100 border-slate-200 text-slate-500"
         }`}>
           {product.hasColorIndicator ? "Ima indikator boje" : "Bez indikatora boje"}
         </div>
       </div>
 
       {/* TDS source section */}
-      <div className="border border-border rounded-2xl overflow-hidden">
-        <div className="bg-muted px-4 py-3 border-b border-border">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Podaci iz tehničkog lista proizvođača</p>
+      <div className="border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Podaci iz tehničkog lista proizvođača</p>
           <div className={`inline-flex items-center gap-1.5 mt-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${statusPodatakaStyle[sp]}`}>
             {sp === "iz_tds" && (
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>
@@ -461,27 +461,26 @@ function TabOsnovno({ product }: { product: Product }) {
           {/* Source document */}
           {product.sourceDocumentName && (
             <div className="flex flex-col gap-0.5">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Naziv dokumenta</p>
-              <p className="text-sm text-foreground">{product.sourceDocumentName}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Naziv dokumenta</p>
+              <p className="text-sm text-slate-800">{product.sourceDocumentName}</p>
               <div className="flex gap-3 mt-0.5 flex-wrap">
                 {product.sourceDocumentType && (
-                  <span className="text-[10px] text-muted-foreground">
-                    Vrsta: <strong>{SOURCE_DOCUMENT_TYPE_LABELS[product.sourceDocumentType]}</strong>
+                  <span className="text-[10px] text-slate-500">
+                    {SOURCE_DOCUMENT_TYPE_LABELS[product.sourceDocumentType]}
                   </span>
-                )}
-                {product.sourceVersion && (
-                  <span className="text-[10px] text-muted-foreground">
-                    Verzija: <strong>{product.sourceVersion}</strong>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[10px] text-slate-500">
+                    Ažurirano: {product.sourceUpdatedAt ? new Date(product.sourceUpdatedAt).toLocaleDateString("hr-HR") : "—"}
                   </span>
-                )}
-                {product.sourceDate && (
-                  <span className="text-[10px] text-muted-foreground">
-                    Datum: <strong>{product.sourceDate}</strong>
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[10px] text-slate-500">
+                    Verzija: {product.sourceVersion ?? "—"}
                   </span>
-                )}
-              </div>
-              {product.sourceNote && (
-                <p className="text-[10px] text-muted-foreground italic mt-0.5">{product.sourceNote}</p>
+                </div>
+                {product.sourceNote && (
+                  <p className="text-[10px] text-slate-400 italic mt-0.5">{product.sourceNote}</p>
               )}
             </div>
           )}
@@ -489,7 +488,7 @@ function TabOsnovno({ product }: { product: Product }) {
           {/* Entered fields */}
           {uneseniPodaci.length > 0 && (
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1.5">Uneseni podaci</p>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 mb-1.5">Uneseni podaci</p>
               <div className="flex flex-wrap gap-1.5">
                 {uneseniPodaci.map((f) => (
                   <span key={f} className="text-[10px] font-medium bg-green-50 border border-green-200 text-green-800 rounded-full px-2 py-0.5">
@@ -503,7 +502,7 @@ function TabOsnovno({ product }: { product: Product }) {
           {/* Missing fields */}
           {nedostajuPodaci.length > 0 && (
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1.5">Podaci koje treba dopuniti</p>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 mb-1.5">Podaci koje treba dopuniti</p>
               <div className="flex flex-wrap gap-1.5">
                 {nedostajuPodaci.map((f) => (
                   <span key={f} className="text-[10px] font-medium bg-red-50 border border-red-200 text-red-700 rounded-full px-2 py-0.5">
@@ -534,27 +533,27 @@ function TabDoziranje({ product }: { product: Product }) {
     <div className="flex flex-col gap-4">
       {/* DS-40: pakiranje / tablica doziranja (prah) */}
       {isDS40Style && (
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border bg-muted/50">
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Pakiranje i doziranje</p>
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Pakiranje i doziranje</p>
           </div>
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-slate-100">
             {[
               { label: "Standardni kućni CH sustav",  dose: "1.5 kg",      desc: "1 pakiranje DS-40 (iz 2 kg sustava)" },
               { label: "Veliki ili jako prljavi sustav", dose: "3.0 kg +",  desc: "Dodati dodatni prah po potrebi" },
             ].map((row) => (
               <div key={row.label} className="flex items-center justify-between px-4 py-3">
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-xs text-muted-foreground">{row.label}</span>
-                  <span className="text-[10px] text-muted-foreground/60">{row.desc}</span>
+                  <span className="text-xs text-slate-600">{row.label}</span>
+                  <span className="text-[10px] text-slate-400">{row.desc}</span>
                 </div>
-                <span className="text-sm font-bold text-foreground tabular-nums">{row.dose}</span>
+                <span className="text-sm font-bold text-slate-800 tabular-nums">{row.dose}</span>
               </div>
             ))}
           </div>
-          <div className="px-4 py-3 bg-muted/30 border-t border-border">
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              2 kg sustav uključuje: <strong className="text-foreground">1.5 kg DS-40</strong> + <strong className="text-foreground">500 ml System Neutraliser</strong>
+          <div className="px-4 py-3 bg-slate-50 border-t border-slate-100">
+            <p className="text-xs text-slate-500 leading-relaxed">
+              2 kg sustav uključuje: <strong className="text-slate-800">1.5 kg DS-40</strong> + <strong className="text-slate-800">500 ml System Neutraliser</strong>
             </p>
           </div>
         </div>
@@ -562,11 +561,11 @@ function TabDoziranje({ product }: { product: Product }) {
 
       {/* Rector BCP: powder descaler — tablica doziranja */}
       {isRectorStyle && (
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border bg-muted/50">
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Tablica doziranja — prah</p>
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Tablica doziranja — prah</p>
           </div>
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-slate-100">
             {[
               { label: "Standardna primjena",  dose: "5–10%",  desc: "Lagane do srednje naslage" },
               { label: "Teže naslage",         dose: "10–15%", desc: "Povećane naslage kamenca" },
@@ -574,10 +573,10 @@ function TabDoziranje({ product }: { product: Product }) {
             ].map((row) => (
               <div key={row.label} className="flex items-center justify-between px-4 py-3">
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-xs text-muted-foreground">{row.label}</span>
-                  <span className="text-[10px] text-muted-foreground/60">{row.desc}</span>
+                  <span className="text-xs text-slate-600">{row.label}</span>
+                  <span className="text-[10px] text-slate-400">{row.desc}</span>
                 </div>
-                <span className="text-sm font-bold text-foreground tabular-nums">{row.dose}</span>
+                <span className="text-sm font-bold text-slate-800 tabular-nums">{row.dose}</span>
               </div>
             ))}
             <div className="flex items-center justify-between px-4 py-3 bg-amber-50">
@@ -590,11 +589,11 @@ function TabDoziranje({ product }: { product: Product }) {
 
       {/* ScaleBreaker FX: tablica doziranja (%) */}
       {isFXStyle && (
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border bg-muted/50">
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Tablica doziranja</p>
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Tablica doziranja</p>
           </div>
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-slate-100">
             {[
               { label: "Standardna primjena",   dose: "5%",     desc: "Normalne naslage" },
               { label: "Teže naslage",          dose: "10%",    desc: "Povećane naslage kamenca" },
@@ -602,10 +601,10 @@ function TabDoziranje({ product }: { product: Product }) {
             ].map((row) => (
               <div key={row.label} className="flex items-center justify-between px-4 py-3">
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-xs text-muted-foreground">{row.label}</span>
-                  <span className="text-[10px] text-muted-foreground/60">{row.desc}</span>
+                  <span className="text-xs text-slate-600">{row.label}</span>
+                  <span className="text-[10px] text-slate-400">{row.desc}</span>
                 </div>
-                <span className="text-sm font-bold text-foreground tabular-nums">{row.dose}</span>
+                <span className="text-sm font-bold text-slate-800 tabular-nums">{row.dose}</span>
               </div>
             ))}
             <div className="flex items-center justify-between px-4 py-3 bg-amber-50">
@@ -618,19 +617,19 @@ function TabDoziranje({ product }: { product: Product }) {
 
       {/* DS-3 style: tablica doziranja (g/L) */}
       {isDS3Style && !isFXStyle && (
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border bg-muted/50">
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Tablica doziranja</p>
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Tablica doziranja</p>
           </div>
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-slate-100">
             {[
               { label: "Lagano zaprljanje", dose: "250 g", per: "10 L" },
               { label: "Srednje zaprljanje", dose: "500 g", per: "10 L" },
               { label: "Jako zaprljanje",   dose: "1 kg",  per: "10 L" },
             ].map((row) => (
               <div key={row.label} className="flex items-center justify-between px-4 py-3">
-                <span className="text-xs text-muted-foreground">{row.label}</span>
-                <span className="text-sm font-bold text-foreground tabular-nums">
+                <span className="text-xs text-slate-600">{row.label}</span>
+                <span className="text-sm font-bold text-slate-800 tabular-nums">
                   {row.dose} / {row.per}
                 </span>
               </div>
@@ -645,49 +644,49 @@ function TabDoziranje({ product }: { product: Product }) {
 
       {/* Generic % dosage for other products */}
       {!isDS3Style && !isFXStyle && !isRectorStyle && (
-        <div className="bg-card border border-border rounded-2xl p-4 flex flex-col gap-3">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Preporučeni raspon doziranja</p>
+        <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col gap-3 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">Preporučeni raspon doziranja</p>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-foreground">{product.dosageMin}–{product.dosageMax}</span>
-            <span className="text-sm text-muted-foreground">{JEDINICA_DOZIRANJA_LABELS[product.dosageUnit]}</span>
+            <span className="text-3xl font-bold text-slate-900 tabular-nums">{product.dosageMin}–{product.dosageMax}</span>
+            <span className="text-sm text-slate-500">{JEDINICA_DOZIRANJA_LABELS[product.dosageUnit]}</span>
           </div>
-          <div className="flex gap-4 text-xs text-muted-foreground">
-            <span>Početna doza: <strong className="text-foreground">{product.defaultStartingDose} {JEDINICA_DOZIRANJA_LABELS[product.dosageUnit]}</strong></span>
-            <span>Max: <strong className="text-foreground">{product.maxRecommendedDose} {JEDINICA_DOZIRANJA_LABELS[product.dosageUnit]}</strong></span>
+          <div className="flex gap-4 text-xs text-slate-500">
+            <span>Početna doza: <strong className="text-slate-800">{product.defaultStartingDose} {JEDINICA_DOZIRANJA_LABELS[product.dosageUnit]}</strong></span>
+            <span>Max: <strong className="text-slate-800">{product.maxRecommendedDose} {JEDINICA_DOZIRANJA_LABELS[product.dosageUnit]}</strong></span>
           </div>
         </div>
       )}
 
       {/* Temperatura */}
       {(product.safetyNotes?.maxTemperatureC !== undefined || product.safetyNotes?.minTemperatureC !== undefined) && (
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border bg-muted/50">
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Temperatura rada</p>
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Temperatura rada</p>
           </div>
-          <div className="grid grid-cols-2 divide-x divide-border">
+          <div className="grid grid-cols-2 divide-x divide-slate-100">
             <div className="px-4 py-3 flex flex-col gap-0.5">
-              <p className="text-[10px] text-muted-foreground">Optimalno</p>
-              <p className="text-lg font-bold text-foreground">{optimalTempLabel}</p>
+              <p className="text-[10px] text-slate-500">Optimalno</p>
+              <p className="text-lg font-bold text-slate-800">{optimalTempLabel}</p>
             </div>
             <div className="px-4 py-3 flex flex-col gap-0.5">
-              <p className="text-[10px] text-muted-foreground">Maksimalno</p>
-              <p className="text-lg font-bold text-foreground">{product.safetyNotes.maxTemperatureC} °C</p>
+              <p className="text-[10px] text-slate-500">Maksimalno</p>
+              <p className="text-lg font-bold text-slate-800">{product.safetyNotes.maxTemperatureC} °C</p>
             </div>
           </div>
         </div>
       )}
 
       {product.densityKgL !== undefined && (
-        <div className="bg-card border border-border rounded-xl p-4 flex flex-col gap-1">
-          <p className="text-xs font-semibold text-muted-foreground">Gustoća</p>
-          <p className="text-sm font-bold text-foreground">{product.densityKgL} kg/L</p>
-          {product.densityNote && <p className="text-xs text-muted-foreground italic">{product.densityNote}</p>}
+        <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col gap-1 shadow-sm">
+          <p className="text-xs font-semibold text-slate-500">Gustoća</p>
+          <p className="text-sm font-bold text-slate-800">{product.densityKgL} kg/L</p>
+          {product.densityNote && <p className="text-xs text-slate-400 italic">{product.densityNote}</p>}
         </div>
       )}
 
       {product.dosageNote && (
-        <div className="bg-muted/50 border border-border rounded-xl p-3">
-          <p className="text-xs text-muted-foreground">{product.dosageNote}</p>
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
+          <p className="text-xs text-slate-600">{product.dosageNote}</p>
         </div>
       )}
     </div>
@@ -707,12 +706,12 @@ function TabPhZone({ product }: { product: Product }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-xs text-muted-foreground">
+      <p className="text-xs text-slate-500">
         pH zone su specifične za ovaj proizvod i koriste se u motoru preporuka.
         Vrijednosti su editable.
       </p>
       {product.phZones.map((zone) => (
-        <div key={zone.id} className={`border rounded-2xl p-4 ${STATUS_BG[zone.status] ?? "bg-secondary border-border"}`}>
+        <div key={zone.id} className={`border rounded-xl p-4 ${STATUS_BG[zone.status] ?? "bg-slate-50 border-slate-200"}`}>
           <div className="flex items-center justify-between mb-1">
             <span className="font-semibold text-sm">{zone.label}</span>
             <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">
@@ -737,8 +736,8 @@ function TabIndikatorBoje({ product }: { product: Product }) {
   if (!product.hasColorIndicator) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center gap-2">
-        <p className="text-sm text-muted-foreground">Nije primjenjivo</p>
-        <p className="text-xs text-muted-foreground">Ovaj proizvod nema indikator boje.</p>
+        <p className="text-sm text-slate-500">Nije primjenjivo</p>
+        <p className="text-xs text-slate-400">Ovaj proizvod nema indikator boje.</p>
       </div>
     );
   }
@@ -753,16 +752,16 @@ function TabIndikatorBoje({ product }: { product: Product }) {
     active:    "bg-yellow-50 border-yellow-200",
     weakening: "bg-green-50 border-green-200",
     exhausted: "bg-blue-100 border-blue-300",
-    unknown:   "bg-secondary border-border",
+    unknown:   "bg-slate-50 border-slate-200",
   };
 
   return (
     <div className="flex flex-col gap-4">
       {/* Tip indikatora */}
-      <div className="bg-card border border-border rounded-xl px-4 py-3 flex items-center gap-3">
+      <div className="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-3 shadow-sm">
         <div className="flex flex-col gap-0.5">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Tip indikatora reakcije</p>
-          <p className="text-sm font-semibold text-foreground">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Tip indikatora reakcije</p>
+          <p className="text-sm font-semibold text-slate-800">
             {isColorFoam       ? "Boja + pjena (CO₂ reakcija)" :
              isColorBubbles    ? "Boja + mjehurići (CO₂ reakcija)" :
              isColorFoamSludge ? "Boja + pjena + black sludge" :
@@ -774,10 +773,10 @@ function TabIndikatorBoje({ product }: { product: Product }) {
 
       {/* Mapa boja */}
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Indikatori reakcije</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Indikatori reakcije</p>
         <div className="flex flex-col gap-2">
           {product.colorIndicators.map((ci) => (
-            <div key={ci.id} className={`border rounded-2xl p-4 ${STATUS_BG[ci.chemicalStatus] ?? "bg-secondary border-border"}`}>
+            <div key={ci.id} className={`border rounded-xl p-4 ${STATUS_BG[ci.chemicalStatus] ?? "bg-slate-50 border-slate-200"}`}>
               <div className="flex items-center gap-3 mb-1.5">
                 {ci.colorHex && (
                   <span
@@ -785,21 +784,21 @@ function TabIndikatorBoje({ product }: { product: Product }) {
                     style={{ backgroundColor: ci.colorHex }}
                   />
                 )}
-                <span className="font-bold text-sm text-foreground">{ci.colorName}</span>
-                <span className="ml-auto text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <span className="font-bold text-sm">{ci.colorName}</span>
+                <span className="ml-auto text-[10px] font-semibold uppercase tracking-wider opacity-70">
                   {CHEMICAL_STATUS_LABELS[ci.chemicalStatus]}
                 </span>
               </div>
-              <p className="text-xs text-foreground/70 leading-relaxed">{ci.meaning}</p>
+              <p className="text-xs opacity-80 leading-relaxed">{ci.meaning}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* CO₂ reakcija (pjena) — za DS-3 i slične */}
+      {/* CO��� reakcija (pjena) — za DS-3 i slične */}
       {isColorFoam && (
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">CO₂ reakcija (pjena)</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">CO₂ reakcija (pjena)</p>
           <div className="flex flex-col gap-2">
             {[
               { icon: "●●●", label: "Jaka pjena",  desc: "Aktivno otapanje kamenca",                color: "bg-green-50 border-green-200 text-green-800" },
@@ -825,7 +824,7 @@ function TabIndikatorBoje({ product }: { product: Product }) {
 
           {/* 1. Mapa boja — pH */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Indikator aktivnosti — mapa boja</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Indikator aktivnosti — mapa boja</p>
             <div className="flex flex-col gap-1.5">
               {[
                 { label: "Tamno crvena",        ph: "pH < 1.0",    desc: "Koncentrat — ultra jaka reakcija. Pratiti materijale.", dot: "#991b1b", bg: "bg-red-50 border-red-200 text-red-900" },
@@ -859,7 +858,7 @@ function TabIndikatorBoje({ product }: { product: Product }) {
 
           {/* 3. CO₂ bubbling */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">CO₂ bubbling</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">CO₂ bubbling</p>
             <div className="flex flex-col gap-1.5">
               {[
                 { label: "Bubbling prisutan",          desc: "Aktivno otapanje kamenca.",                                             color: "bg-green-50 border-green-200 text-green-900" },
@@ -911,7 +910,7 @@ function TabIndikatorBoje({ product }: { product: Product }) {
 
           {/* 1. Mapa boja — pH */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">
               Status kemije — mapa boja
             </p>
             <div className="flex flex-col gap-1.5">
@@ -972,7 +971,7 @@ function TabIndikatorBoje({ product }: { product: Product }) {
 
           {/* 3. Reakcija i kontaminacija */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">
               Reakcija i kontaminacija
             </p>
             <div className="flex flex-col gap-1.5">
@@ -1026,18 +1025,18 @@ function TabIndikatorBoje({ product }: { product: Product }) {
           </div>
 
           {/* 5. Kapacitet otapanja */}
-          <div className="bg-card border border-border rounded-xl overflow-hidden">
-            <div className="px-4 py-3 border-b border-border bg-muted/50">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                 Kapacitet otapanja
               </p>
             </div>
             <div className="px-4 py-4 flex flex-col gap-1">
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">250–300 g</span>
-                <span className="text-sm text-muted-foreground">CaCO₃ / kg DS-40</span>
+                <span className="text-2xl font-bold text-slate-900 tabular-nums">250–300 g</span>
+                <span className="text-sm text-slate-500">CaCO₃ / kg DS-40</span>
               </div>
-              <p className="text-[11px] text-muted-foreground">Servisna procjena — okvirna vrijednost.</p>
+              <p className="text-[11px] text-slate-500">Servisna procjena — okvirna vrijednost.</p>
             </div>
           </div>
 
@@ -1061,43 +1060,43 @@ function TabIndikatorBoje({ product }: { product: Product }) {
           </div>
 
           {/* 7. Neutralizacija i ispiranje */}
-          <div className="bg-card border border-border rounded-xl overflow-hidden">
-            <div className="px-4 py-3 border-b border-border bg-muted/50">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
                 Neutralizacija i ispiranje
               </p>
             </div>
-            <div className="flex flex-col divide-y divide-border">
+            <div className="flex flex-col divide-y divide-slate-100">
               {[
                 { step: "1", text: "Dodati System Neutraliser — dodavati dok se otopina ne okrene u žutu." },
                 { step: "2", text: "Ispirati više puta svježom vodom dok voda na ispustu ne bude bistra." },
                 { step: "3", text: "Preporučeno: dodati Fernox Protector F1 nakon završnog ispiranja." },
               ].map((row) => (
                 <div key={row.step} className="flex items-start gap-3 px-4 py-3">
-                  <span className="w-5 h-5 rounded-full bg-muted flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-[10px] font-bold text-muted-foreground">{row.step}</span>
+                  <span className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[10px] font-bold text-slate-600">{row.step}</span>
                   </span>
-                  <p className="text-xs text-foreground/90 leading-relaxed">{row.text}</p>
+                  <p className="text-xs text-slate-700 leading-relaxed">{row.text}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* 8. Nije za */}
-          <div className="bg-rose-500/8 border-2 border-rose-500/30 rounded-2xl px-4 py-3 flex flex-col gap-1">
+          <div className="bg-red-50 border-2 border-red-200 rounded-xl px-4 py-3 flex flex-col gap-1">
             <div className="flex items-center gap-2 mb-1">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-rose-500 shrink-0">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-500 shrink-0" aria-hidden="true">
                 <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
               </svg>
-              <p className="text-[9px] font-black uppercase tracking-widest text-rose-800 dark:text-rose-200">Nije za</p>
+              <p className="text-[9px] font-black uppercase tracking-widest text-red-800">Nije za</p>
             </div>
             <ul className="flex flex-col gap-1">
               {[
                 "Single feed indirect cylinders",
                 "Primatic ili slične sustave",
               ].map((item) => (
-                <li key={item} className="flex items-center gap-2 text-xs font-medium text-rose-800 dark:text-rose-200">
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500/50 shrink-0" />
+                <li key={item} className="flex items-center gap-2 text-xs font-medium text-red-800">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
                   {item}
                 </li>
               ))}
@@ -1114,7 +1113,7 @@ function TabIndikatorBoje({ product }: { product: Product }) {
           {/* Status kemije — header sekcije */}
           <div className="flex items-center gap-2">
             <span className="w-1 h-5 rounded-full bg-yellow-500 shrink-0" />
-            <p className="text-[11px] font-black uppercase tracking-widest text-foreground">Status kemije</p>
+            <p className="text-[11px] font-black uppercase tracking-widest text-slate-800">Status kemije</p>
           </div>
 
           {/* Mapa boja — 3 zone */}
