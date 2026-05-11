@@ -21,37 +21,37 @@ import { CHEMISTRY_CONSUMPTION_RATE_LABEL } from "@/lib/live-interpretation";
 
 function levelBg(level: WarningLevel): string {
   switch (level) {
-    case "critical": return "bg-rose-950/60 border-rose-500/50";
-    case "warning":  return "bg-amber-950/50 border-amber-500/40";
-    case "caution":  return "bg-yellow-950/40 border-yellow-600/35";
-    case "info":     return "bg-sky-950/35 border-sky-700/30";
+    case "critical": return "bg-red-50 border-red-200";
+    case "warning":  return "bg-amber-50 border-amber-200";
+    case "caution":  return "bg-yellow-50 border-yellow-200";
+    case "info":     return "bg-sky-50 border-sky-200";
   }
 }
 
 function levelText(level: WarningLevel): string {
   switch (level) {
-    case "critical": return "text-rose-300";
-    case "warning":  return "text-amber-300";
-    case "caution":  return "text-yellow-300";
-    case "info":     return "text-sky-300";
+    case "critical": return "text-red-700";
+    case "warning":  return "text-amber-700";
+    case "caution":  return "text-yellow-700";
+    case "info":     return "text-sky-700";
   }
 }
 
 function levelSubText(level: WarningLevel): string {
   switch (level) {
-    case "critical": return "text-rose-300/70";
-    case "warning":  return "text-amber-300/70";
-    case "caution":  return "text-yellow-300/70";
-    case "info":     return "text-sky-300/70";
+    case "critical": return "text-red-500";
+    case "warning":  return "text-amber-500";
+    case "caution":  return "text-yellow-500";
+    case "info":     return "text-sky-500";
   }
 }
 
 function levelBadge(level: WarningLevel): string {
   switch (level) {
-    case "critical": return "bg-rose-500/20 text-rose-400 border-rose-500/40";
-    case "warning":  return "bg-amber-500/20 text-amber-400 border-amber-500/40";
-    case "caution":  return "bg-yellow-500/15 text-yellow-400 border-yellow-500/35";
-    case "info":     return "bg-sky-500/15 text-sky-400 border-sky-500/35";
+    case "critical": return "bg-red-100 text-red-700 border-red-200";
+    case "warning":  return "bg-amber-100 text-amber-700 border-amber-200";
+    case "caution":  return "bg-yellow-100 text-yellow-700 border-yellow-200";
+    case "info":     return "bg-sky-100 text-sky-700 border-sky-200";
   }
 }
 
@@ -214,7 +214,7 @@ interface SeverityDotProps { count: number; level: WarningLevel }
 function SeverityDot({ count, level }: SeverityDotProps) {
   if (count === 0) return null;
   const dotColor =
-    level === "critical" ? "bg-rose-500" :
+    level === "critical" ? "bg-red-500" :
     level === "warning"  ? "bg-amber-500" :
     level === "caution"  ? "bg-yellow-400" :
     "bg-sky-500";
@@ -257,10 +257,10 @@ export function WarningsKartica({
     null;
 
   const headerBorder =
-    topLevel === "critical" ? "border-rose-700/40"   :
-    topLevel === "warning"  ? "border-amber-700/40"  :
-    topLevel === "caution"  ? "border-yellow-600/30" :
-    topLevel === "info"     ? "border-sky-700/30"    :
+    topLevel === "critical" ? "border-red-200"    :
+    topLevel === "warning"  ? "border-amber-200"  :
+    topLevel === "caution"  ? "border-yellow-200" :
+    topLevel === "info"     ? "border-sky-200"    :
     "border-border";
 
   return (
@@ -391,9 +391,9 @@ export function WarningsKartica({
             </span>
             {recommendation && (
               <span className={`text-[10px] font-black uppercase tracking-wider ${
-                topLevel === "critical" ? "text-rose-400" :
-                topLevel === "warning"  ? "text-amber-400" :
-                "text-foreground/60"
+                topLevel === "critical" ? "text-red-700" :
+                topLevel === "warning"  ? "text-amber-700" :
+                "text-slate-500"
               }`}>
                 {recommendation}
               </span>
