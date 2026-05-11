@@ -763,36 +763,42 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
         const deltaTOut = tOut !== null && refTOut !== null ? parseFloat((tOut - refTOut).toFixed(1)) : null;
         const tempOutStagnira = deltaTOut === null || (deltaTOut > -0.3 && deltaTOut < 0.3);
 
-        // Flow visual state — direktno iz flowImprovement engine outputa
+        // Contradiction — detektira se ISKLJUČIVO iz rs.statusLabel (engine output)
+        const CONTRADICTION_LABELS = new Set([
+          "pH visok, ali protok raste",
+          "Sredstvo slabi, ali protok raste",
+        ]);
+        const hasContradiction = CONTRADICTION_LABELS.has(rs.statusLabel ?? "");
+
+        // Plateau — direktno iz flowImprovement.stagnation (engine boolean)
+        const isPlateauAfterImprovement = flowImprovement?.stagnation === true;
+
+        // Flow visual state — temelji se na scaleLevel koji engine klasificira
         const flowCardBg =
-          flowImprovement == null ? "bg-slate-50 border-slate-200" :
-          flowImprovement.stagnation && flowImprovement.deltaFlowPercent > 3 ? "bg-amber-50 border-amber-200" :
-          flowImprovement.deltaFlowPercent >= 10 ? "bg-teal-50 border-teal-300" :
-          flowImprovement.deltaFlowPercent >= 3  ? "bg-teal-50 border-teal-200" :
-          flowImprovement.deltaFlowPercent < -3  ? "bg-red-50 border-red-200" :
-          flowImprovement.deltaFlowPercent < 0   ? "bg-amber-50 border-amber-200" :
+          flowImprovement == null              ? "bg-slate-50 border-slate-200" :
+          flowImprovement.stagnation           ? "bg-amber-50 border-amber-200" :
+          flowImprovement.scaleLevel === "heavy"   ? "bg-red-50 border-red-200" :
+          flowImprovement.scaleLevel === "medium"  ? "bg-amber-50 border-amber-200" :
+          flowImprovement.scaleLevel === "light"   ? "bg-teal-50 border-teal-200" :
+          flowImprovement.scaleLevel === "none"    ? "bg-emerald-50 border-emerald-200" :
           "bg-slate-50 border-slate-200";
 
         const flowLabelColor =
-          flowImprovement == null ? "text-slate-500" :
-          flowImprovement.stagnation && flowImprovement.deltaFlowPercent > 3 ? "text-amber-700" :
-          flowImprovement.deltaFlowPercent >= 3  ? "text-teal-700" :
-          flowImprovement.deltaFlowPercent < -3  ? "text-red-700" :
-          flowImprovement.deltaFlowPercent < 0   ? "text-amber-700" :
+          flowImprovement == null              ? "text-slate-500" :
+          flowImprovement.stagnation           ? "text-amber-700" :
+          flowImprovement.scaleLevel === "heavy"   ? "text-red-700" :
+          flowImprovement.scaleLevel === "medium"  ? "text-amber-700" :
+          flowImprovement.scaleLevel === "light"   ? "text-teal-700" :
+          flowImprovement.scaleLevel === "none"    ? "text-emerald-700" :
           "text-slate-600";
 
-        // Contradiction — rs.explanation sadrži contradiction tekst ako ga ima.
-        // Detektiramo ga po rs.statusLabel koji engine generira za contradiction stanja.
-        const hasContradiction =
-          rs.statusLabel === "pH visok, ali protok raste" ||
-          rs.statusLabel === "Sredstvo slabi, ali protok raste";
+        const flowDeltaColor =
+          flowImprovement == null               ? "text-slate-400" :
+          flowImprovement.deltaFlowPercent >= 3 ? "text-emerald-600" :
+          flowImprovement.deltaFlowPercent < 0  ? "text-red-600"    :
+          "text-slate-500";
 
-        // Plateau after improvement
-        const isPlateauAfterImprovement =
-          flowImprovement?.stagnation === true &&
-          (flowImprovement?.deltaFlowPercent ?? 0) > 3;
-
-        // Main card bg
+        // Main card bg — prema severity iz enginea
         const cardBg =
           rs.severity === "critical" ? "bg-red-600 border-red-500" :
           rs.severity === "warn"     ? "bg-amber-500 border-amber-400" :
@@ -860,50 +866,53 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
               </div>
             )}
 
-            {/* ── 3. PLATEAU BANNER ────────────────────────────────────────── */}
+            {/* ── 3. PLATEAU BANNER — iz flowImprovement.stagnation (engine) ── */}
             {isPlateauAfterImprovement && (
               <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-amber-700 mb-0.5">Poboljšanje stabilizirano</p>
                 <p className="text-sm text-amber-800 leading-relaxed">
-                  Protok se poboljšao za{" "}
-                  <strong>{flowImprovement!.deltaFlowPercent.toFixed(1)}%</strong>, ali više ne raste.{" "}
                   {flowImprovement!.statusLabel}
                 </p>
               </div>
             )}
 
-            {/* ── 4. FLOW CARD ─────────────────────────────────────────────── */}
+            {/* ── 4. FLOW CARD — iz flowImprovement engine outputa ─────────── */}
             {flowImprovement != null && (
               <div className={`rounded-xl border px-4 py-3 ${flowCardBg}`}>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Protok</p>
                 <div className="flex items-end justify-between gap-3">
-                  <div>
-                    <p className={`text-base font-black leading-tight ${flowLabelColor}`}>
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-black leading-tight ${flowLabelColor}`}>
                       {flowImprovement.statusLabel}
                     </p>
                     {currFlow != null && (
                       <p className="text-xs text-slate-500 mt-0.5">
                         Trenutno: <strong className="text-slate-700">{currFlow.toFixed(1)} L/min</strong>
                         {baseFlow != null && (
-                          <span className="ml-1 text-slate-400">
-                            (ref: {baseFlow.toFixed(1)} L/min)
-                          </span>
+                          <span className="ml-1 text-slate-400">(ref: {baseFlow.toFixed(1)} L/min)</span>
                         )}
                       </p>
                     )}
                   </div>
                   <div className="text-right shrink-0">
-                    <p className={`text-xl font-black tabular-nums ${
-                      flowImprovement.deltaFlowPercent >= 3 ? "text-teal-600" :
-                      flowImprovement.deltaFlowPercent < 0  ? "text-red-600" :
-                      "text-slate-500"
-                    }`}>
+                    <p className={`text-xl font-black tabular-nums ${flowDeltaColor}`}>
                       {flowImprovement.deltaFlowPercent > 0 ? "+" : ""}
                       {flowImprovement.deltaFlowPercent.toFixed(1)}%
                     </p>
                     <p className="text-[10px] text-slate-400">vs referentno</p>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* ── 5. DOMINANT SIGNAL — iz rs.statusLabel (engine output) ─────── */}
+            {rs.statusLabel && (
+              <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" aria-hidden="true" />
+                <p className="text-xs text-slate-500">
+                  <span className="font-bold text-slate-600">Glavni razlog odluke: </span>
+                  {rs.statusLabel}
+                </p>
               </div>
             )}
 
