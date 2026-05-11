@@ -152,17 +152,14 @@ export function DodavanjeKemije({
   // ── Product list ──────────────────────────────────────────────────────────
   const sviProizvodi = useMemo(() => getAktivniProizvodi(), [getAktivniProizvodi]);
 
-  // Filter samo sredstva za uklanjanje kamenca (cleaning mode)
-  // Cast needed: TS exhaustive-narrows filter to never[] when only one TipProizvoda value exists
-  const relevantProducts = useMemo(
-    (): Product[] => (sviProizvodi as Product[]).filter((p) => p.productType === "sredstvo_uklanjanje_kamenca"),
-    [sviProizvodi]
-  );
+  // All products are cleaning agents (single TipProizvoda), no filter needed
+  const relevantProducts: Product[] = useMemo(() => sviProizvodi as Product[], [sviProizvodi]);
 
-  const filteredProducts = useMemo((): Product[] => {
+  const filteredProducts = useMemo<Product[]>(() => {
     const q = searchQuery.toLowerCase().trim();
-    if (!q) return relevantProducts;
-    return relevantProducts.filter(
+    const list = relevantProducts as Product[];
+    if (!q) return list;
+    return list.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
         p.brand.toLowerCase().includes(q) ||
@@ -273,6 +270,8 @@ export function DodavanjeKemije({
   };
 
   const isProductSelected = selectedProduct !== null || isOtherMode;
+  // Explicit typed reference to avoid TS narrowing filteredProducts to never[]
+  const productsToShow: Product[] = Array.from(filteredProducts as unknown as Product[]);
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -427,12 +426,12 @@ export function DodavanjeKemije({
 
               {/* Product list */}
               <div className="flex flex-col gap-2 max-h-64 overflow-y-auto pr-0.5">
-                {filteredProducts.length === 0 && (
+                {productsToShow.length === 0 && (
                   <p className="text-sm text-muted-foreground text-center py-4">
                     Nema rezultata za &quot;{searchQuery}&quot;
                   </p>
                 )}
-                {filteredProducts.map((p) => (
+                {productsToShow.map((p) => (
                   <ProductCard
                     key={p.id}
                     product={p}
