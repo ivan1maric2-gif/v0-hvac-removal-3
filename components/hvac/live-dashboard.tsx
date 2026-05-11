@@ -689,8 +689,12 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
       "Sljedeci korak: " + sljedeciKorakTekst;
 
     // Govori samo ako vodič NIJE pauziran
+    console.log("[v0] useEffect TTS - vodičPauziranRef.current:", vodičPauziranRef.current);
     if (!vodičPauziranRef.current) {
+      console.log("[v0] Pozivam govori() s tekstom:", glasovnaTekst.substring(0, 50) + "...");
       govori(glasovnaTekst);
+    } else {
+      console.log("[v0] TTS pauziran, preskačem govori()");
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastMj]);
@@ -903,7 +907,10 @@ export function LiveDashboard({ ciklus, callbacks, stability, isTestMode = false
               </span>
               <button
                 type="button"
-                onClick={() => setVodičPauziran((v) => !v)}
+                onClick={() => {
+                  console.log("[v0] Klik na gumb - trenutno vodičPauziran:", vodičPauziran);
+                  setVodičPauziran((v) => !v);
+                }}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
                   vodičPauziran
                     ? "bg-emerald-600 border-emerald-500 text-white"
