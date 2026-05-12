@@ -284,10 +284,8 @@ export function NovaSesijaEkran() {
 
   // 8. Materijali
   const [odabraniMaterijali, setOdabraniMaterijali] = useState<MaterijalOsnovni[]>([]);
-  const [mjeSoviti, setMjesoviti] = useState(false);            // Mješoviti materijali expanded
   const [odabraniProsireni, setOdabraniProsireni] = useState<MaterijalProsireni[]>([]);
-  const [materijalOstalo, setMaterijalOstalo] = useState(false); // Ostalo selected
-  const [materijalOstaloText, setMaterijalOstaloText] = useState("");
+  const [materijalOstalo, setMaterijalOstalo] = useState(false); // "Ostalo" expanded
 
   // 9. Početne informativne vrijednosti
   const [pocetniPh, setPocetniPh] = useState("");
@@ -315,18 +313,10 @@ export function NovaSesijaEkran() {
     );
   }
 
-  // Toggle Mješoviti materijali — expand/collapse proširene opcije
-  function toggleMjesoviti() {
-    setMjesoviti((prev) => {
-      if (prev) setOdabraniProsireni([]); // čisti odabir pri zatvaranju
-      return !prev;
-    });
-  }
-
-  // Toggle Ostalo
+  // Toggle Ostalo — expand/collapse proširene materijale
   function toggleMaterijalOstalo() {
     setMaterijalOstalo((prev) => {
-      if (prev) setMaterijalOstaloText(""); // čisti tekst pri odznačavanju
+      if (prev) setOdabraniProsireni([]); // čisti proširene pri zatvaranju
       return !prev;
     });
   }
@@ -384,9 +374,6 @@ export function NovaSesijaEkran() {
     const sviMaterijali = [
       ...odabraniMaterijali,
       ...odabraniProsireni,
-      ...(materijalOstalo && materijalOstaloText.trim()
-        ? [`Ostalo: ${materijalOstaloText.trim()}`]
-        : materijalOstalo ? ["Ostalo"] : []),
     ];
     const materijaliLabel = sviMaterijali.length > 0
       ? `Materijali: ${sviMaterijali.join(", ")}`
@@ -739,8 +726,8 @@ export function NovaSesijaEkran() {
               </Field>
 
               {/* 8. Materijali sustava */}
-              <Field label="Materijali sustava" optional hint='Odabir utječe na upozorenja o kompatibilnosti kemije.'>
-                {/* Osnovni materijali */}
+              <Field label="Materijali sustava" optional hint="Odabir utjece na upozorenja o kompatibilnosti kemije.">
+                {/* Osnovni materijali + Ostalo chip */}
                 <div className="grid grid-cols-2 gap-2">
                   {MATERIJALI_OSNOVNI.map((m) => (
                     <ChipBtn
@@ -751,16 +738,7 @@ export function NovaSesijaEkran() {
                       variant="small"
                     />
                   ))}
-
-                  {/* Mješoviti materijali — toggle chip */}
-                  <ChipBtn
-                    label="Mješoviti materijali"
-                    selected={mjeSoviti}
-                    onClick={toggleMjesoviti}
-                    variant="small"
-                  />
-
-                  {/* Ostalo — toggle chip */}
+                  {/* Ostalo — expanduje proširene materijale */}
                   <ChipBtn
                     label="Ostalo"
                     selected={materijalOstalo}
@@ -769,8 +747,8 @@ export function NovaSesijaEkran() {
                   />
                 </div>
 
-                {/* Expandable — prošireni materijali */}
-                {mjeSoviti && (
+                {/* Expandable — prošireni materijali (prikazuje se kada je "Ostalo" aktivan) */}
+                {materijalOstalo && (
                   <div className="mt-3 rounded-xl border border-border/70 bg-muted/30 p-3">
                     <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
                       Dodatni materijali
@@ -786,23 +764,6 @@ export function NovaSesijaEkran() {
                         />
                       ))}
                     </div>
-                  </div>
-                )}
-
-                {/* Ostalo — text polje */}
-                {materijalOstalo && (
-                  <div className="mt-3">
-                    <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
-                      Unesite dodatni materijal
-                    </label>
-                    <input
-                      type="text"
-                      value={materijalOstaloText}
-                      onChange={(e) => setMaterijalOstaloText(e.target.value)}
-                      placeholder="Npr. EPDM, silikon, teflon, posebna legura..."
-                      autoFocus
-                      className={inputCls}
-                    />
                   </div>
                 )}
               </Field>
