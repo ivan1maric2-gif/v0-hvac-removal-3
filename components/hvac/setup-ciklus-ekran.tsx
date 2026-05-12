@@ -161,18 +161,25 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
   const { getSesija, navigiraj, nazad, pokreniCiklusSesije } = useApp();
   const sesija = getSesija(sesijaId);
 
-  // ── Draft — restore form on back-navigation ──────────────────────────────
+  // ── Draft — restore form AND view on back-navigation ───────────────────────
   const draftKey = DRAFT_KEYS.setupCiklus(sesijaId);
+  const viewKey = `${draftKey}_view`;
   const savedDraft = readDraft<SetupForm>(draftKey);
+  const savedView = readDraft<View>(viewKey);
 
   const [form, setForm] = useState<SetupForm>(savedDraft ?? DEFAULT_FORM);
-  const [view, setView] = useState<View>("form");
+  const [view, setView] = useState<View>(savedView ?? "form");
   const [touched, setTouched] = useState(false);
 
-  // Persist draft on every change
+  // Persist form draft on every change
   useEffect(() => {
     writeDraft<SetupForm>(draftKey, form);
   }, [draftKey, form]);
+
+  // Persist view on every change
+  useEffect(() => {
+    writeDraft<View>(viewKey, view);
+  }, [viewKey, view]);
 
   // useMemo MORA biti ovdje — prije if (!sesija) early returna (Rules of Hooks).
   // Premješteno s linije 203 gdje je uzrokovalo "more hooks than previous render".
@@ -229,6 +236,7 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
         systemCategory={systemCategoryForModal}
         onSave={(ciklus) => {
           clearDraft(draftKey);
+          clearDraft(viewKey);
           pokreniCiklusSesije(sesijaId, ciklus);
           navigiraj({ ime: "sesija", sesijaId });
         }}
