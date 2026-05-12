@@ -43,16 +43,27 @@ type VrstaProblema = (typeof VRSTA_PROBLEMA_OPCIJE)[number];
 // Volumen — quick buttons
 const VOLUMEN_OPCIJE = [10, 25, 50, 100, 250] as const;
 
-// Materijali — multiselect chips
-const MATERIJALI_OPCIJE = [
+// Materijali — osnovni multiselect chips
+const MATERIJALI_OSNOVNI = [
   "Inox",
   "Bakar",
   "Mesing",
   "Čelik",
   "Aluminij",
-  "Plastika/guma",
+  "Plastika / guma",
 ] as const;
-type Materijal = (typeof MATERIJALI_OPCIJE)[number];
+type MaterijalOsnovni = (typeof MATERIJALI_OSNOVNI)[number];
+
+// Materijali — prošireni (prikazuju se kada je odabran "Mješoviti materijali")
+const MATERIJALI_PROSIRENI = [
+  "Pocinčani čelik",
+  "Lijevano željezo",
+  "Titan",
+  "PEX / PE-X",
+  "Alu-PEX",
+  "PVC / CPVC",
+] as const;
+type MaterijalProsireni = (typeof MATERIJALI_PROSIRENI)[number];
 
 type WorkMode = "no_subsessions" | "with_subsessions";
 
@@ -272,7 +283,11 @@ export function NovaSesijaEkran() {
   const [volumenRucnoMode, setVolumenRucnoMode] = useState(false);
 
   // 8. Materijali
-  const [odabraniMaterijali, setOdabraniMaterijali] = useState<Materijal[]>([]);
+  const [odabraniMaterijali, setOdabraniMaterijali] = useState<MaterijalOsnovni[]>([]);
+  const [mjeSoviti, setMjesoviti] = useState(false);            // Mješoviti materijali expanded
+  const [odabraniProsireni, setOdabraniProsireni] = useState<MaterijalProsireni[]>([]);
+  const [materijalOstalo, setMaterijalOstalo] = useState(false); // Ostalo selected
+  const [materijalOstaloText, setMaterijalOstaloText] = useState("");
 
   // 9. Početne informativne vrijednosti
   const [pocetniPh, setPocetniPh] = useState("");
@@ -286,11 +301,34 @@ export function NovaSesijaEkran() {
   const [sesijaPokrenuta, setSesijaPokrenuta] = useState(false);
   const [novaSesijaId, setNovaSesijaId] = useState<string | null>(null);
 
-  // Toggle materijal
-  function toggleMaterijal(m: Materijal) {
+  // Toggle materijal — osnovni
+  function toggleMaterijal(m: MaterijalOsnovni) {
     setOdabraniMaterijali((prev) =>
       prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m]
     );
+  }
+
+  // Toggle prošireni materijal
+  function toggleProsireni(m: MaterijalProsireni) {
+    setOdabraniProsireni((prev) =>
+      prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m]
+    );
+  }
+
+  // Toggle Mješoviti materijali — expand/collapse proširene opcije
+  function toggleMjesoviti() {
+    setMjesoviti((prev) => {
+      if (prev) setOdabraniProsireni([]); // čisti odabir pri zatvaranju
+      return !prev;
+    });
+  }
+
+  // Toggle Ostalo
+  function toggleMaterijalOstalo() {
+    setMaterijalOstalo((prev) => {
+      if (prev) setMaterijalOstaloText(""); // čisti tekst pri odznačavanju
+      return !prev;
+    });
   }
 
   // Toggle problem
@@ -333,19 +371,32 @@ export function NovaSesijaEkran() {
     if (!canSubmit) return;
 
     const now = nowISO();
-    const problemiLabel = odabraniProblemi
-      .map((p) => (p === "Ostalo" && problemOstaloTekst.trim() ? `Ostalo: ${problemOstaloTekst.trim()}` : p))
-      .join(", ");
 
     const vrstaSustavaFinal =
       odabranaVrstaSustava === "Ostalo" && customSustavaText.trim()
         ? `Ostalo: ${customSustavaText.trim()}`
         : odabranaVrstaSustava;
 
+    const problemiLabel = odabraniProblemi
+      .map((p) => (p === "Ostalo" && problemOstaloTekst.trim() ? `Ostalo: ${problemOstaloTekst.trim()}` : p))
+      .join(", ");
+
+    const sviMaterijali = [
+      ...odabraniMaterijali,
+      ...odabraniProsireni,
+      ...(materijalOstalo && materijalOstaloText.trim()
+        ? [`Ostalo: ${materijalOstaloText.trim()}`]
+        : materijalOstalo ? ["Ostalo"] : []),
+    ];
+    const materijaliLabel = sviMaterijali.length > 0
+      ? `Materijali: ${sviMaterijali.join(", ")}`
+      : null;
+
     const opisDijelovi = [
       predmetFinal,
       vrstaSustavaFinal,
       problemiLabel,
+      materijaliLabel,
       napomena.trim() || null,
     ].filter(Boolean);
 
@@ -688,9 +739,10 @@ export function NovaSesijaEkran() {
               </Field>
 
               {/* 8. Materijali sustava */}
-              <Field label="Materijali sustava" optional hint="Odabir utjece na upozorenja o kompatibilnosti kemije">
+              <Field label="Materijali sustava" optional hint='Odabir utječe na upozorenja o kompatibilnosti kemije.'>
+                {/* Osnovni materijali */}
                 <div className="grid grid-cols-2 gap-2">
-                  {MATERIJALI_OPCIJE.map((m) => (
+                  {MATERIJALI_OSNOVNI.map((m) => (
                     <ChipBtn
                       key={m}
                       label={m}
@@ -699,7 +751,60 @@ export function NovaSesijaEkran() {
                       variant="small"
                     />
                   ))}
+
+                  {/* Mješoviti materijali — toggle chip */}
+                  <ChipBtn
+                    label="Mješoviti materijali"
+                    selected={mjeSoviti}
+                    onClick={toggleMjesoviti}
+                    variant="small"
+                  />
+
+                  {/* Ostalo — toggle chip */}
+                  <ChipBtn
+                    label="Ostalo"
+                    selected={materijalOstalo}
+                    onClick={toggleMaterijalOstalo}
+                    variant="small"
+                  />
                 </div>
+
+                {/* Expandable — prošireni materijali */}
+                {mjeSoviti && (
+                  <div className="mt-3 rounded-xl border border-border/70 bg-muted/30 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                      Dodatni materijali
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {MATERIJALI_PROSIRENI.map((m) => (
+                        <ChipBtn
+                          key={m}
+                          label={m}
+                          selected={odabraniProsireni.includes(m)}
+                          onClick={() => toggleProsireni(m)}
+                          variant="small"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Ostalo — text polje */}
+                {materijalOstalo && (
+                  <div className="mt-3">
+                    <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                      Unesite dodatni materijal
+                    </label>
+                    <input
+                      type="text"
+                      value={materijalOstaloText}
+                      onChange={(e) => setMaterijalOstaloText(e.target.value)}
+                      placeholder="Npr. EPDM, silikon, teflon, posebna legura..."
+                      autoFocus
+                      className={inputCls}
+                    />
+                  </div>
+                )}
               </Field>
 
               {/* 9. Početne informativne vrijednosti */}
