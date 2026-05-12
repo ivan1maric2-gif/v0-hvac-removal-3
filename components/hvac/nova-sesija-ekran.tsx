@@ -754,21 +754,21 @@ export function NovaSesijaEkran() {
                   {/* Mješani materijali — expanduje proširene */}
                   <ChipBtn
                     label="Mješani materijali"
-                    selected={materijalOstalo}
-                    onClick={toggleMaterijalOstalo}
+                    selected={mjeSoviti}
+                    onClick={toggleMjesoviti}
                     variant="small"
                   />
                   {/* Ostalo — prikazuje text polje */}
                   <ChipBtn
                     label="Ostalo"
-                    selected={mjeSoviti}
-                    onClick={toggleMjesoviti}
+                    selected={materijalOstalo}
+                    onClick={toggleMaterijalOstalo}
                     variant="small"
                   />
                 </div>
 
                 {/* Expandable — prošireni materijali (Mješani materijali) */}
-                {materijalOstalo && (
+                {mjeSoviti && (
                   <div className="mt-3 rounded-xl border border-border/70 bg-muted/30 p-3">
                     <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
                       Mješani materijali
@@ -788,7 +788,7 @@ export function NovaSesijaEkran() {
                 )}
 
                 {/* Ostalo — text polje */}
-                {mjeSoviti && (
+                {materijalOstalo && (
                   <div className="mt-3">
                     <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
                       Unesite dodatni materijal
