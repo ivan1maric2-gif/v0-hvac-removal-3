@@ -190,7 +190,8 @@ function defaultForm(defaultWater?: number, defaultChem?: string, isFirst?: bool
     vizualnoStanje: "nije_provjereno",
     napomenaStanjePrije: "",
     cleanWaterAdded: isFirst === true ? true : false,
-    waterVolumeL: defaultWater ? String(defaultWater) : "",
+    // Ciklus #2+: volumen se NE pre-filla — korisnik mora unijeti novi volumen
+    waterVolumeL: isFirst && defaultWater ? String(defaultWater) : "",
     waterTempC: "",
     waterPh: "",
     waterTds: "",
@@ -306,9 +307,10 @@ export function PokreniCiklusModal({
   }, [selectedProduct?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Validation ───────────────────────────────────────────────────────────
-  // Ciklus #1: sustav je već napunjen — nema drainOk provjere
-  // Ciklus #2+: treba potvrda pražnjenja (stanje step)
+  // Ciklus #1: sustav je već napunjen — nema drainOk ni refillOk provjere
+  // Ciklus #2+: obavezno pražnjenje + "Sustav napunjen vodom" + novi volumen
   const drainOk = isFirst ? true : form.previousSolutionDrained;
+  const refillOk = isFirst ? true : (form.cleanWaterAdded && waterL > 0);
 
   const formValid =
     selectedProduct !== null &&
@@ -319,6 +321,7 @@ export function PokreniCiklusModal({
     chemAmt > 0 &&
     form.chemicalAddedAt !== "" &&
     drainOk &&
+    refillOk &&
     (!productIsSystemIncompatible || systemWarningConfirmed);
 
   // ── Wizard step order ────────────────────────────────────────────────────
@@ -330,8 +333,10 @@ export function PokreniCiklusModal({
   const stepIndex = WIZARD_STEPS.indexOf(step as Exclude<Step, "confirm">);
 
   // Per-step forward validation
-  // Ciklus #2+: stanje zahtijeva potvrdu pražnjenja
-  const stepStanjeValid = isFirst ? true : form.previousSolutionDrained;
+  // Ciklus #2+: stanje zahtijeva pražnjenje + refill potvrdu + volumen
+  const stepStanjeValid = isFirst
+    ? true
+    : form.previousSolutionDrained && form.cleanWaterAdded && waterL > 0;
   const stepVodaValid = form.cleanWaterAdded && waterL > 0;
   const stepSredstvoValid =
     selectedProduct !== null &&
@@ -796,9 +801,9 @@ export function PokreniCiklusModal({
             </CSection>
           )}
 
-          {/* Ispiranje sustava */}
+          {/* Ispiranje sustava — samo ciklus #2+ */}
           {!isFirst && (
-            <CSection title="Ispiranje i punjenje sustava">
+            <CSection title="Ispiranje sustava">
               <CCheckbox
                 name="rinsed"
                 checked={form.rinsed}
@@ -807,7 +812,7 @@ export function PokreniCiklusModal({
               />
               {form.rinsed && (
                 <>
-                  <CField label="Nacin ispiranja">
+                  <CField label="Način ispiranja">
                     <select name="rinseMethod" value={form.rinseMethod} onChange={handle} className={inputCls}>
                       {RINSE_METHOD_OPTIONS.map((o) => (
                         <option key={o.value} value={o.value}>{o.label}</option>
@@ -817,7 +822,7 @@ export function PokreniCiklusModal({
                   <div className="grid grid-cols-2 gap-3">
                     <CField
                       label="pH vode nakon ispiranja"
-                      hint="Unijeti pH izlazne vode nakon ispiranja. Usporediti s pH ulazne/mrežne vode."
+                      hint="Usporediti s pH ulazne/mrežne vode."
                     >
                       <input
                         name="rinsePhAfter"
@@ -853,24 +858,67 @@ export function PokreniCiklusModal({
                   </CField>
                 </>
               )}
-                {/* Volumen vode za novi ciklus — obavezan za izračun koncentracije */}
-              <CField
-                label="Volumen vode za novi ciklus (L) *"
-                hint="Koliko čiste vode je uneseno u sustav. Određuje koncentraciju kemije."
-                error={touched && waterL === 0 ? "Obavezno polje" : undefined}
-              >
-                <input
-                  name="waterVolumeL"
-                  type="number"
-                  step="0.5"
-                  min="0.5"
-                  value={form.waterVolumeL}
-                  onChange={handle}
-                  placeholder="npr. 80"
-                  className={inputCls}
-                />
-              </CField>
             </CSection>
+          )}
+
+          {/* Novo punjenje vodom — samo ciklus #2+, obavezno */}
+          {!isFirst && (
+            <div className="rounded-2xl overflow-hidden border-2 border-primary/40 bg-primary/5">
+              <div className="px-4 pt-4 pb-2">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-primary mb-1">
+                  Novo punjenje — Ciklus #{cycleNumber}
+                </p>
+                <p className="text-base font-bold text-foreground mb-3">
+                  Punjenje sustava novom vodom
+                </p>
+                {/* Obavezna potvrda punjenja */}
+                <label className={`flex items-start gap-3 rounded-xl p-3 cursor-pointer border transition-colors ${
+                  form.cleanWaterAdded
+                    ? "bg-primary/10 border-primary/40"
+                    : "bg-muted/40 border-border"
+                }`}>
+                  <input
+                    type="checkbox"
+                    name="cleanWaterAdded"
+                    checked={form.cleanWaterAdded}
+                    onChange={handle}
+                    className="mt-0.5 w-4 h-4 accent-primary flex-shrink-0"
+                  />
+                  <span className="text-sm font-semibold text-foreground leading-snug">
+                    Sustav je ponovno napunjen vodom
+                    <span className="text-destructive ml-1">*</span>
+                  </span>
+                </label>
+                {touched && !form.cleanWaterAdded && (
+                  <p className="text-xs text-destructive mt-1 ml-1">Obavezna potvrda</p>
+                )}
+              </div>
+              {/* Volumen novog punjenja — obavezan */}
+              <div className="px-4 pb-4 pt-2">
+                <CField
+                  label="Volumen novog punjenja (L) *"
+                  hint="Koliko čiste vode je uneseno. Određuje koncentraciju kemije za ovaj ciklus."
+                  error={touched && form.cleanWaterAdded && waterL === 0 ? "Obavezno polje" : undefined}
+                >
+                  <input
+                    name="waterVolumeL"
+                    type="number"
+                    step="0.5"
+                    min="0.5"
+                    value={form.waterVolumeL}
+                    onChange={handle}
+                    placeholder="npr. 80"
+                    className={inputCls}
+                    disabled={!form.cleanWaterAdded}
+                  />
+                </CField>
+                {!form.cleanWaterAdded && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Potvrdi punjenje sustava vodom za unos volumena.
+                  </p>
+                )}
+              </div>
+            </div>
           )}
 
           {/* Stanje sustava */}
