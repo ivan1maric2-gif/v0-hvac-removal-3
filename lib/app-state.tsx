@@ -1063,7 +1063,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         ekran,
         history,
         forwardStack,
-        mozeLiNazad: history.length > 0,
+        // Strelica ← enabled na svakom ekranu koji nije pocetni —
+        // nazad() ima fallback na getAktivniRadniEkran()/pocetni kad je history prazan.
+        mozeLiNazad: ekran.ime !== "pocetni",
         mozeLiNaprijed: forwardStack.length > 0,
         navigiraj,
         nazad,
