@@ -53,6 +53,54 @@ function autoFinalValues(c: Ciklus): Pick<Ciklus, "finalPh" | "finalFlowLMin" | 
 // IDs of demo sessions — never persisted to storage
 const DEMO_IDS = new Set(DEMO_SESIJE.map((s) => s.id));
 
+// ─── Draft: Nova sesija ───────────────────────────────────────────────────────
+
+export interface DraftNewSession {
+  workMode: "no_subsessions" | "with_subsessions";
+  nazivSesije: string;
+  adresa: string;
+  narucitelj: string;
+  predmetCiscenja: string | null;
+  predmetOstaloNaziv: string;
+  odabranaVrstaSustava: string | null;
+  customSustavaText: string;
+  odabraniProblemi: string[];
+  problemOstaloTekst: string;
+  volumen: number | null;
+  volumenRucni: string;
+  volumenRucnoMode: boolean;
+  odabraniMaterijali: string[];
+  odabraniProsireni: string[];
+  materijalOstalo: boolean;
+  pocetniPh: string;
+  pocetniProtok: string;
+  pocetniTemp: string;
+  napomena: string;
+}
+
+export const DRAFT_NEW_SESSION_DEFAULT: DraftNewSession = {
+  workMode: "no_subsessions",
+  nazivSesije: "",
+  adresa: "",
+  narucitelj: "",
+  predmetCiscenja: null,
+  predmetOstaloNaziv: "",
+  odabranaVrstaSustava: null,
+  customSustavaText: "",
+  odabraniProblemi: [],
+  problemOstaloTekst: "",
+  volumen: null,
+  volumenRucni: "",
+  volumenRucnoMode: false,
+  odabraniMaterijali: [],
+  odabraniProsireni: [],
+  materijalOstalo: false,
+  pocetniPh: "",
+  pocetniProtok: "",
+  pocetniTemp: "",
+  napomena: "",
+};
+
 // ─── Navigation types ─────────────────────────────────────────────────────────
 
 export type Ekran =
@@ -142,6 +190,10 @@ interface AppState {
   completeNeutralization: (sesijaId: string, ciklusId: string, data: import("./types").NeutralizacijaData) => void;
   /** Mark a session as completed. Alias: zavrsiSesiju */
   completeSession: (sesijaId: string) => void;
+  // ── Draft: Nova sesija ────────────────────────────────────────────────────────
+  draftNewSession: DraftNewSession;
+  updateDraftNewSession: (patch: Partial<DraftNewSession>) => void;
+  resetDraftNewSession: () => void;
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -149,6 +201,17 @@ interface AppState {
 const AppContext = createContext<AppState | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
+  // ── Draft: Nova sesija ────────────────────────────────────────────────────────
+  const [draftNewSession, setDraftNewSession] = useState<DraftNewSession>(DRAFT_NEW_SESSION_DEFAULT);
+
+  const updateDraftNewSession = useCallback((patch: Partial<DraftNewSession>) => {
+    setDraftNewSession((prev) => ({ ...prev, ...patch }));
+  }, []);
+
+  const resetDraftNewSession = useCallback(() => {
+    setDraftNewSession(DRAFT_NEW_SESSION_DEFAULT);
+  }, []);
+
   // Pocinjemo s demo sesijama kao placeholder dok se Supabase ne ucita.
   const [sesije, setSesije] = useState<Sesija[]>(DEMO_SESIJE);
   const [ucitavaSe, setUcitavaSe] = useState(true);
@@ -1041,6 +1104,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         completeRinsing,
         completeNeutralization,
         completeSession,
+        draftNewSession,
+        updateDraftNewSession,
+        resetDraftNewSession,
       }}
     >
       {children}

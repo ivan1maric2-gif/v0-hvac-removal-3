@@ -251,67 +251,81 @@ function CollapsibleSekcija({
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function NovaSesijaEkran() {
-  const { navigiraj, dodajSesiju } = useApp();
+  const { navigiraj, dodajSesiju, draftNewSession, updateDraftNewSession, resetDraftNewSession } = useApp();
 
-  const [workMode, setWorkMode] = useState<WorkMode>("no_subsessions");
-  const [nazivSesije, setNazivSesije] = useState("");
-  const [adresa, setAdresa] = useState("");
-  const [narucitelj, setNarucitelj] = useState("");
-  const [predmetCiscenja, setPredmetCiscenja] = useState<PredmetCiscenja | null>(null);
-  const [predmetOstaloNaziv, setPredmetOstaloNaziv] = useState("");
-  const [odabranaVrstaSustava, setOdabranaVrstaSustava] = useState<string | null>(null);
-  const [customSustavaText, setCustomSustavaText] = useState("");
-  const [odabraniProblemi, setOdabraniProblemi] = useState<VrstaProblema[]>([]);
-  const [problemOstaloTekst, setProblemOstaloTekst] = useState("");
-  const [volumen, setVolumen] = useState<number | null>(null);
-  const [volumenRucni, setVolumenRucni] = useState("");
-  const [volumenRucnoMode, setVolumenRucnoMode] = useState(false);
-  const [odabraniMaterijali, setOdabraniMaterijali] = useState<MaterijalOsnovni[]>([]);
-  const [odabraniProsireni, setOdabraniProsireni] = useState<MaterijalProsireni[]>([]);
-  const [materijalOstalo, setMaterijalOstalo] = useState(false);
+  // UI-only lokalni state — ne trebaju perzistirati kroz navigaciju
   const [pocetneOtvorene, setPocetneOtvorene] = useState(false);
-  const [pocetniPh, setPocetniPh] = useState("");
-  const [pocetniProtok, setPocetniProtok] = useState("");
-  const [pocetniTemp, setPocetniTemp] = useState("");
-  const [napomena, setNapomena] = useState("");
   const [sesijaPokrenuta, setSesijaPokrenuta] = useState(false);
   const [novaSesijaId, setNovaSesijaId] = useState<string | null>(null);
+
+  // Destrukturiraj draft iz contexta — forma čita odavde
+  const {
+    workMode,
+    nazivSesije,
+    adresa,
+    narucitelj,
+    predmetCiscenja,
+    predmetOstaloNaziv,
+    odabranaVrstaSustava,
+    customSustavaText,
+    odabraniProblemi,
+    problemOstaloTekst,
+    volumen,
+    volumenRucni,
+    volumenRucnoMode,
+    odabraniMaterijali,
+    odabraniProsireni,
+    materijalOstalo,
+    pocetniPh,
+    pocetniProtok,
+    pocetniTemp,
+    napomena,
+  } = draftNewSession;
 
   const tipSustava: SystemCategory =
     VRSTA_SUSTAVA.find((v) => v.label === odabranaVrstaSustava)?.id ?? "dhw_potable";
 
   // Toggle materijal — osnovni
   function toggleMaterijal(m: MaterijalOsnovni) {
-    setOdabraniMaterijali((prev) =>
-      prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m]
-    );
+    updateDraftNewSession({
+      odabraniMaterijali: odabraniMaterijali.includes(m)
+        ? odabraniMaterijali.filter((x) => x !== m)
+        : [...odabraniMaterijali, m],
+    });
   }
 
   // Toggle prošireni materijal
   function toggleProsireni(m: MaterijalProsireni) {
-    setOdabraniProsireni((prev) =>
-      prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m]
-    );
+    updateDraftNewSession({
+      odabraniProsireni: odabraniProsireni.includes(m)
+        ? odabraniProsireni.filter((x) => x !== m)
+        : [...odabraniProsireni, m],
+    });
   }
 
   // Toggle Ostalo — expand/collapse prošireni materijali
   function toggleMaterijalOstalo() {
-    setMaterijalOstalo((prev) => {
-      if (prev) setOdabraniProsireni([]); // čisti proširene pri zatvaranju
-      return !prev;
-    });
+    if (materijalOstalo) {
+      updateDraftNewSession({ materijalOstalo: false, odabraniProsireni: [] });
+    } else {
+      updateDraftNewSession({ materijalOstalo: true });
+    }
   }
 
   // Toggle problem
   function toggleProblem(v: VrstaProblema) {
-    setOdabraniProblemi((prev) => {
-      const already = prev.includes(v);
-      if (already && v === "Ostalo") setProblemOstaloTekst("");
-      return already ? prev.filter((x) => x !== v) : [...prev, v];
-    });
+    const already = (odabraniProblemi as VrstaProblema[]).includes(v);
+    if (already) {
+      updateDraftNewSession({
+        odabraniProblemi: odabraniProblemi.filter((x) => x !== v),
+        ...(v === "Ostalo" ? { problemOstaloTekst: "" } : {}),
+      });
+    } else {
+      updateDraftNewSession({ odabraniProblemi: [...odabraniProblemi, v] });
+    }
   }
 
-  // Validacija — naziv objekta + predmet čišćenja obvezni
+  // Validacija — naziv objekta + predmet čišćenja + problem obvezni
   const canSubmit =
     nazivSesije.trim().length > 0 &&
     predmetCiscenja !== null &&
@@ -348,14 +362,11 @@ export function NovaSesijaEkran() {
         ? `Ostalo: ${customSustavaText.trim()}`
         : odabranaVrstaSustava;
 
-    const problemiLabel = odabraniProblemi
+    const problemiLabel = (odabraniProblemi as VrstaProblema[])
       .map((p) => (p === "Ostalo" && problemOstaloTekst.trim() ? `Ostalo: ${problemOstaloTekst.trim()}` : p))
       .join(", ");
 
-    const sviMaterijali = [
-      ...odabraniMaterijali,
-      ...odabraniProsireni,
-    ];
+    const sviMaterijali = [...odabraniMaterijali, ...odabraniProsireni];
     const materijaliLabel = sviMaterijali.length > 0
       ? `Materijali: ${sviMaterijali.join(", ")}`
       : null;
@@ -390,6 +401,8 @@ export function NovaSesijaEkran() {
 
     dodajSesiju(novaSesija);
     setNovaSesijaId(novaSesija.id);
+    // Reset drafta TEK nakon uspješnog kreiranja sesije
+    resetDraftNewSession();
     setSesijaPokrenuta(true);
   }
 
@@ -467,7 +480,7 @@ export function NovaSesijaEkran() {
               <input
                 type="text"
                 value={nazivSesije}
-                onChange={(e) => setNazivSesije(e.target.value)}
+                onChange={(e) => updateDraftNewSession({ nazivSesije: e.target.value })}
                 placeholder="Hotel Osijek"
                 autoFocus
                 className={inputCls}
@@ -477,7 +490,7 @@ export function NovaSesijaEkran() {
               <input
                 type="text"
                 value={adresa}
-                onChange={(e) => setAdresa(e.target.value)}
+                onChange={(e) => updateDraftNewSession({ adresa: e.target.value })}
                 placeholder="Ulica i broj, grad"
                 className={inputCls}
               />
@@ -486,7 +499,7 @@ export function NovaSesijaEkran() {
               <input
                 type="text"
                 value={narucitelj}
-                onChange={(e) => setNarucitelj(e.target.value)}
+                onChange={(e) => updateDraftNewSession({ narucitelj: e.target.value })}
                 placeholder="Naziv tvrtke ili ime naručitelja"
                 className={inputCls}
               />
@@ -504,7 +517,7 @@ export function NovaSesijaEkran() {
           <div className="flex flex-col gap-3 pb-6">
             <RadioKartica
               selected={workMode === "no_subsessions"}
-              onSelect={() => setWorkMode("no_subsessions")}
+              onSelect={() => updateDraftNewSession({ workMode: "no_subsessions" })}
               title="Jedan uredaj"
               description="Ciklusi, mjerenja i nadopune vode se direktno u sesiji."
               items={[
@@ -516,7 +529,7 @@ export function NovaSesijaEkran() {
             />
             <RadioKartica
               selected={workMode === "with_subsessions"}
-              onSelect={() => setWorkMode("with_subsessions")}
+              onSelect={() => updateDraftNewSession({ workMode: "with_subsessions" })}
               title="Vise uredaja / podsesije"
               description="Svaki dio sustava je zasebna podsesija s vlastitim ciklusima i kemijom."
               items={[
@@ -543,8 +556,10 @@ export function NovaSesijaEkran() {
                 label={p}
                 selected={predmetCiscenja === p}
                 onClick={() => {
-                  setPredmetCiscenja(p);
-                  if (p !== "Ostalo") setPredmetOstaloNaziv("");
+                  updateDraftNewSession({
+                    predmetCiscenja: p,
+                    ...(p !== "Ostalo" ? { predmetOstaloNaziv: "" } : {}),
+                  });
                 }}
               />
             ))}
@@ -557,7 +572,7 @@ export function NovaSesijaEkran() {
               <input
                 type="text"
                 value={predmetOstaloNaziv}
-                onChange={(e) => setPredmetOstaloNaziv(e.target.value)}
+                onChange={(e) => updateDraftNewSession({ predmetOstaloNaziv: e.target.value })}
                 placeholder="Npr. kondenzator, fan coil, hladnjak, recirkulacijska grana..."
                 autoFocus
                 className={inputCls}
@@ -581,8 +596,10 @@ export function NovaSesijaEkran() {
                 selected={odabranaVrstaSustava === v.label}
                 onClick={() => {
                   const next = odabranaVrstaSustava === v.label ? null : v.label;
-                  if (next === null && v.label === "Ostalo") setCustomSustavaText("");
-                  setOdabranaVrstaSustava(next);
+                  updateDraftNewSession({
+                    odabranaVrstaSustava: next,
+                    ...(next === null && v.label === "Ostalo" ? { customSustavaText: "" } : {}),
+                  });
                 }}
                 variant="small"
               />
@@ -596,7 +613,7 @@ export function NovaSesijaEkran() {
               <input
                 type="text"
                 value={customSustavaText}
-                onChange={(e) => setCustomSustavaText(e.target.value)}
+                onChange={(e) => updateDraftNewSession({ customSustavaText: e.target.value })}
                 placeholder="Npr. rashladni toranj, industrijski krug, bazenski sustav..."
                 autoFocus
                 className={inputCls}
@@ -631,7 +648,7 @@ export function NovaSesijaEkran() {
               </label>
               <textarea
                 value={problemOstaloTekst}
-                onChange={(e) => setProblemOstaloTekst(e.target.value)}
+                onChange={(e) => updateDraftNewSession({ problemOstaloTekst: e.target.value })}
                 placeholder="Npr. neugodan miris, buka pumpe, nestabilna temperatura, curenje..."
                 rows={2}
                 className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none leading-relaxed"
@@ -656,9 +673,7 @@ export function NovaSesijaEkran() {
                         key={v}
                         type="button"
                         onClick={() => {
-                          setVolumen(v);
-                          setVolumenRucnoMode(false);
-                          setVolumenRucni("");
+                          updateDraftNewSession({ volumen: v, volumenRucnoMode: false, volumenRucni: "" });
                         }}
                         className={`rounded-xl border-2 py-3 text-sm font-semibold transition-all active:scale-[0.97] ${
                           !volumenRucnoMode && volumen === v
@@ -672,8 +687,7 @@ export function NovaSesijaEkran() {
                     <button
                       type="button"
                       onClick={() => {
-                        setVolumenRucnoMode(true);
-                        setVolumen(null);
+                        updateDraftNewSession({ volumenRucnoMode: true, volumen: null });
                       }}
                       className={`rounded-xl border-2 py-3 text-sm font-semibold transition-all active:scale-[0.97] ${
                         volumenRucnoMode
@@ -689,7 +703,7 @@ export function NovaSesijaEkran() {
                       type="number"
                       inputMode="numeric"
                       value={volumenRucni}
-                      onChange={(e) => setVolumenRucni(e.target.value)}
+                      onChange={(e) => updateDraftNewSession({ volumenRucni: e.target.value })}
                       placeholder="Upiši volumen u litrama"
                       autoFocus
                       className={inputCls}
@@ -774,7 +788,7 @@ export function NovaSesijaEkran() {
                       <label className="text-xs text-muted-foreground font-medium w-28 shrink-0">pH prije kemije</label>
                       <input
                         type="number" inputMode="decimal" step="0.1" min="0" max="14"
-                        value={pocetniPh} onChange={(e) => setPocetniPh(e.target.value)}
+                        value={pocetniPh} onChange={(e) => updateDraftNewSession({ pocetniPh: e.target.value })}
                         placeholder="npr. 7.2"
                         className="flex-1 bg-background border-2 border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all"
                       />
@@ -783,7 +797,7 @@ export function NovaSesijaEkran() {
                       <label className="text-xs text-muted-foreground font-medium w-28 shrink-0">Protok prije kemije</label>
                       <input
                         type="number" inputMode="decimal" step="0.1" min="0"
-                        value={pocetniProtok} onChange={(e) => setPocetniProtok(e.target.value)}
+                        value={pocetniProtok} onChange={(e) => updateDraftNewSession({ pocetniProtok: e.target.value })}
                         placeholder="L/min"
                         className="flex-1 bg-background border-2 border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all"
                       />
@@ -792,7 +806,7 @@ export function NovaSesijaEkran() {
                       <label className="text-xs text-muted-foreground font-medium w-28 shrink-0">Temp OUT prije kemije</label>
                       <input
                         type="number" inputMode="decimal" step="0.1"
-                        value={pocetniTemp} onChange={(e) => setPocetniTemp(e.target.value)}
+                        value={pocetniTemp} onChange={(e) => updateDraftNewSession({ pocetniTemp: e.target.value })}
                         placeholder="°C"
                         className="flex-1 bg-background border-2 border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all"
                       />
@@ -805,7 +819,7 @@ export function NovaSesijaEkran() {
               <Field label="Napomena servisera" optional>
                 <textarea
                   value={napomena}
-                  onChange={(e) => setNapomena(e.target.value)}
+                  onChange={(e) => updateDraftNewSession({ napomena: e.target.value })}
                   placeholder="Slobodna napomena..."
                   rows={3}
                   className="w-full bg-background border-2 border-border rounded-xl px-4 py-3.5 text-base text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary resize-none transition-all"
