@@ -51,6 +51,7 @@ const MATERIJALI_OSNOVNI = [
   "Čelik",
   "Aluminij",
   "Plastika / guma",
+  "Mješoviti materijali",
 ] as const;
 type MaterijalOsnovni = (typeof MATERIJALI_OSNOVNI)[number];
 
@@ -738,7 +739,14 @@ export function NovaSesijaEkran() {
                       variant="small"
                     />
                   ))}
-                  {/* Ostalo — prikazuje text polje */}
+                  {/* Mješoviti materijali — standalone chip */}
+                  <ChipBtn
+                    label="Mješoviti materijali"
+                    selected={odabraniMaterijali.includes("Mješoviti materijali")}
+                    onClick={() => toggleMaterijal("Mješoviti materijali")}
+                    variant="small"
+                  />
+                  {/* Ostalo — expanduje proširene materijale */}
                   <ChipBtn
                     label="Ostalo"
                     selected={materijalOstalo}
