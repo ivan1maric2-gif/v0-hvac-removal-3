@@ -798,12 +798,12 @@ export function PokreniCiklusModal({
 
           {/* Ispiranje sustava */}
           {!isFirst && (
-            <CSection title="Ispiranje sustava">
+            <CSection title="Ispiranje i punjenje sustava">
               <CCheckbox
                 name="rinsed"
                 checked={form.rinsed}
                 onChange={handle}
-                label="Sustav je ispran prije novog ciklusa"
+                label="Sustav je ispran mrežnom vodom"
               />
               {form.rinsed && (
                 <>
@@ -853,6 +853,23 @@ export function PokreniCiklusModal({
                   </CField>
                 </>
               )}
+                {/* Volumen vode za novi ciklus — obavezan za izračun koncentracije */}
+              <CField
+                label="Volumen vode za novi ciklus (L) *"
+                hint="Koliko čiste vode je uneseno u sustav. Određuje koncentraciju kemije."
+                error={touched && waterL === 0 ? "Obavezno polje" : undefined}
+              >
+                <input
+                  name="waterVolumeL"
+                  type="number"
+                  step="0.5"
+                  min="0.5"
+                  value={form.waterVolumeL}
+                  onChange={handle}
+                  placeholder="npr. 80"
+                  className={inputCls}
+                />
+              </CField>
             </CSection>
           )}
 
@@ -993,6 +1010,28 @@ export function PokreniCiklusModal({
           {/* STEP: SREDSTVO — Kemijsko sredstvo */}
           {/* ════════════════════════════════════════════════════════ */}
           {step === "sredstvo" && <>
+
+          {/* Volumen vode — za ciklus #1 (nema voda step) */}
+          {isFirst && (
+            <CSection title="Volumen vode u sustavu">
+              <CField
+                label="Volumen vode u sustavu (L) *"
+                hint="Ukupna količina vode u sustavu određuje koncentraciju kemije."
+                error={touched && waterL === 0 ? "Obavezno polje" : undefined}
+              >
+                <input
+                  name="waterVolumeL"
+                  type="number"
+                  step="0.5"
+                  min="0.5"
+                  value={form.waterVolumeL}
+                  onChange={handle}
+                  placeholder="npr. 80"
+                  className={inputCls}
+                />
+              </CField>
+            </CSection>
+          )}
 
           {/* Kemijsko sredstvo */}
           <CSection title="Kemijsko sredstvo">

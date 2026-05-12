@@ -788,8 +788,8 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
                       onClick={() => setModal({ tip: "mjerenje", measurementType: "regular" })}
                     />
                     <ActionButton
-                      label="Dodaj nadopunu sredstva"
-                      variant="secondary"
+                      label={preporukaA?.recommendedAction === "add_top_up" ? "Nadopuni (preporučeno)" : "Nadopuna kemije"}
+                      variant={preporukaA?.recommendedAction === "add_top_up" ? "primary" : "secondary"}
                       onClick={() => setModal({ tip: "nadopuna" })}
                     />
                     <ActionButton
@@ -806,56 +806,95 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
                 )}
                 {sviZavrseni && (
                   <div className="flex flex-col gap-3">
-                    <div className="rounded-xl bg-muted/40 border border-border px-4 py-3">
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-1">
-                        Sesija nema aktivnih ciklusa
-                      </p>
-                      <p className="text-xs text-muted-foreground leading-snug">
-                        Odaberi kako završiti sesiju ili pokreni novi ciklus.
-                      </p>
-                    </div>
-                    {/* PRIMARY — uspješan završetak (s provjerom blokatora) */}
-                    <button
-                      onClick={() => {
-                        // Detektiraj blokatore — aktivna reakcija, nema ispiranja itd.
-                        const blokatoriTekst: string[] = [];
-                        if (aktivanCiklus) blokatoriTekst.push("Postoji aktivan ciklus koji nije zatvoren");
-                        if (isModeA && !zadnjiZavrsenCiklusA?.completionPhases?.ispiranje)
-                          blokatoriTekst.push("Ispiranje nije potvrđeno");
-                        if (isModeA && !zadnjiZavrsenCiklusA?.completionPhases?.neutralizacija)
-                          blokatoriTekst.push("Neutralizacija nije potvrđena");
-                        const zadnjeMj = zadnjiZavrsenCiklusA?.mjerenja?.slice(-1)[0];
-                        if (isModeA && !zadnjeMj)
-                          blokatoriTekst.push("Nema završnog mjerenja");
-                        if (blokatoriTekst.length > 0) {
-                          setModal({ tip: "prisilni_zavrsetak", blokatoriTekst });
-                        } else {
-                          handleZavrsiSesiju();
-                        }
-                      }}
-                      className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white py-3.5 text-sm font-bold transition-all"
-                    >
-                      Završi sesiju
-                    </button>
-                    <p className="text-[11px] text-muted-foreground text-center -mt-1">
-                      Servis uspješno završen.
-                    </p>
-                    {/* SECONDARY — nedovršena sesija */}
-                    <button
-                      onClick={() => zatvoriSesijuNedovrsenu(sesijaId)}
-                      className="w-full rounded-xl bg-amber-500/10 hover:bg-amber-500/20 active:scale-[0.98] border border-amber-500/40 text-amber-600 dark:text-amber-400 py-3 text-sm font-semibold transition-all"
-                    >
-                      Zatvori bez završetka
-                    </button>
-                    <p className="text-[11px] text-muted-foreground text-center -mt-1">
-                      Sesija ostaje označena kao nedovršena.
-                    </p>
-                    {/* Tertiary — novi ciklus */}
-                    <ActionButton
-                      label="Pokreni novi ciklus"
-                      variant="secondary"
-                      onClick={() => setModal({ tip: "novi_ciklus" })}
-                    />
+                    {/* Kartica odluke — preporuka appa */}
+                    {(() => {
+                      const brCiklusa = (sesija.ciklusi ?? []).filter(c => !c.isDeleted).length;
+                      const sljedeciBroj = brCiklusa + 1;
+                      // Preporuka: ako completion faze nisu gotove → ispiranje i završetak, inače → novi ciklus
+                      const preporukaNoviCiklus = !zadnjiZavrsenCiklusA?.completionPhases?.ispiranje;
+                      return (
+                        <div className="rounded-2xl overflow-hidden border border-border shadow-sm">
+                          <div className="bg-card px-4 pt-4 pb-3 flex flex-col gap-1">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                              Preporuka appa
+                            </p>
+                            <p className="text-lg font-black text-foreground leading-tight">
+                              {preporukaNoviCiklus
+                                ? `Pokreni Ciklus #${sljedeciBroj}`
+                                : "Ispiranje i završetak sesije"}
+                            </p>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                              {preporukaNoviCiklus
+                                ? "Kemijska reakcija je završena. Ispusti otopinu, isperi sustav i pokreni novi ciklus za bolji rezultat."
+                                : "Svi ciklusi su završeni. Provedi ispiranje i neutralizaciju, zatim završi sesiju."}
+                            </p>
+                          </div>
+                          <div className="bg-muted/30 px-4 pb-4 pt-3 flex flex-col gap-2">
+                            {/* PRIMARNI GUMB — prati preporuku appa */}
+                            {preporukaNoviCiklus ? (
+                              <button
+                                onClick={() => setModal({ tip: "novi_ciklus" })}
+                                className="w-full rounded-xl bg-primary text-primary-foreground py-3.5 text-sm font-bold hover:opacity-90 active:scale-[0.98] transition-all"
+                              >
+                                Pokreni Ciklus #{sljedeciBroj}
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => {
+                                  const blokatoriTekst: string[] = [];
+                                  if (isModeA && !zadnjiZavrsenCiklusA?.completionPhases?.ispiranje)
+                                    blokatoriTekst.push("Ispiranje nije potvrđeno");
+                                  if (isModeA && !zadnjiZavrsenCiklusA?.completionPhases?.neutralizacija)
+                                    blokatoriTekst.push("Neutralizacija nije potvrđena");
+                                  if (blokatoriTekst.length > 0) {
+                                    setModal({ tip: "prisilni_zavrsetak", blokatoriTekst });
+                                  } else {
+                                    handleZavrsiSesiju();
+                                  }
+                                }}
+                                className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white py-3.5 text-sm font-bold transition-all"
+                              >
+                                Završi sesiju
+                              </button>
+                            )}
+                            {/* SEKUNDARNI GUMB — alternativa */}
+                            {preporukaNoviCiklus ? (
+                              <button
+                                onClick={() => {
+                                  const blokatoriTekst: string[] = [];
+                                  if (isModeA && !zadnjiZavrsenCiklusA?.completionPhases?.ispiranje)
+                                    blokatoriTekst.push("Ispiranje nije potvrđeno");
+                                  if (isModeA && !zadnjiZavrsenCiklusA?.completionPhases?.neutralizacija)
+                                    blokatoriTekst.push("Neutralizacija nije potvrđena");
+                                  if (blokatoriTekst.length > 0) {
+                                    setModal({ tip: "prisilni_zavrsetak", blokatoriTekst });
+                                  } else {
+                                    handleZavrsiSesiju();
+                                  }
+                                }}
+                                className="w-full rounded-xl bg-muted border border-border text-foreground py-3 text-sm font-semibold hover:bg-muted/80 active:scale-[0.98] transition-all"
+                              >
+                                Ispiranje i završetak sesije
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => setModal({ tip: "novi_ciklus" })}
+                                className="w-full rounded-xl bg-muted border border-border text-foreground py-3 text-sm font-semibold hover:bg-muted/80 active:scale-[0.98] transition-all"
+                              >
+                                Pokreni Ciklus #{sljedeciBroj}
+                              </button>
+                            )}
+                            {/* Zatvori bez završetka — uvijek tercijarno */}
+                            <button
+                              onClick={() => zatvoriSesijuNedovrsenu(sesijaId)}
+                              className="w-full rounded-xl bg-transparent border border-amber-500/40 text-amber-600 dark:text-amber-400 py-2.5 text-xs font-semibold hover:bg-amber-500/10 active:scale-[0.98] transition-all"
+                            >
+                              Zatvori bez završetka
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
                 {/* Reakcija završena banner — shown before ispiranje is started */}
@@ -867,7 +906,7 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
                         Kemijska reakcija završena
                       </p>
                       <p className="text-sm text-green-200 leading-relaxed">
-                        Svi ciklusi su zatvoreni. Potrebno je provesti ispiranje i neutralizaciju prije završetka sesije.
+                        Nakon ispusta stare otopine: isperi sustav mrežnom vodom, zatim po potrebi provedi neutralizaciju.
                       </p>
                     </div>
                     <div className="bg-green-950 px-5 py-3">
@@ -878,8 +917,8 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
                   </div>
                 )}
 
-                {/* Completion phases — shown when all chemical cycles are done */}
-                {(sviZavrseni || (!aktivanCiklus && (sesija.ciklusi ?? []).length > 0)) && isModeA && (
+                {/* Completion phases — prikazati SAMO kad postoji barem jedan završeni ciklus */}
+                {sviZavrseni && isModeA && zadnjiZavrsenCiklusA && (
                   <CompletionPhasesPanel
                     phases={zadnjiZavrsenCiklusA?.completionPhases}
                     onIspiranje={() => setModal({ tip: "ispiranje" })}
@@ -2170,7 +2209,7 @@ function CleaningEffectivenessKartica({ eff }: { eff: CleaningEffectiveness }) {
   );
 }
 
-// ─── Analiza prethodnog ciklusa ��� preporuke za sljedeci ──────────────────────
+// ─── Analiza prethodnog ciklusa ���� preporuke za sljedeci ──────────────────────
 
 function AnalizaPrethCiklusa({ ciklus }: { ciklus: Ciklus }) {
   const nonInitial = ciklus.mjerenja.filter(
