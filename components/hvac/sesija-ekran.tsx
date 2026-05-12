@@ -724,28 +724,28 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
               </div>
             )}
 
-            {/* Mode A — no cycles yet: large empty state */}
+            {/* Mode A — no cycles yet: operational CTA */}
             {nemaCiklusa && !jeZavrsena && (
-              <div className="bg-primary/8 border-2 border-primary/30 rounded-2xl p-5 flex flex-col gap-4">
-                <div className="flex items-start gap-3">
-                  <div className="shrink-0 w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center text-primary">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-base font-bold text-foreground">Spremno za ciscenje jednog uredaja</p>
-                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                      Pokrenite prvi ciklus. Ciklus znaci cista voda + novo sredstvo.
-                    </p>
-                  </div>
+              <div className="rounded-2xl overflow-hidden border-2 border-primary/40">
+                <div className="bg-primary/8 px-5 pt-5 pb-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary mb-1">
+                    Sljedeci korak
+                  </p>
+                  <p className="text-xl font-black text-foreground leading-tight mb-1">
+                    Pokreni ciklus #1
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Unesi volumen vode i kemijsko sredstvo.
+                  </p>
                 </div>
-                <button
-                  onClick={() => setModal({ tip: "novi_ciklus" })}
-                  className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
-                >
-                  Pokreni prvi ciklus
-                </button>
+                <div className="px-5 pb-5 pt-3 bg-primary/5">
+                  <button
+                    onClick={() => setModal({ tip: "novi_ciklus" })}
+                    className="w-full bg-primary text-primary-foreground rounded-xl py-4 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all"
+                  >
+                    Pokreni ciklus #1
+                  </button>
+                </div>
               </div>
             )}
 

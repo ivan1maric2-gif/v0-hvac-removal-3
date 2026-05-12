@@ -608,12 +608,12 @@ export function PokreniCiklusModal({
       subtitle: "Unesite količinu čiste vode",
     },
     sredstvo: {
-      title: "Kemijsko sredstvo",
-      subtitle: "Odaberite sredstvo i unesite količinu",
+      title: "Priprema kemijske otopine",
+      subtitle: "Volumen vode, kemija i koncentracija",
     },
     pregled: {
       title: "Pregled i pokretanje",
-      subtitle: "Provjerite podatke i pokrenite ciklus",
+      subtitle: "Provjeri podatke i pokreni ciklus",
     },
   };
 
@@ -1055,11 +1055,11 @@ export function PokreniCiklusModal({
           </>} {/* end step === "voda" */}
 
           {/* ════════════════════════════════════════════════════════ */}
-          {/* STEP: SREDSTVO — Kemijsko sredstvo */}
+          {/* STEP: SREDSTVO — Priprema kemijske otopine */}
           {/* ════════════════════════════════════════════════════════ */}
           {step === "sredstvo" && <>
 
-          {/* Volumen vode — za ciklus #1 (nema voda step) */}
+          {/* Volumen vode — za ciklus #1 */}
           {isFirst && (
             <CSection title="Volumen vode u sustavu">
               <CField
@@ -1511,9 +1511,9 @@ export function PokreniCiklusModal({
             form="ciklus-form"
             disabled={!formValid}
             onClick={() => setTouched(true)}
-            className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none"
+            className="w-full bg-primary text-primary-foreground rounded-xl py-4 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-40 disabled:pointer-events-none"
           >
-            Pokreni ciklus #{cycleNumber}
+            Dodaj kemiju i pokreni cirkulaciju
           </button>
         )}
 
@@ -1565,7 +1565,7 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-// ─── Shared styling constants ─────────────────────────────────────────────────
+// ─── Shared styling constants ───────────────────────────────────────────���─────
 
 const inputCls =
   "w-full border border-input rounded-lg px-3 py-2.5 text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring";

@@ -466,30 +466,34 @@ export function NovaSesijaEkran() {
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
-        <h1 className="text-lg font-bold text-foreground">Otvaranje sesije</h1>
+        <h1 className="text-lg font-bold text-foreground">Nova sesija</h1>
       </header>
 
       <main className="flex-1 overflow-y-auto">
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto w-full px-4 pb-10">
 
-          {/* ── BLOK 1 — OSNOVNI PODACI ───────────────────────────────────── */}
-          <div className="pt-6 pb-4">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-              Osnovni podaci
-            </p>
+          {/* ── BLOK 1 — LOKACIJA ─────────────────────────────────────────── */}
+          <div className="pt-6 pb-4 flex flex-col gap-0.5">
+            <p className="text-base font-black text-foreground">Lokacija servisa</p>
+            <p className="text-xs text-muted-foreground">Naziv objekta je obavezan. Ostalo je opcionalno.</p>
           </div>
-          <div className="flex flex-col gap-4 pb-6">
-            <Field label="Naziv sesije / objekta" required>
+          <div className="flex flex-col gap-3 pb-6">
+            {/* Naziv — vizualno najvažniji input */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-bold text-foreground">
+                Naziv objekta <span className="text-primary">*</span>
+              </label>
               <input
                 type="text"
                 value={nazivSesije}
                 onChange={(e) => updateDraftNewSession({ nazivSesije: e.target.value })}
                 placeholder="Hotel Osijek"
                 autoFocus
-                className={inputCls}
+                className="w-full bg-background border-2 border-primary/50 focus:border-primary rounded-xl px-4 py-4 text-base font-semibold text-foreground placeholder:text-muted-foreground/40 focus:outline-none transition-all"
               />
-            </Field>
-            <Field label="Adresa" optional>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-muted-foreground">Adresa</label>
               <input
                 type="text"
                 value={adresa}
@@ -497,8 +501,9 @@ export function NovaSesijaEkran() {
                 placeholder="Ulica i broj, grad"
                 className={inputCls}
               />
-            </Field>
-            <Field label="Investitor / klijent" optional>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-muted-foreground">Investitor / klijent</label>
               <input
                 type="text"
                 value={narucitelj}
@@ -506,16 +511,15 @@ export function NovaSesijaEkran() {
                 placeholder="Naziv tvrtke ili ime naručitelja"
                 className={inputCls}
               />
-            </Field>
+            </div>
           </div>
 
           <div className="h-px bg-border/60" />
 
           {/* ── BLOK 2 — NAČIN RADA ───────────────────────────────────────── */}
-          <div className="pt-5 pb-4">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-              Nacin rada
-            </p>
+          <div className="pt-5 pb-4 flex flex-col gap-0.5">
+            <p className="text-base font-black text-foreground">Način rada</p>
+            <p className="text-xs text-muted-foreground">Odaberi prema broju uređaja na servisnom poslu.</p>
           </div>
           <div className="flex flex-col gap-3 pb-6">
             <RadioKartica
@@ -661,10 +665,10 @@ export function NovaSesijaEkran() {
 
           <div className="h-px bg-border/60 mt-5" />
 
-          {/* ── BLOK 6 — TEHNIČKI PODACI (collapsed) ─────────────────────── */}
+          {/* ── BLOK 6 — NAPREDNE OPCIJE (manje vizualno) ─────────────────── */}
           <div className="pt-5 pb-6">
             <CollapsibleSekcija
-              label="Tehnicki podaci"
+              label="Napredne opcije"
               hint="volumen, materijali, pocetne vrijednosti"
             >
               {/* Procijenjeni volumen vode */}
@@ -832,22 +836,23 @@ export function NovaSesijaEkran() {
           </div>
 
           {/* ── Submit ────────────────────────────────────────────────────── */}
-          <div className="pb-4">
+          <div className="pb-4 flex flex-col gap-2">
             <button
               type="submit"
               disabled={!canSubmit}
-              className="w-full bg-primary text-primary-foreground rounded-2xl py-5 font-black text-base tracking-wide hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-30 disabled:pointer-events-none"
+              className="w-full bg-primary text-primary-foreground rounded-2xl py-4 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
-              OTVORI SESIJU
+              Otvori sesiju
             </button>
-            {validationMsg && (
-              <p className="text-[11px] text-muted-foreground text-center mt-3">
+            {validationMsg ? (
+              <p className="text-xs text-muted-foreground text-center">
                 {validationMsg}
               </p>
+            ) : (
+              <p className="text-xs text-muted-foreground/50 text-center leading-snug">
+                Kemijsko sredstvo bira se pri pokretanju ciklusa.
+              </p>
             )}
-            <p className="text-[11px] text-muted-foreground/50 text-center mt-3 leading-snug">
-              Kemijsko sredstvo odabire se pri pokretanju ciklusa.
-            </p>
           </div>
 
         </form>
