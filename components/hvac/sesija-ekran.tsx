@@ -85,7 +85,6 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
     navigiraj,
     idi_na_pocetni,
     getSesija,
-    ucitavaSe,
     zavrsiSesiju,
     pauzirajSesiju,
     nastaviSesiju,
@@ -182,15 +181,10 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
     );
   }
 
-  // Guard: Mode A sessions with no cycles must go through setup first.
-  // VAŽNO: ne aktiviraj guard dok se sesije učitavaju (ucitavaSe) —
-  // inače async load race condition lažno prikazuje cikluse kao prazne.
-  const isModeAGuard = sesija.workMode === "no_subsessions";
-  const nemaCiklusaGuard = isModeAGuard && (sesija.ciklusi ?? []).length === 0 && !ucitavaSe;
-  if (nemaCiklusaGuard) {
-    navigiraj({ ime: "setup_ciklus", sesijaId });
-    return null;
-  }
+  // Guard je uklonjen — Mode A sesije prolaze setup_ciklus samo pri prvom
+  // kreiranju (nova-sesija-ekran ih navigira direktno na setup_ciklus).
+  // Kasniji ulasci u sesiju-ekran (iz povijesti, back navigacije) ne trebaju
+  // redirect jer ciklusi se čuvaju u memoriji, ne persistiraju u Supabase.
 
   const stat = izracunajStatistiku(sesija);
   const isModeA = sesija.workMode === "no_subsessions";
