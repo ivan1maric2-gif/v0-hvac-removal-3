@@ -174,6 +174,13 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
     writeDraft<SetupForm>(draftKey, form);
   }, [draftKey, form]);
 
+  // Map tipSustava to systemCategory — MORA biti prije early returna (Rules of Hooks)
+  const systemCategoryForModal: SystemCategory = useMemo(() => {
+    if (form.tipSustava === "TPV") return "dhw_potable";
+    if (form.tipSustava === "tehnicka_voda") return "technical_water";
+    return "unknown";
+  }, [form.tipSustava]);
+
   if (!sesija) {
     return (
       <div className="flex items-center justify-center flex-1">
@@ -198,13 +205,6 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
     if (!isValid) return;
     setView("zapoceto");
   }
-
-  // Map tipSustava to systemCategory for product compatibility in cycle modal
-  const systemCategoryForModal: SystemCategory = useMemo(() => {
-    if (form.tipSustava === "TPV") return "dhw_potable";
-    if (form.tipSustava === "tehnicka_voda") return "technical_water";
-    return "unknown";
-  }, [form.tipSustava]);
 
   // ── Cycle screen view ─────────────────────────────────────────────────────
   if (view === "ciklus") {
