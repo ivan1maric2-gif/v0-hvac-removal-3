@@ -174,7 +174,8 @@ export function SetupCiklusEkran({ sesijaId }: Props) {
     writeDraft<SetupForm>(draftKey, form);
   }, [draftKey, form]);
 
-  // Map tipSustava to systemCategory — MORA biti prije early returna (Rules of Hooks)
+  // useMemo MORA biti ovdje — prije if (!sesija) early returna (Rules of Hooks).
+  // Premješteno s linije 203 gdje je uzrokovalo "more hooks than previous render".
   const systemCategoryForModal: SystemCategory = useMemo(() => {
     if (form.tipSustava === "TPV") return "dhw_potable";
     if (form.tipSustava === "tehnicka_voda") return "technical_water";
