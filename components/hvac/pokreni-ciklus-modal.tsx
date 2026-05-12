@@ -228,7 +228,9 @@ export function PokreniCiklusModal({
 }: Props) {
   const { getProizvod } = useProducts();
   const isFirst = cycleNumber === 1;
-  const [step, setStep] = useState<Step>(hasActiveCycle ? "confirm" : "stanje");
+  // Ciklus #1 počinje od "stanje", ciklus #2+ direktno od "sredstvo"
+  const initialStep: Step = hasActiveCycle ? "confirm" : (isFirst ? "stanje" : "sredstvo");
+  const [step, setStep] = useState<Step>(initialStep);
 
   // Pre-resolve product from defaultProductId so the picker shows it immediately
   const initialProduct = React.useMemo(
@@ -303,14 +305,15 @@ export function PokreniCiklusModal({
   }, [selectedProduct?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Validation ───────────────────────────────────────────────────────────
+  // Ciklus #1: treba potvrdu čiste vode (voda step)
+  // Ciklus #2+: preskačemo stanje+voda stepove — drainOk uvijek true
   const drainOk = isFirst
     ? form.cleanWaterAdded
-    : form.previousSolutionDrained && form.cleanWaterAdded;
+    : true;
 
   const formValid =
     selectedProduct !== null &&
-    form.waterVolumeL !== "" &&
-    waterL > 0 &&
+    (isFirst ? form.waterVolumeL !== "" && waterL > 0 : true) &&
     form.chemicalProductName.trim() !== "" &&
     form.chemicalAmount !== "" &&
     chemAmt > 0 &&
@@ -319,12 +322,16 @@ export function PokreniCiklusModal({
     (!productIsSystemIncompatible || systemWarningConfirmed);
 
   // ── Wizard step order ────────────────────────────────────────────────────
-  const WIZARD_STEPS: Step[] = ["stanje", "voda", "sredstvo", "pregled"];
+  // Ciklus #1: stanje → voda → sredstvo → pregled
+  // Ciklus #2+: direktno sredstvo → pregled (bez punjenja i stanja)
+  const WIZARD_STEPS: Step[] = isFirst
+    ? ["stanje", "voda", "sredstvo", "pregled"]
+    : ["sredstvo", "pregled"];
   const stepIndex = WIZARD_STEPS.indexOf(step as Exclude<Step, "confirm">);
 
   // Per-step forward validation — what must be true to advance
-  // On non-first cycles, drain confirmation is required before proceeding
-  const stepStanjeValid = isFirst ? true : form.previousSolutionDrained;
+  // Ciklus #2+ preskače stanje i voda stepove — uvijek true
+  const stepStanjeValid = true;
   const stepVodaValid = form.cleanWaterAdded && waterL > 0;
   const stepSredstvoValid =
     selectedProduct !== null &&
