@@ -85,6 +85,7 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
     navigiraj,
     idi_na_pocetni,
     getSesija,
+    ucitavaSe,
     zavrsiSesiju,
     pauzirajSesiju,
     nastaviSesiju,
@@ -181,9 +182,11 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
     );
   }
 
-  // Guard: Mode A sessions with no cycles must go through setup first
+  // Guard: Mode A sessions with no cycles must go through setup first.
+  // VAŽNO: ne aktiviraj guard dok se sesije učitavaju (ucitavaSe) —
+  // inače async load race condition lažno prikazuje cikluse kao prazne.
   const isModeAGuard = sesija.workMode === "no_subsessions";
-  const nemaCiklusaGuard = isModeAGuard && (sesija.ciklusi ?? []).length === 0;
+  const nemaCiklusaGuard = isModeAGuard && (sesija.ciklusi ?? []).length === 0 && !ucitavaSe;
   if (nemaCiklusaGuard) {
     navigiraj({ ime: "setup_ciklus", sesijaId });
     return null;
