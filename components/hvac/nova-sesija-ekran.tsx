@@ -289,6 +289,7 @@ export function NovaSesijaEkran() {
   const [materijalOstalo, setMaterijalOstalo] = useState(false);   // "Ostalo" chip aktivan
 
   // 9. Početne informativne vrijednosti
+  const [pocetneOtvorene, setPocetneOtvorene] = useState(false);
   const [pocetniPh, setPocetniPh] = useState("");
   const [pocetniProtok, setPocetniProtok] = useState("");
   const [pocetniTemp, setPocetniTemp] = useState("");
@@ -769,54 +770,82 @@ export function NovaSesijaEkran() {
                 )}
               </Field>
 
-              {/* 9. Početne informativne vrijednosti */}
-              <Field
-                label="Pocetne informativne vrijednosti"
-                optional
-                hint="Vrijednosti prije dodavanja kemije — nisu referentne vrijednosti ciklusa. Referentno mjerenje radi se nakon cca 3 min cirkulacije s kemijom."
-              >
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center gap-3">
-                    <label className="text-xs text-muted-foreground font-medium w-28 shrink-0">pH prije kemije</label>
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      step="0.1"
-                      min="0"
-                      max="14"
-                      value={pocetniPh}
-                      onChange={(e) => setPocetniPh(e.target.value)}
-                      placeholder="npr. 7.2"
-                      className="flex-1 bg-background border-2 border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all"
-                    />
+              {/* 9. Početne informativne vrijednosti — collapsible */}
+              <div className="rounded-2xl border border-border overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setPocetneOtvorene((p) => !p)}
+                  className="w-full flex items-center justify-between px-4 py-3.5 text-left hover:bg-muted/40 transition-colors"
+                >
+                  <span className="flex items-center gap-2">
+                    <svg
+                      width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" strokeWidth="2.5" aria-hidden="true"
+                      className={`text-primary transition-transform duration-200 ${pocetneOtvorene ? "rotate-45" : ""}`}
+                    >
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    <span className="text-sm font-semibold text-foreground">
+                      Pocetne informativne vrijednosti
+                    </span>
+                    <span className="text-xs text-muted-foreground font-normal">(opcionalno)</span>
+                  </span>
+                  <svg
+                    width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth="2.5" aria-hidden="true"
+                    className={`text-muted-foreground transition-transform duration-200 ${pocetneOtvorene ? "rotate-180" : ""}`}
+                  >
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </button>
+
+                {pocetneOtvorene && (
+                  <div className="px-4 pt-1 pb-4 flex flex-col gap-3 border-t border-border/60">
+                    <p className="text-xs text-muted-foreground leading-relaxed pt-2">
+                      Ovo nije referentno mjerenje ciklusa. Referentno mjerenje radi se tek nakon dodavanja kemije i cca 3 minute cirkulacije.
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <label className="text-xs text-muted-foreground font-medium w-28 shrink-0">pH prije kemije</label>
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        step="0.1"
+                        min="0"
+                        max="14"
+                        value={pocetniPh}
+                        onChange={(e) => setPocetniPh(e.target.value)}
+                        placeholder="npr. 7.2"
+                        className="flex-1 bg-background border-2 border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <label className="text-xs text-muted-foreground font-medium w-28 shrink-0">Protok prije kemije</label>
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        step="0.1"
+                        min="0"
+                        value={pocetniProtok}
+                        onChange={(e) => setPocetniProtok(e.target.value)}
+                        placeholder="L/min"
+                        className="flex-1 bg-background border-2 border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <label className="text-xs text-muted-foreground font-medium w-28 shrink-0">Temp OUT prije kemije</label>
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        step="0.1"
+                        value={pocetniTemp}
+                        onChange={(e) => setPocetniTemp(e.target.value)}
+                        placeholder="°C"
+                        className="flex-1 bg-background border-2 border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all"
+                      />
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <label className="text-xs text-muted-foreground font-medium w-28 shrink-0">Protok prije kemije</label>
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      step="0.1"
-                      min="0"
-                      value={pocetniProtok}
-                      onChange={(e) => setPocetniProtok(e.target.value)}
-                      placeholder="L/min"
-                      className="flex-1 bg-background border-2 border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all"
-                    />
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <label className="text-xs text-muted-foreground font-medium w-28 shrink-0">Temp OUT prije kemije</label>
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      step="0.1"
-                      value={pocetniTemp}
-                      onChange={(e) => setPocetniTemp(e.target.value)}
-                      placeholder="°C"
-                      className="flex-1 bg-background border-2 border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all"
-                    />
-                  </div>
-                </div>
-              </Field>
+                )}
+              </div>
 
               {/* 10. Napomena servisera */}
               <Field label="Napomena servisera" optional>
