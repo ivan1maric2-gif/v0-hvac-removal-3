@@ -440,11 +440,7 @@ export function NovaSesijaEkran() {
             <button
               type="button"
               onClick={() => {
-                if (successWorkMode === "no_subsessions") {
-                  navigiraj({ ime: "setup_ciklus", sesijaId: novaSesijaId });
-                } else {
-                  navigiraj({ ime: "sesija", sesijaId: novaSesijaId });
-                }
+                navigiraj({ ime: "sesija", sesijaId: novaSesijaId });
               }}
               className="w-full bg-primary text-primary-foreground rounded-xl py-4 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all"
             >
@@ -456,7 +452,7 @@ export function NovaSesijaEkran() {
     );
   }
 
-  // ── Forma ─────────────────────────────────────────────────────────────────────
+  // ── Forma ──────────────────────────────────────────────────────────���──────────
   return (
     <div className="flex flex-col flex-1 bg-background">
       <header className="flex items-center gap-3 px-4 py-4 border-b border-border">
@@ -630,7 +626,7 @@ export function NovaSesijaEkran() {
 
           <div className="h-px bg-border/60 mt-5" />
 
-          {/* ── BLOK 5 — VRSTA PROBLEMA ───────────────────────────────────── */}
+          {/* ��─ BLOK 5 — VRSTA PROBLEMA ───────────────────────────────────── */}
           <div className="pt-5 pb-4">
             <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
               Vrsta problema

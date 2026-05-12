@@ -4,7 +4,6 @@ import { useApp } from "@/lib/app-state";
 import { NavBar } from "./nav-bar";
 import { PocetniEkran } from "./pocetni-ekran";
 import { NovaSesijaEkran } from "./nova-sesija-ekran";
-import { SetupCiklusEkran } from "./setup-ciklus-ekran";
 import { SesijaEkran } from "./sesija-ekran";
 import { PodsesijaEkran } from "./podsesija-ekran";
 import { PovijestEkran } from "./povijest-ekran";
@@ -20,8 +19,6 @@ export function AppShell() {
         return <PocetniEkran />;
       case "nova_sesija":
         return <NovaSesijaEkran />;
-      case "setup_ciklus":
-        return <SetupCiklusEkran sesijaId={ekran.sesijaId} />;
       case "sesija":
         return <SesijaEkran sesijaId={ekran.sesijaId} />;
       case "podsesija":

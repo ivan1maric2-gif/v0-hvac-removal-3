@@ -106,7 +106,7 @@ export const DRAFT_NEW_SESSION_DEFAULT: DraftNewSession = {
 export type Ekran =
   | { ime: "pocetni" }
   | { ime: "nova_sesija" }
-  | { ime: "setup_ciklus"; sesijaId: string }
+  
   | { ime: "sesija"; sesijaId: string }
   | { ime: "podsesija"; sesijaId: string; podsesijaId: string }
   | { ime: "povijest" }
@@ -271,7 +271,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       // Validiraj pohranjeni ekran — ako referirana sesija ne postoji, idi na pocetni
       const currentEkran = ekranRef.current;
       const trebaSesijaId = currentEkran.ime === "sesija"
-        || currentEkran.ime === "setup_ciklus"
         || currentEkran.ime === "podsesija";
 
       if (trebaSesijaId) {
@@ -324,7 +323,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   /** Provjeri je li ekran validan (sesija/podsesija i dalje postoji) */
   const isEkranValidan = useCallback((e: Ekran): boolean => {
-    if (e.ime === "sesija" || e.ime === "setup_ciklus") {
+    if (e.ime === "sesija") {
       const s = sesijeRef.current.find((x) => x.id === e.sesijaId);
       return !!s && !s.isDeleted;
     }
@@ -338,30 +337,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   /**
    * Pronalazi najrelevantiniji "radni" ekran na koji treba ići
    * kada nema history-ja. Prioritet:
-   * 1. Aktivni ciklus (setup_ciklus ekran za Mode A)
-   * 2. Aktivna sesija (sesija ekran)
-   * 3. Početni ekran
+   * 1. Aktivna sesija (sesija ekran)
+   * 2. Početni ekran
    */
   const getAktivniRadniEkran = useCallback((): Ekran => {
     const sveSesije = sesijeRef.current.filter((s) => !s.isDeleted && !DEMO_IDS.has(s.id));
 
-    // Traži sesiju koja je u tijeku
     const aktivnaSesija = sveSesije.find((s) =>
       s.status === "u_radu" || s.status === "aktivna_reakcija" || s.status === "ciklus_zavrsen"
     );
     if (!aktivnaSesija) return { ime: "pocetni" };
 
-    // Provjeri ima li aktivni ciklus (Mode A)
-    if (aktivnaSesija.workMode === "no_subsessions" || !aktivnaSesija.workMode) {
-      const aktivniCiklus = (aktivnaSesija.ciklusi ?? []).find(
-        (c) => c.status === "aktivan" || c.status === "ceka_pocetno_mjerenje" || c.status === "ceka_redovno_mjerenje"
-      );
-      if (aktivniCiklus) {
-        return { ime: "setup_ciklus", sesijaId: aktivnaSesija.id };
-      }
-    }
-
-    // Idi na sesiju ekran
     return { ime: "sesija", sesijaId: aktivnaSesija.id };
   }, []);
 
@@ -1014,7 +1000,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       // Očisti history od svih ekrana koji se odnose na obrisanu sesiju
       setHistory((prev) =>
         prev.filter((e) => {
-          if (e.ime === "sesija" || e.ime === "setup_ciklus") return e.sesijaId !== sesijaId;
+          if (e.ime === "sesija") return e.sesijaId !== sesijaId;
           if (e.ime === "podsesija") return e.sesijaId !== sesijaId;
           return true;
         })
@@ -1022,7 +1008,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       // Ako je trenutni ekran ta sesija — vrati na povijest
       setEkran((current) => {
         if (
-          (current.ime === "sesija" || current.ime === "setup_ciklus") &&
+          (current.ime === "sesija") &&
           current.sesijaId === sesijaId
         ) return { ime: "povijest" };
         if (current.ime === "podsesija" && current.sesijaId === sesijaId)
