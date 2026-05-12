@@ -808,7 +808,7 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
                   <div className="flex flex-col gap-3">
                     {/* Kartica odluke — preporuka appa */}
                     {(() => {
-                      const brCiklusa = (sesija.ciklusi ?? []).filter(c => !c.isDeleted).length;
+                      const brCiklusa = (sesija.ciklusi ?? []).length;
                       const sljedeciBroj = brCiklusa + 1;
                       // Preporuka: ako completion faze nisu gotove → ispiranje i završetak, inače → novi ciklus
                       const preporukaNoviCiklus = !zadnjiZavrsenCiklusA?.completionPhases?.ispiranje;
