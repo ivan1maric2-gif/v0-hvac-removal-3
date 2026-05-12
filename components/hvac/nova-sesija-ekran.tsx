@@ -258,6 +258,10 @@ export function NovaSesijaEkran() {
   const [pocetneOtvorene, setPocetneOtvorene] = useState(false);
   const [sesijaPokrenuta, setSesijaPokrenuta] = useState(false);
   const [novaSesijaId, setNovaSesijaId] = useState<string | null>(null);
+  // Snapshots za success ekran (pohraniti prije reseta forme)
+  const [successNaziv, setSuccessNaziv] = useState("");
+  const [successPredmet, setSuccessPredmet] = useState("");
+  const [successWorkMode, setSuccessWorkMode] = useState<WorkMode>("no_subsessions");
 
   // ── Destrukturiraj draft iz contexta ─────────────────────────────────────────
   const {
@@ -430,9 +434,13 @@ export function NovaSesijaEkran() {
 
     dodajSesiju(novaSesija);
     setNovaSesijaId(novaSesija.id);
-    setSesijaPokrenuta(true);
-    // Reset forme SAMO nakon uspješnog otvaranja sesije
+    // Pohrani snapshot podataka za success ekran PRIJE reseta forme
+    setSuccessNaziv(nazivSesije.trim());
+    setSuccessPredmet(predmetFinal);
+    setSuccessWorkMode(workMode);
+    // Reset forme SAMO nakon pohrane snapshots
     resetNovaSesijaFormu();
+    setSesijaPokrenuta(true);
   }
 
   // ── Poruka nakon otvaranja sesije ─────────────────────────────────────────────
@@ -450,9 +458,9 @@ export function NovaSesijaEkran() {
               </svg>
             </div>
             <p className="text-xl font-black text-foreground mb-2 leading-snug break-words">
-              {nazivSesije}
+              {successNaziv}
             </p>
-            <p className="text-sm text-muted-foreground mb-1">{predmetFinal}</p>
+            <p className="text-sm text-muted-foreground mb-1">{successPredmet}</p>
             <div className="mt-4 mb-8 bg-muted/30 border border-border/60 rounded-xl px-4 py-3">
               <p className="text-sm font-bold text-foreground">Sesija je otvorena.</p>
               <p className="text-sm text-muted-foreground mt-0.5">
@@ -462,7 +470,7 @@ export function NovaSesijaEkran() {
             <button
               type="button"
               onClick={() => {
-                if (workMode === "no_subsessions") {
+                if (successWorkMode === "no_subsessions") {
                   navigiraj({ ime: "setup_ciklus", sesijaId: novaSesijaId });
                 } else {
                   navigiraj({ ime: "sesija", sesijaId: novaSesijaId });
