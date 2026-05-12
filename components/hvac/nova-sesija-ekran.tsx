@@ -251,9 +251,15 @@ function CollapsibleSekcija({
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function NovaSesijaEkran() {
+  // ── Hookovi — UVIJEK NA VRHU, bez uvjeta ─────────────────────────────────────
   const { navigiraj, dodajSesiju, novaSesijaForma, setNovaSesijaForma, resetNovaSesijaFormu } = useApp();
 
-  // Destrukturiraj draft iz contexta
+  // Lokalni UI state (ne trebaju perzistirati)
+  const [pocetneOtvorene, setPocetneOtvorene] = useState(false);
+  const [sesijaPokrenuta, setSesijaPokrenuta] = useState(false);
+  const [novaSesijaId, setNovaSesijaId] = useState<string | null>(null);
+
+  // ── Destrukturiraj draft iz contexta ─────────────────────────────────────────
   const {
     workMode,
     nazivSesije,
@@ -277,7 +283,7 @@ export function NovaSesijaEkran() {
     napomena,
   } = novaSesijaForma;
 
-  // Setteri — thin wrappers koji upisuju u context draft
+  // ── Setteri — thin wrappers koji upisuju u context draft ──────────────────────
   const setWorkMode = (v: WorkMode) => setNovaSesijaForma({ workMode: v });
   const setNazivSesije = (v: string) => setNovaSesijaForma({ nazivSesije: v });
   const setAdresa = (v: string) => setNovaSesijaForma({ adresa: v });
@@ -311,15 +317,8 @@ export function NovaSesijaEkran() {
   const setPocetniTemp = (v: string) => setNovaSesijaForma({ pocetniTemp: v });
   const setNapomena = (v: string) => setNovaSesijaForma({ napomena: v });
 
-  // pocetneOtvorene — lokalni UI state (ne treba perzistirati kroz navigaciju)
-  const [pocetneOtvorene, setPocetneOtvorene] = useState(false);
-
   const tipSustava: SystemCategory =
     VRSTA_SUSTAVA.find((v) => v.label === odabranaVrstaSustava)?.id ?? "dhw_potable";
-
-  // Završeno stanje — prikaži poruku
-  const [sesijaPokrenuta, setSesijaPokrenuta] = useState(false);
-  const [novaSesijaId, setNovaSesijaId] = useState<string | null>(null);
 
   // Toggle materijal — osnovni
   function toggleMaterijal(m: MaterijalOsnovni) {
