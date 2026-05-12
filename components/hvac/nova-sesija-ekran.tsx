@@ -286,7 +286,6 @@ export function NovaSesijaEkran() {
   const [odabraniMaterijali, setOdabraniMaterijali] = useState<MaterijalOsnovni[]>([]);
   const [odabraniProsireni, setOdabraniProsireni] = useState<MaterijalProsireni[]>([]);
   const [materijalOstalo, setMaterijalOstalo] = useState(false);   // "Ostalo" chip aktivan
-  const [materijalOstaloText, setMaterijalOstaloText] = useState("");
 
   // 9. Početne informativne vrijednosti
   const [pocetniPh, setPocetniPh] = useState("");
@@ -314,10 +313,10 @@ export function NovaSesijaEkran() {
     );
   }
 
-  // Toggle Ostalo — prikazuje text polje
+  // Toggle Ostalo — expand/collapse prošireni materijali
   function toggleMaterijalOstalo() {
     setMaterijalOstalo((prev) => {
-      if (prev) setMaterijalOstaloText(""); // čisti tekst pri odznačavanju
+      if (prev) setOdabraniProsireni([]); // čisti proširene pri zatvaranju
       return !prev;
     });
   }
@@ -375,9 +374,6 @@ export function NovaSesijaEkran() {
     const sviMaterijali = [
       ...odabraniMaterijali,
       ...odabraniProsireni,
-      ...(materijalOstalo && materijalOstaloText.trim()
-        ? [`Ostalo: ${materijalOstaloText.trim()}`]
-        : materijalOstalo ? ["Ostalo"] : []),
     ];
     const materijaliLabel = sviMaterijali.length > 0
       ? `Materijali: ${sviMaterijali.join(", ")}`
@@ -751,19 +747,23 @@ export function NovaSesijaEkran() {
                   />
                 </div>
 
-                {/* Ostalo — text polje */}
+                {/* Ostalo — expandable blok s proširenim materijalima */}
                 {materijalOstalo && (
-                  <div className="mt-3">
-                    <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
-                      Unesite dodatni materijal
-                    </label>
-                    <input
-                      type="text"
-                      value={materijalOstaloText}
-                      onChange={(e) => setMaterijalOstaloText(e.target.value)}
-                      placeholder="Npr. EPDM, silikon, teflon, posebna legura..."
-                      className={inputCls}
-                    />
+                  <div className="mt-3 rounded-xl border border-border/70 bg-muted/30 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                      Prošireni materijali
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {MATERIJALI_PROSIRENI.map((m) => (
+                        <ChipBtn
+                          key={m}
+                          label={m}
+                          selected={odabraniProsireni.includes(m)}
+                          onClick={() => toggleProsireni(m)}
+                          variant="small"
+                        />
+                      ))}
+                    </div>
                   </div>
                 )}
               </Field>
