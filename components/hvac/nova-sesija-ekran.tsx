@@ -251,12 +251,15 @@ function CollapsibleSekcija({
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function NovaSesijaEkran() {
-  const { navigiraj, dodajSesiju, draftNewSession, updateDraftNewSession, resetDraftNewSession } = useApp();
+  const { navigiraj, nazad, dodajSesiju, draftNewSession, updateDraftNewSession, resetDraftNewSession } = useApp();
 
   // UI-only lokalni state — ne trebaju perzistirati kroz navigaciju
   const [pocetneOtvorene, setPocetneOtvorene] = useState(false);
   const [sesijaPokrenuta, setSesijaPokrenuta] = useState(false);
   const [novaSesijaId, setNovaSesijaId] = useState<string | null>(null);
+  const [successNaziv, setSuccessNaziv] = useState("");
+  const [successPredmet, setSuccessPredmet] = useState("");
+  const [successWorkMode, setSuccessWorkMode] = useState<WorkMode>("no_subsessions");
 
   // Destrukturiraj draft iz contexta — forma čita odavde
   const {
@@ -401,7 +404,11 @@ export function NovaSesijaEkran() {
 
     dodajSesiju(novaSesija);
     setNovaSesijaId(novaSesija.id);
-    // Reset drafta TEK nakon uspješnog kreiranja sesije
+    // Pohrani snapshot za success ekran PRIJE reseta drafta
+    setSuccessNaziv(nazivSesije.trim());
+    setSuccessPredmet(predmetFinal);
+    setSuccessWorkMode(workMode);
+    // Reset drafta TEK nakon pohrane snapshota
     resetDraftNewSession();
     setSesijaPokrenuta(true);
   }
@@ -421,9 +428,9 @@ export function NovaSesijaEkran() {
               </svg>
             </div>
             <p className="text-xl font-black text-foreground mb-2 leading-snug break-words">
-              {nazivSesije}
+              {successNaziv}
             </p>
-            <p className="text-sm text-muted-foreground mb-1">{predmetFinal}</p>
+            <p className="text-sm text-muted-foreground mb-1">{successPredmet}</p>
             <div className="mt-4 mb-8 bg-muted/30 border border-border/60 rounded-xl px-4 py-3">
               <p className="text-sm font-bold text-foreground">Sesija je otvorena.</p>
               <p className="text-sm text-muted-foreground mt-0.5">
@@ -433,7 +440,7 @@ export function NovaSesijaEkran() {
             <button
               type="button"
               onClick={() => {
-                if (workMode === "no_subsessions") {
+                if (successWorkMode === "no_subsessions") {
                   navigiraj({ ime: "setup_ciklus", sesijaId: novaSesijaId });
                 } else {
                   navigiraj({ ime: "sesija", sesijaId: novaSesijaId });
@@ -455,7 +462,7 @@ export function NovaSesijaEkran() {
       <header className="flex items-center gap-3 px-4 py-4 border-b border-border">
         <button
           type="button"
-          onClick={() => navigiraj({ ime: "pocetni" })}
+          onClick={nazad}
           className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted transition-colors -ml-1"
           aria-label="Natrag"
         >
