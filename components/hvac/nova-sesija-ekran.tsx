@@ -530,12 +530,15 @@ export function NovaSesijaEkran() {
             ))}
           </div>
           {predmetCiscenja === "Ostalo" && (
-            <div className="mb-4">
+            <div className="mt-3 mb-4">
+              <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                Unesite predmet čišćenja
+              </label>
               <input
                 type="text"
                 value={predmetOstaloNaziv}
                 onChange={(e) => setPredmetOstaloNaziv(e.target.value)}
-                placeholder="Upiši naziv predmeta..."
+                placeholder="Npr. kondenzator, recirkulacijska grana, fan coil, hladnjak..."
                 autoFocus
                 className={inputCls}
               />
