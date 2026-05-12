@@ -288,6 +288,190 @@ const ACTION_BG: Record<PreporukaAkcija, string> = {
   finish_session:           "bg-green-700 text-white",
 };
 
+// ─── AkcijeNakonMjerenjaBlok ─────────────────────────────────────────────────
+// Practical action buttons shown in the content body (not just footer),
+// contextual to the engine's recommended action.
+
+interface AkcijeNakonMjerenjaProps {
+  preporuka: import("@/lib/preporuka").Preporuka | null;
+  onNovoMjerenje: () => void;
+  onDodajNadopunu: () => void;
+  onNoviCiklus: () => void;
+  onPrimaryAction: (action: import("@/lib/preporuka").PreporukaAkcija) => void;
+}
+
+function AkcijeNakonMjerenjaBlok({
+  preporuka,
+  onNovoMjerenje,
+  onDodajNadopunu,
+  onNoviCiklus,
+  onPrimaryAction,
+}: AkcijeNakonMjerenjaProps) {
+  const action = preporuka?.recommendedAction ?? "continue_circulation";
+
+  // Build contextual action list based on engine recommendation
+  type ActionItem = {
+    key: string;
+    label: string;
+    sublabel?: string;
+    onClick: () => void;
+    variant: "primary" | "warning" | "danger" | "default";
+    icon: React.ReactNode;
+  };
+
+  const chevronRight = (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+      <path d="M9 18l6-6-6-6" />
+    </svg>
+  );
+
+  const items: ActionItem[] = [];
+
+  // Always show "novo mjerenje" unless the engine says finish/rinse
+  const showNovomjerenje =
+    action === "continue_circulation" ||
+    action === "monitor_next_measurement";
+
+  // Show "nadopuna" when engine recommends it OR chemistry is borderline
+  const showNadopuna =
+    action === "add_top_up" ||
+    action === "monitor_next_measurement";
+
+  // Show "novi ciklus" when engine says finish/new cycle
+  const showNoviCiklus =
+    action === "start_new_cycle" ||
+    action === "finish_cycle" ||
+    action === "rinse_system";
+
+  // Show "završi ciklus" explicitly when engine recommends it
+  const showZavrsiCiklus =
+    action === "finish_cycle" ||
+    action === "rinse_system" ||
+    action === "finish_subsession" ||
+    action === "finish_session";
+
+  if (showNovomjerenje) {
+    items.push({
+      key: "novo",
+      label: "Novo mjerenje",
+      sublabel: "Nastavi pratiti reakciju",
+      onClick: onNovoMjerenje,
+      variant: "primary",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+      ),
+    });
+  }
+
+  if (showNadopuna) {
+    items.push({
+      key: "nadopuna",
+      label: "Dodaj nadopunu",
+      sublabel: preporuka?.recommendedAddAmountL
+        ? `Preporučeno: ${preporuka.recommendedAddAmountL.toFixed(1)} L`
+        : "Pojačaj koncentraciju sredstva",
+      onClick: onDodajNadopunu,
+      variant: "warning",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" />
+          <path d="M12 8v8M8 12h8" />
+        </svg>
+      ),
+    });
+  }
+
+  if (showNoviCiklus) {
+    items.push({
+      key: "novi_ciklus",
+      label: "Pokreni novi ciklus",
+      sublabel: "Počni čišćenje iznova",
+      onClick: onNoviCiklus,
+      variant: "default",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+          <polyline points="23 4 23 10 17 10" />
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+        </svg>
+      ),
+    });
+  }
+
+  if (showZavrsiCiklus) {
+    items.push({
+      key: "zavrsi",
+      label: action === "rinse_system" ? "Isperi sustav" : "Završi ciklus",
+      sublabel: action === "rinse_system" ? "Isperi i zatvori čišćenje" : "Zatvori ovaj ciklus",
+      onClick: () => onPrimaryAction(action),
+      variant: "danger",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      ),
+    });
+  }
+
+  // If nothing matched, fallback to novo mjerenje only
+  if (items.length === 0) {
+    items.push({
+      key: "novo_fallback",
+      label: "Novo mjerenje",
+      sublabel: "Nastavi pratiti reakciju",
+      onClick: onNovoMjerenje,
+      variant: "primary",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+      ),
+    });
+  }
+
+  const variantClass: Record<ActionItem["variant"], string> = {
+    primary:  "border-primary/30 bg-primary/8 text-primary dark:bg-primary/15",
+    warning:  "border-amber-400/50 bg-amber-50 text-amber-900 dark:bg-amber-950/30 dark:text-amber-300",
+    danger:   "border-destructive/30 bg-destructive/5 text-destructive dark:bg-destructive/15",
+    default:  "border-border bg-card text-foreground",
+  };
+
+  return (
+    <div className="rounded-2xl border border-border bg-card overflow-hidden">
+      <div className="px-4 py-3 border-b border-border/60 flex items-center justify-between">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+          Akcije nakon mjerenja
+        </span>
+        {preporuka && (
+          <span className="text-[10px] font-semibold text-muted-foreground/60 bg-muted/50 rounded-full px-2 py-0.5">
+            {preporuka.recommendedActionLabel}
+          </span>
+        )}
+      </div>
+      <div className="flex flex-col divide-y divide-border/40">
+        {items.map((item) => (
+          <button
+            key={item.key}
+            type="button"
+            onClick={item.onClick}
+            className={`w-full flex items-center gap-3 px-4 py-3.5 text-left hover:brightness-95 active:scale-[0.99] transition-all border-l-4 ${variantClass[item.variant]}`}
+          >
+            <span className="shrink-0 opacity-70">{item.icon}</span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-sm font-bold leading-snug">{item.label}</span>
+              {item.sublabel && (
+                <span className="block text-xs text-current opacity-60 mt-0.5 leading-snug">{item.sublabel}</span>
+              )}
+            </span>
+            <span className="shrink-0 opacity-40">{chevronRight}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 export interface RezultatMjerenjaProps {
@@ -816,6 +1000,15 @@ export function RezultatMjerenja({
                 referenceTempOutC={referenceTempOutC}
                 tempOutC={mjerenje.tempOutC}
                 foam={foam}
+              />
+
+              {/* 2d. AKCIJE NAKON MJERENJA — brze akcije kontekstualne prema preporuci */}
+              <AkcijeNakonMjerenjaBlok
+                preporuka={preporuka}
+                onNovoMjerenje={onNovoMjerenje}
+                onDodajNadopunu={onDodajNadopunu}
+                onNoviCiklus={onNoviCiklus}
+                onPrimaryAction={onPrimaryAction}
               />
                 </>
               )}
