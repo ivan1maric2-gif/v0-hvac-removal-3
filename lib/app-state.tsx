@@ -176,18 +176,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Učitaj pohranjeno navigacijsko stanje iz localStorage — samo na klijentu.
   // navSaveEnabled postaje true tek NAKON što restore završi (sljedeći tick).
   const navSaveEnabled = React.useRef(false);
-  // restoredEkran: snapshot ekrana iz localStorage — koristi se za validaciju sesije.
-  // Ne koristimo ekranRef jer korisnik može navigirati PRIJE nego getSesije završi.
-  const restoredEkranRef = React.useRef<Ekran | null>(null);
   React.useEffect(() => {
     try {
       const raw = localStorage.getItem(NAV_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (parsed.ekran) {
-          setEkran(parsed.ekran);
-          restoredEkranRef.current = parsed.ekran; // pohrani snapshot
-        }
+        if (parsed.ekran) setEkran(parsed.ekran);
         if (parsed.back) setHistory(parsed.back);
       }
     } catch { /* ignore */ }
@@ -215,28 +209,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
       setUcitavaSe(false);
 
-      // Validiraj SAMO ekran koji je bio pohranjen u localStorage (restoredEkranRef).
-      // Ako korisnik navigira PRIJE nego getSesije završi, ekranRef.current se mijenja —
-      // ali mi validiramo restored snapshot, ne trenutni ekran.
-      // Ako validacija promijeni ekran, korisnikova navigacija ima prednost:
-      // resetiramo SAMO ako se korisnik nije već pomaknuo s restored ekrana.
-      const restoredEkran = restoredEkranRef.current;
-      if (!restoredEkran) return; // nema pohranjenog ekrana, nema što validirati
-
-      const trebaSesijaId = restoredEkran.ime === "sesija"
-        || restoredEkran.ime === "setup_ciklus"
-        || restoredEkran.ime === "podsesija";
+      // Validiraj pohranjeni ekran — ako referirana sesija ne postoji, idi na pocetni
+      const currentEkran = ekranRef.current;
+      const trebaSesijaId = currentEkran.ime === "sesija"
+        || currentEkran.ime === "setup_ciklus"
+        || currentEkran.ime === "podsesija";
 
       if (trebaSesijaId) {
-        const sesijaId = (restoredEkran as any).sesijaId;
+        const sesijaId = (currentEkran as any).sesijaId;
         const postoji = sveSesije.some((x) => x.id === sesijaId && !x.isDeleted);
         if (!postoji) {
-          // Resetiraj SAMO ako korisnik još nije navigirao dalje
-          if (ekranRef.current.ime === restoredEkran.ime) {
-            setEkran({ ime: "pocetni" });
-            setHistory([]);
-            setForwardStack([]);
-          }
+          setEkran({ ime: "pocetni" });
+          setHistory([]);
+          setForwardStack([]);
         }
       }
     }).catch((err: unknown) => {
