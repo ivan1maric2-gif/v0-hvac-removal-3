@@ -471,20 +471,20 @@ export function NovaSesijaEkran() {
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
-        <h1 className="text-lg font-bold text-foreground">Nova sesija</h1>
+        <h1 className="text-lg font-bold text-foreground">Otvaranje sesije</h1>
       </header>
 
       <main className="flex-1 overflow-y-auto">
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto w-full px-4 pb-10">
 
-          {/* ── 1. NAZIV SESIJE / OBJEKTA ─────────────────────────────────── */}
-          <div className="pt-6 pb-2">
-            <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-              Objekt
-            </h2>
+          {/* ── BLOK 1 — OSNOVNI PODACI ───────────────────────────────────── */}
+          <div className="pt-6 pb-4">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+              Osnovni podaci
+            </p>
           </div>
           <div className="flex flex-col gap-4 pb-6">
-            <Field label="Naziv objekta" required>
+            <Field label="Naziv sesije / objekta" required>
               <input
                 type="text"
                 value={nazivSesije}
@@ -494,8 +494,6 @@ export function NovaSesijaEkran() {
                 className={inputCls}
               />
             </Field>
-
-            {/* ── 2. Adresa ──���──────────────────────────────────────────── */}
             <Field label="Adresa" optional>
               <input
                 type="text"
@@ -505,8 +503,6 @@ export function NovaSesijaEkran() {
                 className={inputCls}
               />
             </Field>
-
-            {/* ── 3. Investitor / klijent ───────────────────────────────── */}
             <Field label="Investitor / klijent" optional>
               <input
                 type="text"
@@ -520,33 +516,32 @@ export function NovaSesijaEkran() {
 
           <div className="h-px bg-border/60" />
 
-          {/* ── ODABIR NAČINA RADA ─────────────────────────────────────────── */}
-          <div className="pt-5 pb-2">
-            <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+          {/* ── BLOK 2 — NAČIN RADA ───────────────────────────────────────── */}
+          <div className="pt-5 pb-4">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
               Nacin rada
-            </h2>
-            <p className="text-base font-black text-foreground mt-1">Koliko uredaja cistite?</p>
+            </p>
           </div>
           <div className="flex flex-col gap-3 pb-6">
             <RadioKartica
               selected={workMode === "no_subsessions"}
               onSelect={() => setWorkMode("no_subsessions")}
               title="Jedan uredaj"
-              description="Posao se vodi direktno u sesiji. Ciklusi, mjerenja i nadopune pripadaju ovom uredaju."
+              description="Ciklusi, mjerenja i nadopune vode se direktno u sesiji."
               items={[
                 { label: "Ciklusi i mjerenja direktno u sesiji", ima: true },
                 { label: "Nadopune kemije po ciklusima", ima: true },
                 { label: "Referentno mjerenje i LIVE pracenje", ima: true },
-                { label: "Dijelovi sustava (podsesije)", ima: false },
+                { label: "Podsesije po dijelovima sustava", ima: false },
               ]}
             />
             <RadioKartica
               selected={workMode === "with_subsessions"}
               onSelect={() => setWorkMode("with_subsessions")}
               title="Vise uredaja / podsesije"
-              description="Svaki uredaj je zasebna podsesija sa vlastitim ciklusima, mjerenjima i volumenom kemije."
+              description="Svaki dio sustava je zasebna podsesija s vlastitim ciklusima i kemijom."
               items={[
-                { label: "Dijelovi sustava (podsesije)", ima: true },
+                { label: "Podsesije po dijelovima sustava", ima: true },
                 { label: "Ciklusi i mjerenja po svakom dijelu", ima: true },
                 { label: "Referentno mjerenje i LIVE pracenje", ima: true },
                 { label: "Zajednicki izvjestaj za cijeli sustav", ima: true },
@@ -556,14 +551,13 @@ export function NovaSesijaEkran() {
 
           <div className="h-px bg-border/60" />
 
-          {/* ── 4. PREDMET ČIŠĆENJA ────────────────────────────────────────── */}
-          <div className="pt-5 pb-3">
-            <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+          {/* ── BLOK 3 — PREDMET ČIŠĆENJA ─────────────────────────────────── */}
+          <div className="pt-5 pb-4">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
               Predmet ciscenja
-            </h2>
-            <p className="text-base font-black text-foreground mt-1">Sto cistite?</p>
+            </p>
           </div>
-          <div className="grid grid-cols-2 gap-2 pb-4">
+          <div className="grid grid-cols-2 gap-2 pb-2">
             {PREDMET_CISCENJA.map((p) => (
               <ChipBtn
                 key={p}
@@ -577,7 +571,7 @@ export function NovaSesijaEkran() {
             ))}
           </div>
           {predmetCiscenja === "Ostalo" && (
-            <div className="mt-3 mb-4">
+            <div className="mt-3 mb-2">
               <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
                 Unesite predmet čišćenja
               </label>
@@ -585,20 +579,20 @@ export function NovaSesijaEkran() {
                 type="text"
                 value={predmetOstaloNaziv}
                 onChange={(e) => setPredmetOstaloNaziv(e.target.value)}
-                placeholder="Npr. kondenzator, recirkulacijska grana, fan coil, hladnjak..."
+                placeholder="Npr. kondenzator, fan coil, hladnjak, recirkulacijska grana..."
                 autoFocus
                 className={inputCls}
               />
             </div>
           )}
 
-          <div className="h-px bg-border/60" />
+          <div className="h-px bg-border/60 mt-5" />
 
-          {/* ── 5. VRSTA SUSTAVA ──────────────────────────────────────────── */}
-          <div className="pt-5 pb-3">
-            <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+          {/* ── BLOK 4 — VRSTA SUSTAVA ────────────────────────────────────── */}
+          <div className="pt-5 pb-4">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
               Vrsta sustava
-            </h2>
+            </p>
           </div>
           <div className="grid grid-cols-3 gap-2">
             {VRSTA_SUSTAVA.map((v) => (
@@ -615,7 +609,6 @@ export function NovaSesijaEkran() {
               />
             ))}
           </div>
-
           {odabranaVrstaSustava === "Ostalo" && (
             <div className="mt-3 mb-2">
               <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
@@ -632,14 +625,14 @@ export function NovaSesijaEkran() {
             </div>
           )}
 
-          <div className="h-px bg-border/60 mt-4" />
+          <div className="h-px bg-border/60 mt-5" />
 
-          {/* ── 6. VRSTA PROBLEMA — multiselect ──────────────────────────── */}
-          <div className="pt-5 pb-3">
-            <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+          {/* ── BLOK 5 — VRSTA PROBLEMA ───────────────────────────────────── */}
+          <div className="pt-5 pb-4">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
               Vrsta problema
-            </h2>
-            <p className="text-xs text-muted-foreground/60 mt-0.5">Mogu se odabrati vise opcija</p>
+            </p>
+            <p className="text-xs text-muted-foreground/60 mt-0.5">Može se odabrati više opcija</p>
           </div>
           <div className="grid grid-cols-2 gap-2">
             {VRSTA_PROBLEMA_OPCIJE.map((v) => (
@@ -651,9 +644,8 @@ export function NovaSesijaEkran() {
               />
             ))}
           </div>
-
           {odabraniProblemi.includes("Ostalo") && (
-            <div className="mt-3 pb-2">
+            <div className="mt-3">
               <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
                 Opiši problem
                 <span className="font-normal text-muted-foreground/60 ml-1">(opcionalno)</span>
@@ -668,15 +660,15 @@ export function NovaSesijaEkran() {
             </div>
           )}
 
-          <div className="h-px bg-border/60 mt-4" />
+          <div className="h-px bg-border/60 mt-5" />
 
-          {/* ── 7–10. TEHNIČKI PODACI — collapsed ────────────────────────── */}
+          {/* ── BLOK 6 — TEHNIČKI PODACI (collapsed) ─────────────────────── */}
           <div className="pt-5 pb-6">
             <CollapsibleSekcija
               label="Tehnicki podaci"
               hint="volumen, materijali, pocetne vrijednosti"
             >
-              {/* 7. Procijenjeni volumen vode */}
+              {/* Procijenjeni volumen vode */}
               <Field label="Procijenjeni volumen vode" optional>
                 <div className="flex flex-col gap-2">
                   <div className="grid grid-cols-3 gap-2">
@@ -727,9 +719,8 @@ export function NovaSesijaEkran() {
                 </div>
               </Field>
 
-              {/* 8. Materijali sustava */}
+              {/* Materijali sustava */}
               <Field label="Materijali sustava" optional hint="Odabir utjece na upozorenja o kompatibilnosti kemije.">
-                {/* Osnovni materijali + Mješani materijali + Ostalo */}
                 <div className="grid grid-cols-2 gap-2">
                   {MATERIJALI_OSNOVNI.map((m) => (
                     <ChipBtn
@@ -740,7 +731,6 @@ export function NovaSesijaEkran() {
                       variant="small"
                     />
                   ))}
-                  {/* Ostalo — expanduje proširene materijale */}
                   <ChipBtn
                     label="Ostalo"
                     selected={materijalOstalo}
@@ -748,12 +738,10 @@ export function NovaSesijaEkran() {
                     variant="small"
                   />
                 </div>
-
-                {/* Ostalo — expandable blok s proširenim materijalima */}
                 {materijalOstalo && (
                   <div className="mt-3 rounded-xl border border-border/70 bg-muted/30 p-3">
                     <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                      Prošireni materijali
+                      Prosireni materijali
                     </p>
                     <div className="grid grid-cols-2 gap-2">
                       {MATERIJALI_PROSIRENI.map((m) => (
@@ -770,7 +758,7 @@ export function NovaSesijaEkran() {
                 )}
               </Field>
 
-              {/* 9. Početne informativne vrijednosti — collapsible */}
+              {/* Početne informativne vrijednosti */}
               <div className="rounded-2xl border border-border overflow-hidden">
                 <button
                   type="button"
@@ -798,7 +786,6 @@ export function NovaSesijaEkran() {
                     <path d="M6 9l6 6 6-6" />
                   </svg>
                 </button>
-
                 {pocetneOtvorene && (
                   <div className="px-4 pt-1 pb-4 flex flex-col gap-3 border-t border-border/60">
                     <p className="text-xs text-muted-foreground leading-relaxed pt-2">
@@ -807,13 +794,8 @@ export function NovaSesijaEkran() {
                     <div className="flex items-center gap-3">
                       <label className="text-xs text-muted-foreground font-medium w-28 shrink-0">pH prije kemije</label>
                       <input
-                        type="number"
-                        inputMode="decimal"
-                        step="0.1"
-                        min="0"
-                        max="14"
-                        value={pocetniPh}
-                        onChange={(e) => setPocetniPh(e.target.value)}
+                        type="number" inputMode="decimal" step="0.1" min="0" max="14"
+                        value={pocetniPh} onChange={(e) => setPocetniPh(e.target.value)}
                         placeholder="npr. 7.2"
                         className="flex-1 bg-background border-2 border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all"
                       />
@@ -821,12 +803,8 @@ export function NovaSesijaEkran() {
                     <div className="flex items-center gap-3">
                       <label className="text-xs text-muted-foreground font-medium w-28 shrink-0">Protok prije kemije</label>
                       <input
-                        type="number"
-                        inputMode="decimal"
-                        step="0.1"
-                        min="0"
-                        value={pocetniProtok}
-                        onChange={(e) => setPocetniProtok(e.target.value)}
+                        type="number" inputMode="decimal" step="0.1" min="0"
+                        value={pocetniProtok} onChange={(e) => setPocetniProtok(e.target.value)}
                         placeholder="L/min"
                         className="flex-1 bg-background border-2 border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all"
                       />
@@ -834,11 +812,8 @@ export function NovaSesijaEkran() {
                     <div className="flex items-center gap-3">
                       <label className="text-xs text-muted-foreground font-medium w-28 shrink-0">Temp OUT prije kemije</label>
                       <input
-                        type="number"
-                        inputMode="decimal"
-                        step="0.1"
-                        value={pocetniTemp}
-                        onChange={(e) => setPocetniTemp(e.target.value)}
+                        type="number" inputMode="decimal" step="0.1"
+                        value={pocetniTemp} onChange={(e) => setPocetniTemp(e.target.value)}
                         placeholder="°C"
                         className="flex-1 bg-background border-2 border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all"
                       />
@@ -847,7 +822,7 @@ export function NovaSesijaEkran() {
                 )}
               </div>
 
-              {/* 10. Napomena servisera */}
+              {/* Napomena servisera */}
               <Field label="Napomena servisera" optional>
                 <textarea
                   value={napomena}
@@ -861,19 +836,22 @@ export function NovaSesijaEkran() {
           </div>
 
           {/* ── Submit ────────────────────────────────────────────────────── */}
-          <div className="pt-2">
+          <div className="pb-4">
             <button
               type="submit"
               disabled={!canSubmit}
-              className="w-full bg-primary text-primary-foreground rounded-xl py-4 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-30 disabled:pointer-events-none"
+              className="w-full bg-primary text-primary-foreground rounded-2xl py-5 font-black text-base tracking-wide hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
-              Pokreni sesiju
+              OTVORI SESIJU
             </button>
             {validationMsg && (
-              <p className="text-[11px] text-muted-foreground text-center mt-2">
+              <p className="text-[11px] text-muted-foreground text-center mt-3">
                 {validationMsg}
               </p>
             )}
+            <p className="text-[11px] text-muted-foreground/50 text-center mt-3 leading-snug">
+              Kemijsko sredstvo odabire se pri pokretanju ciklusa.
+            </p>
           </div>
 
         </form>
