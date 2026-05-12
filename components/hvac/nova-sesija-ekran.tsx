@@ -251,51 +251,71 @@ function CollapsibleSekcija({
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function NovaSesijaEkran() {
-  const { navigiraj, dodajSesiju } = useApp();
+  const { navigiraj, dodajSesiju, novaSesijaForma, setNovaSesijaForma, resetNovaSesijaFormu } = useApp();
 
-  const [workMode, setWorkMode] = useState<WorkMode>("no_subsessions");
+  // Destrukturiraj draft iz contexta
+  const {
+    workMode,
+    nazivSesije,
+    adresa,
+    narucitelj,
+    predmetCiscenja,
+    predmetOstaloNaziv,
+    odabranaVrstaSustava,
+    customSustavaText,
+    odabraniProblemi,
+    problemOstaloTekst,
+    volumen,
+    volumenRucni,
+    volumenRucnoMode,
+    odabraniMaterijali,
+    odabraniProsireni,
+    materijalOstalo,
+    pocetniPh,
+    pocetniProtok,
+    pocetniTemp,
+    napomena,
+  } = novaSesijaForma;
 
-  // 1. Naziv sesije / objekta
-  const [nazivSesije, setNazivSesije] = useState("");
+  // Setteri — thin wrappers koji upisuju u context draft
+  const setWorkMode = (v: WorkMode) => setNovaSesijaForma({ workMode: v });
+  const setNazivSesije = (v: string) => setNovaSesijaForma({ nazivSesije: v });
+  const setAdresa = (v: string) => setNovaSesijaForma({ adresa: v });
+  const setNarucitelj = (v: string) => setNovaSesijaForma({ narucitelj: v });
+  const setPredmetCiscenja = (v: PredmetCiscenja | null) => setNovaSesijaForma({ predmetCiscenja: v });
+  const setPredmetOstaloNaziv = (v: string) => setNovaSesijaForma({ predmetOstaloNaziv: v });
+  const setOdabranaVrstaSustava = (v: string | null) => setNovaSesijaForma({ odabranaVrstaSustava: v });
+  const setCustomSustavaText = (v: string) => setNovaSesijaForma({ customSustavaText: v });
+  const setOdabraniProblemi = (v: VrstaProblema[] | ((prev: VrstaProblema[]) => VrstaProblema[])) => {
+    if (typeof v === "function") setNovaSesijaForma({ odabraniProblemi: v(odabraniProblemi as VrstaProblema[]) });
+    else setNovaSesijaForma({ odabraniProblemi: v });
+  };
+  const setProblemOstaloTekst = (v: string) => setNovaSesijaForma({ problemOstaloTekst: v });
+  const setVolumen = (v: number | null) => setNovaSesijaForma({ volumen: v });
+  const setVolumenRucni = (v: string) => setNovaSesijaForma({ volumenRucni: v });
+  const setVolumenRucnoMode = (v: boolean) => setNovaSesijaForma({ volumenRucnoMode: v });
+  const setOdabraniMaterijali = (v: MaterijalOsnovni[] | ((prev: MaterijalOsnovni[]) => MaterijalOsnovni[])) => {
+    if (typeof v === "function") setNovaSesijaForma({ odabraniMaterijali: v(odabraniMaterijali as MaterijalOsnovni[]) });
+    else setNovaSesijaForma({ odabraniMaterijali: v });
+  };
+  const setOdabraniProsireni = (v: MaterijalProsireni[] | ((prev: MaterijalProsireni[]) => MaterijalProsireni[])) => {
+    if (typeof v === "function") setNovaSesijaForma({ odabraniProsireni: v(odabraniProsireni as MaterijalProsireni[]) });
+    else setNovaSesijaForma({ odabraniProsireni: v });
+  };
+  const setMaterijalOstalo = (v: boolean | ((prev: boolean) => boolean)) => {
+    if (typeof v === "function") setNovaSesijaForma({ materijalOstalo: v(materijalOstalo) });
+    else setNovaSesijaForma({ materijalOstalo: v });
+  };
+  const setPocetniPh = (v: string) => setNovaSesijaForma({ pocetniPh: v });
+  const setPocetniProtok = (v: string) => setNovaSesijaForma({ pocetniProtok: v });
+  const setPocetniTemp = (v: string) => setNovaSesijaForma({ pocetniTemp: v });
+  const setNapomena = (v: string) => setNovaSesijaForma({ napomena: v });
 
-  // 2. Adresa
-  const [adresa, setAdresa] = useState("");
+  // pocetneOtvorene — lokalni UI state (ne treba perzistirati kroz navigaciju)
+  const [pocetneOtvorene, setPocetneOtvorene] = useState(false);
 
-  // 3. Investitor / klijent
-  const [narucitelj, setNarucitelj] = useState("");
-
-  // 4. Predmet čišćenja
-  const [predmetCiscenja, setPredmetCiscenja] = useState<PredmetCiscenja | null>(null);
-  const [predmetOstaloNaziv, setPredmetOstaloNaziv] = useState("");
-
-  // 5. Vrsta sustava
-  const [odabranaVrstaSustava, setOdabranaVrstaSustava] = useState<string | null>(null);
-  const [customSustavaText, setCustomSustavaText] = useState("");
   const tipSustava: SystemCategory =
     VRSTA_SUSTAVA.find((v) => v.label === odabranaVrstaSustava)?.id ?? "dhw_potable";
-
-  // 6. Vrsta problema — multiselect
-  const [odabraniProblemi, setOdabraniProblemi] = useState<VrstaProblema[]>([]);
-  const [problemOstaloTekst, setProblemOstaloTekst] = useState("");
-
-  // 7. Volumen vode
-  const [volumen, setVolumen] = useState<number | null>(null);
-  const [volumenRucni, setVolumenRucni] = useState("");
-  const [volumenRucnoMode, setVolumenRucnoMode] = useState(false);
-
-  // 8. Materijali
-  const [odabraniMaterijali, setOdabraniMaterijali] = useState<MaterijalOsnovni[]>([]);
-  const [odabraniProsireni, setOdabraniProsireni] = useState<MaterijalProsireni[]>([]);
-  const [materijalOstalo, setMaterijalOstalo] = useState(false);   // "Ostalo" chip aktivan
-
-  // 9. Početne informativne vrijednosti
-  const [pocetneOtvorene, setPocetneOtvorene] = useState(false);
-  const [pocetniPh, setPocetniPh] = useState("");
-  const [pocetniProtok, setPocetniProtok] = useState("");
-  const [pocetniTemp, setPocetniTemp] = useState("");
-
-  // 10. Napomena servisera
-  const [napomena, setNapomena] = useState("");
 
   // Završeno stanje — prikaži poruku
   const [sesijaPokrenuta, setSesijaPokrenuta] = useState(false);
@@ -412,6 +432,8 @@ export function NovaSesijaEkran() {
     dodajSesiju(novaSesija);
     setNovaSesijaId(novaSesija.id);
     setSesijaPokrenuta(true);
+    // Reset forme SAMO nakon uspješnog otvaranja sesije
+    resetNovaSesijaFormu();
   }
 
   // ── Poruka nakon otvaranja sesije ─────────────────────────────────────────────
