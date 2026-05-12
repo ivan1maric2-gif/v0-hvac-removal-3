@@ -14,6 +14,11 @@ import { PostavkeEkran } from "./postavke-ekran";
 export function AppShell() {
   const { ekran } = useApp();
 
+  // DEBUG — privremeno
+  if (typeof window !== "undefined") {
+    console.log("[v0] DEBUG AppShell render — ekran:", ekran.ime, ekran);
+  }
+
   function renderScreen() {
     switch (ekran.ime) {
       case "pocetni":

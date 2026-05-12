@@ -173,57 +173,45 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const forwardRef = React.useRef<Ekran[]>([]);
   React.useLayoutEffect(() => { forwardRef.current = forwardStack; }, [forwardStack]);
 
-  // Učitaj pohranjeno navigacijsko stanje iz localStorage — samo na klijentu.
-  // navSaveEnabled postaje true tek NAKON što restore završi (sljedeći tick).
+  // ── DEBUG: localStorage restore PRIVREMENO DISABLED ─────────────────────────
+  // Razlog: dijagnostika — app uvijek starta na "pocetni" bez stale state-a.
+  // Čistimo i stari localStorage key da nema ostataka.
   const navSaveEnabled = React.useRef(false);
   React.useEffect(() => {
     try {
-      const raw = localStorage.getItem(NAV_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed.ekran) setEkran(parsed.ekran);
-        if (parsed.back) setHistory(parsed.back);
-      }
+      localStorage.removeItem(NAV_KEY);
+      console.log("[v0] DEBUG: localStorage restore DISABLED — uvijek pocetni ekran");
+      console.log("[v0] DEBUG: localStorage key obrisan:", NAV_KEY);
     } catch { /* ignore */ }
-    // Dozvoli save tek u sljedećem tick-u — nakon što su setState pozivi aplicirani
     setTimeout(() => { navSaveEnabled.current = true; }, 0);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Spremi navigacijsko stanje u localStorage — samo kada je restore završen
-  React.useEffect(() => {
-    if (!navSaveEnabled.current) return;
-    try {
-      localStorage.setItem(NAV_KEY, JSON.stringify({ ekran, back: history }));
-    } catch { /* ignore quota errors */ }
-  }, [ekran, history]);
+  // Spremi navigacijsko stanje u localStorage — PRIVREMENO DISABLED
+  // React.useEffect(() => {
+  //   if (!navSaveEnabled.current) return;
+  //   try {
+  //     localStorage.setItem(NAV_KEY, JSON.stringify({ ekran, back: history }));
+  //   } catch { /* ignore quota errors */ }
+  // }, [ekran, history]);
 
   // Async ucitavanje sesija iz Supabase nakon mounta.
   // Demo sesije su UVIJEK prisutne — realne se dodaju uz njih.
   React.useEffect(() => {
+    console.log("[v0] DEBUG: getSesije() start — ekran:", ekranRef.current.ime);
     getSesije().then((stored) => {
       const realneSesije = stored && stored.length > 0 ? stored : [];
       const sveSesije = [...realneSesije, ...DEMO_SESIJE];
+      console.log("[v0] DEBUG: getSesije() done — realne:", realneSesije.length, "ekran sada:", ekranRef.current.ime);
       if (realneSesije.length > 0) {
         setSesije(sveSesije);
       }
       setUcitavaSe(false);
 
-      // Validiraj pohranjeni ekran — ako referirana sesija ne postoji, idi na pocetni
-      const currentEkran = ekranRef.current;
-      const trebaSesijaId = currentEkran.ime === "sesija"
-        || currentEkran.ime === "setup_ciklus"
-        || currentEkran.ime === "podsesija";
-
-      if (trebaSesijaId) {
-        const sesijaId = (currentEkran as any).sesijaId;
-        const postoji = sveSesije.some((x) => x.id === sesijaId && !x.isDeleted);
-        if (!postoji) {
-          setEkran({ ime: "pocetni" });
-          setHistory([]);
-          setForwardStack([]);
-        }
-      }
+      // Validacija ekrana — PRIVREMENO DISABLED za dijagnostiku
+      // const currentEkran = ekranRef.current;
+      // ...
+      console.log("[v0] DEBUG: validacija ekrana PRESKOCENA (debug mode)");
     }).catch((err: unknown) => {
       const raw = err instanceof Error ? err.message : String(err);
       const lower = raw.toLowerCase();
@@ -253,6 +241,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const navigiraj = useCallback((noviEkran: Ekran) => {
+    console.log("[v0] DEBUG navigiraj:", ekranRef.current.ime, "→", noviEkran.ime, noviEkran);
     // Push trenutni ekran na back stack, očisti forward stack
     setHistory((prev) => [...prev, ekranRef.current]);
     setForwardStack([]); // svaka nova navigacija briše forward
