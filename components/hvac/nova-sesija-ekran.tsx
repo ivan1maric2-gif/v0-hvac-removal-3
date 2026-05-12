@@ -26,6 +26,7 @@ const VRSTA_SUSTAVA: { label: string; id: SystemCategory }[] = [
   { label: "Grijanje", id: "technical_water" },
   { label: "Hlađenje", id: "technical_water" },
   { label: "Solar", id: "technical_water" },
+  { label: "Ostalo", id: "technical_water" },
 ];
 
 // Vrsta problema — multiselect
@@ -257,6 +258,7 @@ export function NovaSesijaEkran() {
 
   // 5. Vrsta sustava
   const [odabranaVrstaSustava, setOdabranaVrstaSustava] = useState<string | null>(null);
+  const [customSustavaText, setCustomSustavaText] = useState("");
   const tipSustava: SystemCategory =
     VRSTA_SUSTAVA.find((v) => v.label === odabranaVrstaSustava)?.id ?? "dhw_potable";
 
@@ -335,9 +337,14 @@ export function NovaSesijaEkran() {
       .map((p) => (p === "Ostalo" && problemOstaloTekst.trim() ? `Ostalo: ${problemOstaloTekst.trim()}` : p))
       .join(", ");
 
+    const vrstaSustavaFinal =
+      odabranaVrstaSustava === "Ostalo" && customSustavaText.trim()
+        ? `Ostalo: ${customSustavaText.trim()}`
+        : odabranaVrstaSustava;
+
     const opisDijelovi = [
       predmetFinal,
-      odabranaVrstaSustava,
+      vrstaSustavaFinal,
       problemiLabel,
       napomena.trim() || null,
     ].filter(Boolean);
@@ -347,7 +354,7 @@ export function NovaSesijaEkran() {
       naziv_objekta: nazivSesije.trim(),
       adresa: adresa.trim() || undefined,
       narucitelj: narucitelj.trim() || undefined,
-      lokacija: [predmetFinal, odabranaVrstaSustava].filter(Boolean).join(" / "),
+      lokacija: [predmetFinal, vrstaSustavaFinal].filter(Boolean).join(" / "),
       datum: new Date().toISOString().slice(0, 10),
       serviser: "",
       kontakt_osoba: "",
@@ -553,21 +560,39 @@ export function NovaSesijaEkran() {
               Vrsta sustava
             </h2>
           </div>
-          <div className="grid grid-cols-3 gap-2 pb-6">
+          <div className="grid grid-cols-3 gap-2">
             {VRSTA_SUSTAVA.map((v) => (
               <ChipBtn
                 key={v.label}
                 label={v.label}
                 selected={odabranaVrstaSustava === v.label}
-                onClick={() => setOdabranaVrstaSustava(
-                  odabranaVrstaSustava === v.label ? null : v.label
-                )}
+                onClick={() => {
+                  const next = odabranaVrstaSustava === v.label ? null : v.label;
+                  if (next === null && v.label === "Ostalo") setCustomSustavaText("");
+                  setOdabranaVrstaSustava(next);
+                }}
                 variant="small"
               />
             ))}
           </div>
 
-          <div className="h-px bg-border/60" />
+          {odabranaVrstaSustava === "Ostalo" && (
+            <div className="mt-3 mb-2">
+              <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                Unesite vrstu sustava
+              </label>
+              <input
+                type="text"
+                value={customSustavaText}
+                onChange={(e) => setCustomSustavaText(e.target.value)}
+                placeholder="Npr. rashladni toranj, industrijski krug, bazenski sustav..."
+                autoFocus
+                className={inputCls}
+              />
+            </div>
+          )}
+
+          <div className="h-px bg-border/60 mt-4" />
 
           {/* ── 6. VRSTA PROBLEMA — multiselect ──────────────────────────── */}
           <div className="pt-5 pb-3">
