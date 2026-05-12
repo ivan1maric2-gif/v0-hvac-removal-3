@@ -262,6 +262,7 @@ export function NovaSesijaEkran() {
 
   // 6. Vrsta problema — multiselect
   const [odabraniProblemi, setOdabraniProblemi] = useState<VrstaProblema[]>([]);
+  const [problemOstaloTekst, setProblemOstaloTekst] = useState("");
 
   // 7. Volumen vode
   const [volumen, setVolumen] = useState<number | null>(null);
@@ -292,9 +293,11 @@ export function NovaSesijaEkran() {
 
   // Toggle problem
   function toggleProblem(v: VrstaProblema) {
-    setOdabraniProblemi((prev) =>
-      prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v]
-    );
+    setOdabraniProblemi((prev) => {
+      const already = prev.includes(v);
+      if (already && v === "Ostalo") setProblemOstaloTekst("");
+      return already ? prev.filter((x) => x !== v) : [...prev, v];
+    });
   }
 
   // Validacija — naziv objekta + predmet čišćenja obvezni
@@ -328,10 +331,14 @@ export function NovaSesijaEkran() {
     if (!canSubmit) return;
 
     const now = nowISO();
+    const problemiLabel = odabraniProblemi
+      .map((p) => (p === "Ostalo" && problemOstaloTekst.trim() ? `Ostalo: ${problemOstaloTekst.trim()}` : p))
+      .join(", ");
+
     const opisDijelovi = [
       predmetFinal,
       odabranaVrstaSustava,
-      odabraniProblemi.join(", "),
+      problemiLabel,
       napomena.trim() || null,
     ].filter(Boolean);
 
@@ -441,7 +448,7 @@ export function NovaSesijaEkran() {
               />
             </Field>
 
-            {/* ── 2. Adresa ─────────────────────────────────────────────── */}
+            {/* ── 2. Adresa ──���──────────────────────────────────────────── */}
             <Field label="Adresa" optional>
               <input
                 type="text"
@@ -566,7 +573,7 @@ export function NovaSesijaEkran() {
             </h2>
             <p className="text-xs text-muted-foreground/60 mt-0.5">Mogu se odabrati vise opcija</p>
           </div>
-          <div className="grid grid-cols-2 gap-2 pb-6">
+          <div className="grid grid-cols-2 gap-2">
             {VRSTA_PROBLEMA_OPCIJE.map((v) => (
               <ChipBtn
                 key={v}
@@ -577,7 +584,23 @@ export function NovaSesijaEkran() {
             ))}
           </div>
 
-          <div className="h-px bg-border/60" />
+          {odabraniProblemi.includes("Ostalo") && (
+            <div className="mt-3 pb-2">
+              <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                Opiši problem
+                <span className="font-normal text-muted-foreground/60 ml-1">(opcionalno)</span>
+              </label>
+              <textarea
+                value={problemOstaloTekst}
+                onChange={(e) => setProblemOstaloTekst(e.target.value)}
+                placeholder="Npr. neugodan miris, buka pumpe, nestabilna temperatura..."
+                rows={2}
+                className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none leading-relaxed"
+              />
+            </div>
+          )}
+
+          <div className="h-px bg-border/60 mt-4" />
 
           {/* ── 7–10. TEHNIČKI PODACI — collapsed ────────────────────────── */}
           <div className="pt-5 pb-6">
