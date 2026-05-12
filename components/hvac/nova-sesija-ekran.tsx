@@ -739,13 +739,6 @@ export function NovaSesijaEkran() {
                       variant="small"
                     />
                   ))}
-                  {/* Mješoviti materijali — standalone chip */}
-                  <ChipBtn
-                    label="Mješoviti materijali"
-                    selected={odabraniMaterijali.includes("Mješoviti materijali")}
-                    onClick={() => toggleMaterijal("Mješoviti materijali")}
-                    variant="small"
-                  />
                   {/* Ostalo — expanduje proširene materijale */}
                   <ChipBtn
                     label="Ostalo"
