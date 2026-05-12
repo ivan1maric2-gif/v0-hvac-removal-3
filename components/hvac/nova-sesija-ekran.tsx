@@ -251,75 +251,31 @@ function CollapsibleSekcija({
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function NovaSesijaEkran() {
-  // ── Hookovi — UVIJEK NA VRHU, bez uvjeta ─────────────────────────────────────
-  const { navigiraj, dodajSesiju, novaSesijaForma, setNovaSesijaForma, resetNovaSesijaFormu } = useApp();
+  const { navigiraj, dodajSesiju } = useApp();
 
-  // Lokalni UI state (ne trebaju perzistirati)
+  const [workMode, setWorkMode] = useState<WorkMode>("no_subsessions");
+  const [nazivSesije, setNazivSesije] = useState("");
+  const [adresa, setAdresa] = useState("");
+  const [narucitelj, setNarucitelj] = useState("");
+  const [predmetCiscenja, setPredmetCiscenja] = useState<PredmetCiscenja | null>(null);
+  const [predmetOstaloNaziv, setPredmetOstaloNaziv] = useState("");
+  const [odabranaVrstaSustava, setOdabranaVrstaSustava] = useState<string | null>(null);
+  const [customSustavaText, setCustomSustavaText] = useState("");
+  const [odabraniProblemi, setOdabraniProblemi] = useState<VrstaProblema[]>([]);
+  const [problemOstaloTekst, setProblemOstaloTekst] = useState("");
+  const [volumen, setVolumen] = useState<number | null>(null);
+  const [volumenRucni, setVolumenRucni] = useState("");
+  const [volumenRucnoMode, setVolumenRucnoMode] = useState(false);
+  const [odabraniMaterijali, setOdabraniMaterijali] = useState<MaterijalOsnovni[]>([]);
+  const [odabraniProsireni, setOdabraniProsireni] = useState<MaterijalProsireni[]>([]);
+  const [materijalOstalo, setMaterijalOstalo] = useState(false);
   const [pocetneOtvorene, setPocetneOtvorene] = useState(false);
+  const [pocetniPh, setPocetniPh] = useState("");
+  const [pocetniProtok, setPocetniProtok] = useState("");
+  const [pocetniTemp, setPocetniTemp] = useState("");
+  const [napomena, setNapomena] = useState("");
   const [sesijaPokrenuta, setSesijaPokrenuta] = useState(false);
   const [novaSesijaId, setNovaSesijaId] = useState<string | null>(null);
-  // Snapshots za success ekran (pohraniti prije reseta forme)
-  const [successNaziv, setSuccessNaziv] = useState("");
-  const [successPredmet, setSuccessPredmet] = useState("");
-  const [successWorkMode, setSuccessWorkMode] = useState<WorkMode>("no_subsessions");
-
-  // ── Destrukturiraj draft iz contexta ─────────────────────────────────────────
-  const {
-    workMode,
-    nazivSesije,
-    adresa,
-    narucitelj,
-    predmetCiscenja,
-    predmetOstaloNaziv,
-    odabranaVrstaSustava,
-    customSustavaText,
-    odabraniProblemi,
-    problemOstaloTekst,
-    volumen,
-    volumenRucni,
-    volumenRucnoMode,
-    odabraniMaterijali,
-    odabraniProsireni,
-    materijalOstalo,
-    pocetniPh,
-    pocetniProtok,
-    pocetniTemp,
-    napomena,
-  } = novaSesijaForma;
-
-  // ── Setteri — thin wrappers koji upisuju u context draft ──────────────────────
-  const setWorkMode = (v: WorkMode) => setNovaSesijaForma({ workMode: v });
-  const setNazivSesije = (v: string) => setNovaSesijaForma({ nazivSesije: v });
-  const setAdresa = (v: string) => setNovaSesijaForma({ adresa: v });
-  const setNarucitelj = (v: string) => setNovaSesijaForma({ narucitelj: v });
-  const setPredmetCiscenja = (v: PredmetCiscenja | null) => setNovaSesijaForma({ predmetCiscenja: v });
-  const setPredmetOstaloNaziv = (v: string) => setNovaSesijaForma({ predmetOstaloNaziv: v });
-  const setOdabranaVrstaSustava = (v: string | null) => setNovaSesijaForma({ odabranaVrstaSustava: v });
-  const setCustomSustavaText = (v: string) => setNovaSesijaForma({ customSustavaText: v });
-  const setOdabraniProblemi = (v: VrstaProblema[] | ((prev: VrstaProblema[]) => VrstaProblema[])) => {
-    if (typeof v === "function") setNovaSesijaForma({ odabraniProblemi: v(odabraniProblemi as VrstaProblema[]) });
-    else setNovaSesijaForma({ odabraniProblemi: v });
-  };
-  const setProblemOstaloTekst = (v: string) => setNovaSesijaForma({ problemOstaloTekst: v });
-  const setVolumen = (v: number | null) => setNovaSesijaForma({ volumen: v });
-  const setVolumenRucni = (v: string) => setNovaSesijaForma({ volumenRucni: v });
-  const setVolumenRucnoMode = (v: boolean) => setNovaSesijaForma({ volumenRucnoMode: v });
-  const setOdabraniMaterijali = (v: MaterijalOsnovni[] | ((prev: MaterijalOsnovni[]) => MaterijalOsnovni[])) => {
-    if (typeof v === "function") setNovaSesijaForma({ odabraniMaterijali: v(odabraniMaterijali as MaterijalOsnovni[]) });
-    else setNovaSesijaForma({ odabraniMaterijali: v });
-  };
-  const setOdabraniProsireni = (v: MaterijalProsireni[] | ((prev: MaterijalProsireni[]) => MaterijalProsireni[])) => {
-    if (typeof v === "function") setNovaSesijaForma({ odabraniProsireni: v(odabraniProsireni as MaterijalProsireni[]) });
-    else setNovaSesijaForma({ odabraniProsireni: v });
-  };
-  const setMaterijalOstalo = (v: boolean | ((prev: boolean) => boolean)) => {
-    if (typeof v === "function") setNovaSesijaForma({ materijalOstalo: v(materijalOstalo) });
-    else setNovaSesijaForma({ materijalOstalo: v });
-  };
-  const setPocetniPh = (v: string) => setNovaSesijaForma({ pocetniPh: v });
-  const setPocetniProtok = (v: string) => setNovaSesijaForma({ pocetniProtok: v });
-  const setPocetniTemp = (v: string) => setNovaSesijaForma({ pocetniTemp: v });
-  const setNapomena = (v: string) => setNovaSesijaForma({ napomena: v });
 
   const tipSustava: SystemCategory =
     VRSTA_SUSTAVA.find((v) => v.label === odabranaVrstaSustava)?.id ?? "dhw_potable";
@@ -434,12 +390,6 @@ export function NovaSesijaEkran() {
 
     dodajSesiju(novaSesija);
     setNovaSesijaId(novaSesija.id);
-    // Pohrani snapshot podataka za success ekran PRIJE reseta forme
-    setSuccessNaziv(nazivSesije.trim());
-    setSuccessPredmet(predmetFinal);
-    setSuccessWorkMode(workMode);
-    // Reset forme SAMO nakon pohrane snapshots
-    resetNovaSesijaFormu();
     setSesijaPokrenuta(true);
   }
 
@@ -458,9 +408,9 @@ export function NovaSesijaEkran() {
               </svg>
             </div>
             <p className="text-xl font-black text-foreground mb-2 leading-snug break-words">
-              {successNaziv}
+              {nazivSesije}
             </p>
-            <p className="text-sm text-muted-foreground mb-1">{successPredmet}</p>
+            <p className="text-sm text-muted-foreground mb-1">{predmetFinal}</p>
             <div className="mt-4 mb-8 bg-muted/30 border border-border/60 rounded-xl px-4 py-3">
               <p className="text-sm font-bold text-foreground">Sesija je otvorena.</p>
               <p className="text-sm text-muted-foreground mt-0.5">
@@ -470,7 +420,7 @@ export function NovaSesijaEkran() {
             <button
               type="button"
               onClick={() => {
-                if (successWorkMode === "no_subsessions") {
+                if (workMode === "no_subsessions") {
                   navigiraj({ ime: "setup_ciklus", sesijaId: novaSesijaId });
                 } else {
                   navigiraj({ ime: "sesija", sesijaId: novaSesijaId });

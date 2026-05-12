@@ -53,54 +53,6 @@ function autoFinalValues(c: Ciklus): Pick<Ciklus, "finalPh" | "finalFlowLMin" | 
 // IDs of demo sessions — never persisted to storage
 const DEMO_IDS = new Set(DEMO_SESIJE.map((s) => s.id));
 
-// ─── Nova sesija — draft forme (perzistira kroz navigaciju) ──────────────────
-
-export interface NovaSesijaForma {
-  workMode: "no_subsessions" | "with_subsessions";
-  nazivSesije: string;
-  adresa: string;
-  narucitelj: string;
-  predmetCiscenja: string | null;
-  predmetOstaloNaziv: string;
-  odabranaVrstaSustava: string | null;
-  customSustavaText: string;
-  odabraniProblemi: string[];
-  problemOstaloTekst: string;
-  volumen: number | null;
-  volumenRucni: string;
-  volumenRucnoMode: boolean;
-  odabraniMaterijali: string[];
-  odabraniProsireni: string[];
-  materijalOstalo: boolean;
-  pocetniPh: string;
-  pocetniProtok: string;
-  pocetniTemp: string;
-  napomena: string;
-}
-
-export const NOVA_SESIJA_FORMA_DEFAULT: NovaSesijaForma = {
-  workMode: "no_subsessions",
-  nazivSesije: "",
-  adresa: "",
-  narucitelj: "",
-  predmetCiscenja: null,
-  predmetOstaloNaziv: "",
-  odabranaVrstaSustava: null,
-  customSustavaText: "",
-  odabraniProblemi: [],
-  problemOstaloTekst: "",
-  volumen: null,
-  volumenRucni: "",
-  volumenRucnoMode: false,
-  odabraniMaterijali: [],
-  odabraniProsireni: [],
-  materijalOstalo: false,
-  pocetniPh: "",
-  pocetniProtok: "",
-  pocetniTemp: "",
-  napomena: "",
-};
-
 // ─── Navigation types ─────────────────────────────────────────────────────────
 
 export type Ekran =
@@ -118,9 +70,7 @@ export type Ekran =
 interface AppState {
   sesije: Sesija[];
   ucitavaSe: boolean;
-  novaSesijaForma: NovaSesijaForma;
-  setNovaSesijaForma: (izmjena: Partial<NovaSesijaForma>) => void;
-  resetNovaSesijaFormu: () => void;
+
   /** Poruka o grešci pri učitavanju sesija iz Supabase-a. Null = bez greške. */
   loadError: string | null;
   ekran: Ekran;
@@ -199,17 +149,6 @@ interface AppState {
 const AppContext = createContext<AppState | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  // Draft forme za "Nova sesija" — perzistira kroz navigaciju
-  const [novaSesijaForma, setNovaSesijaFormaState] = useState<NovaSesijaForma>(NOVA_SESIJA_FORMA_DEFAULT);
-
-  const setNovaSesijaForma = useCallback((izmjena: Partial<NovaSesijaForma>) => {
-    setNovaSesijaFormaState((prev) => ({ ...prev, ...izmjena }));
-  }, []);
-
-  const resetNovaSesijaFormu = useCallback(() => {
-    setNovaSesijaFormaState(NOVA_SESIJA_FORMA_DEFAULT);
-  }, []);
-
   // Pocinjemo s demo sesijama kao placeholder dok se Supabase ne ucita.
   const [sesije, setSesije] = useState<Sesija[]>(DEMO_SESIJE);
   const [ucitavaSe, setUcitavaSe] = useState(true);
@@ -1061,9 +1000,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       value={{
         sesije,
         ucitavaSe,
-        novaSesijaForma,
-        setNovaSesijaForma,
-        resetNovaSesijaFormu,
         loadError,
         ekran,
         history,
