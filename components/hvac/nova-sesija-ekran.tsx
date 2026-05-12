@@ -54,7 +54,6 @@ const MATERIJALI_OPCIJE = [
 type Materijal = (typeof MATERIJALI_OPCIJE)[number];
 
 type WorkMode = "no_subsessions" | "with_subsessions";
-type Korak = "odabir_nacina" | "forma";
 
 // ─── UI Helpers ───────────────────────────────────────────────────────────────
 
@@ -241,7 +240,6 @@ function CollapsibleSekcija({
 export function NovaSesijaEkran() {
   const { navigiraj, dodajSesiju } = useApp();
 
-  const [korak, setKorak] = useState<Korak>("odabir_nacina");
   const [workMode, setWorkMode] = useState<WorkMode>("no_subsessions");
 
   // 1. Naziv sesije / objekta
@@ -405,68 +403,13 @@ export function NovaSesijaEkran() {
     );
   }
 
-  // ── Korak 1 — Odabir načina rada ─────────────────────────────────────────────
-  if (korak === "odabir_nacina") {
-    return (
-      <div className="flex flex-col flex-1 bg-background">
-        <header className="flex items-center gap-3 px-4 py-4 border-b border-border">
-          <h1 className="text-lg font-bold text-foreground">Nova sesija</h1>
-        </header>
-
-        <main className="flex-1 overflow-y-auto">
-          <div className="max-w-lg mx-auto w-full px-4 pb-10">
-            <div className="pt-6 pb-4">
-              <h2 className="text-xl font-black text-foreground leading-tight">Odaberi način rada</h2>
-              <p className="text-xs text-muted-foreground mt-1">Koliko uređaja/dijelova sustava čistite?</p>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <RadioKartica
-                selected={workMode === "no_subsessions"}
-                onSelect={() => setWorkMode("no_subsessions")}
-                title="Jedan uređaj"
-                description="Posao se vodi direktno u sesiji. Ciklusi, mjerenja i nadopune pripadaju ovom uređaju."
-                items={[
-                  { label: "Ciklusi i mjerenja direktno u sesiji", ima: true },
-                  { label: "Nadopune kemije po ciklusima", ima: true },
-                  { label: "Referentno mjerenje i LIVE praćenje", ima: true },
-                  { label: "Dijelovi sustava (podsesije)", ima: false },
-                ]}
-              />
-              <RadioKartica
-                selected={workMode === "with_subsessions"}
-                onSelect={() => setWorkMode("with_subsessions")}
-                title="Više uređaja / podsesije"
-                description="Svaki uređaj je zasebna podsesija sa vlastitim ciklusima, mjerenjima i volumenom kemije."
-                items={[
-                  { label: "Dijelovi sustava (podsesije)", ima: true },
-                  { label: "Ciklusi i mjerenja po svakom dijelu", ima: true },
-                  { label: "Referentno mjerenje i LIVE praćenje", ima: true },
-                  { label: "Zajednički izvještaj za cijeli sustav", ima: true },
-                ]}
-              />
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setKorak("forma")}
-              className="mt-8 w-full bg-primary text-primary-foreground rounded-xl py-4 font-bold text-base hover:opacity-90 active:scale-[0.98] transition-all"
-            >
-              Nastavi
-            </button>
-          </div>
-        </main>
-      </div>
-    );
-  }
-
-  // ── Korak 2 — Forma ───────────────────────────────────────────────────────────
+  // ── Forma ─────────────────────────────────────────────────────────────────────
   return (
     <div className="flex flex-col flex-1 bg-background">
       <header className="flex items-center gap-3 px-4 py-4 border-b border-border">
         <button
           type="button"
-          onClick={() => setKorak("odabir_nacina")}
+          onClick={() => navigiraj({ ime: "pocetni" })}
           className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted transition-colors -ml-1"
           aria-label="Natrag"
         >
@@ -474,12 +417,7 @@ export function NovaSesijaEkran() {
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
-        <div className="flex-1 min-w-0">
-          <h1 className="text-lg font-bold text-foreground leading-tight">
-            {workMode === "no_subsessions" ? "Jedan uređaj" : "Više uređaja"}
-          </h1>
-          <p className="text-xs text-muted-foreground">Nova sesija</p>
-        </div>
+        <h1 className="text-lg font-bold text-foreground">Nova sesija</h1>
       </header>
 
       <main className="flex-1 overflow-y-auto">
@@ -524,6 +462,42 @@ export function NovaSesijaEkran() {
                 className={inputCls}
               />
             </Field>
+          </div>
+
+          <div className="h-px bg-border/60" />
+
+          {/* ── ODABIR NAČINA RADA ─────────────────────────────────────────── */}
+          <div className="pt-5 pb-2">
+            <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+              Nacin rada
+            </h2>
+            <p className="text-base font-black text-foreground mt-1">Koliko uredaja cistite?</p>
+          </div>
+          <div className="flex flex-col gap-3 pb-6">
+            <RadioKartica
+              selected={workMode === "no_subsessions"}
+              onSelect={() => setWorkMode("no_subsessions")}
+              title="Jedan uredaj"
+              description="Posao se vodi direktno u sesiji. Ciklusi, mjerenja i nadopune pripadaju ovom uredaju."
+              items={[
+                { label: "Ciklusi i mjerenja direktno u sesiji", ima: true },
+                { label: "Nadopune kemije po ciklusima", ima: true },
+                { label: "Referentno mjerenje i LIVE pracenje", ima: true },
+                { label: "Dijelovi sustava (podsesije)", ima: false },
+              ]}
+            />
+            <RadioKartica
+              selected={workMode === "with_subsessions"}
+              onSelect={() => setWorkMode("with_subsessions")}
+              title="Vise uredaja / podsesije"
+              description="Svaki uredaj je zasebna podsesija sa vlastitim ciklusima, mjerenjima i volumenom kemije."
+              items={[
+                { label: "Dijelovi sustava (podsesije)", ima: true },
+                { label: "Ciklusi i mjerenja po svakom dijelu", ima: true },
+                { label: "Referentno mjerenje i LIVE pracenje", ima: true },
+                { label: "Zajednicki izvjestaj za cijeli sustav", ima: true },
+              ]}
+            />
           </div>
 
           <div className="h-px bg-border/60" />
