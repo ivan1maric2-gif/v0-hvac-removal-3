@@ -26,7 +26,6 @@ function getSupabase() {
 
 /**
  * Vraca sve sesije iz Supabase baze.
- * Vraca null ako baza ne vraca podatke (app ucitava demo).
  */
 export async function getSesije(): Promise<Sesija[] | null> {
   const supabase = getSupabase();
@@ -46,20 +45,15 @@ export async function getSesije(): Promise<Sesija[] | null> {
 
 /**
  * Sprema cijelu listu sesija — brise sve iz baze i upisuje iznova.
- * Koristi se samo za brisanje sesija.
- * DEMO SESIJE SE NE ČUVAJU U SUPABASE — samo produkcijske sesije!
  */
 export async function spremiSesije(sesije: Sesija[]): Promise<void> {
   const supabase = getSupabase();
   if (!supabase) return;
 
-  // Filtriraj samo produkcijske sesije — demo se ne čuva
-  const productionSesije = sesije.filter((s) => !s.isDemo);
-
   // Dohvati sve postojece ID-jeve
   const { data: existing } = await supabase.from("sesije").select("id");
   const existingIds: string[] = (existing ?? []).map((r: { id: string }) => r.id);
-  const newIds = new Set(productionSesije.map((s) => s.id));
+  const newIds = new Set(sesije.map((s) => s.id));
 
   // Obrisi one kojih nema u novoj listi
   const toDelete = existingIds.filter((id: string) => !newIds.has(id));
@@ -67,10 +61,10 @@ export async function spremiSesije(sesije: Sesija[]): Promise<void> {
     await supabase.from("sesije").delete().in("id", toDelete);
   }
 
-  // Upsert samo produkcijske sesije
-  if (productionSesije.length > 0) {
+  // Upsert sesija
+  if (sesije.length > 0) {
     const now = nowISO();
-    const rows = productionSesije.map((s) => ({
+    const rows = sesije.map((s) => ({
       id: s.id,
       podaci: { ...s, updatedAt: now },
     }));
@@ -81,16 +75,8 @@ export async function spremiSesije(sesije: Sesija[]): Promise<void> {
 
 /**
  * Upsert jedne sesije — dodaje ili azurira po ID-u.
- * Poziva se na svakoj promjeni sesije.
- * DEMO SESIJE SE NE ČUVAJU U SUPABASE — samo produkcijske sesije!
  */
 export async function spremiSesiju(sesija: Sesija): Promise<void> {
-  // Demo sesije se ne čuvaju — ostaju samo u memoriji
-  if (sesija.isDemo) {
-    console.log(`[storage] Demo sesija '${sesija.id}' nije spremljena u Supabase (demo mode)`);
-    return;
-  }
-
   const now = nowISO();
   const stamped: Sesija = {
     ...sesija,

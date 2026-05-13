@@ -270,16 +270,11 @@ function AktivnaSesijaKartica({ sesija }: { sesija: Sesija }) {
         <div className="h-0.5 bg-primary w-full" />
 
         <div className="p-4 flex flex-col gap-3">
-          {/* Top row — name + status + demo indicator */}
+          {/* Top row — name + status */}
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
                 <p className="font-bold text-foreground text-base leading-snug break-words">{sesija.naziv_objekta}</p>
-                {sesija.isDemo && (
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700/50 uppercase tracking-widest">
-                    DEMO
-                  </span>
-                )}
               </div>
               {sesija.lokacija && (
                 <p className="text-xs text-muted-foreground mt-0.5">{sesija.lokacija}</p>
@@ -601,9 +596,7 @@ function SesijaKartica({ sesija }: { sesija: Sesija }) {
   return (
     <button
       onClick={() => navigiraj({ ime: "sesija", sesijaId: sesija.id })}
-      className={`w-full text-left bg-card border rounded-2xl overflow-hidden hover:border-primary/50 active:scale-[0.99] transition-all ${
-        sesija.isDemo ? "border-amber-400/30" : "border-border"
-      }`}
+      className="w-full text-left bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 active:scale-[0.99] transition-all"
     >
       {/* Top accent line for active sessions */}
       {sesija.status === "u_radu" && (
@@ -615,11 +608,6 @@ function SesijaKartica({ sesija }: { sesija: Sesija }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-0.5">
               <span className="font-bold text-foreground text-sm leading-snug break-words">{sesija.naziv_objekta}</span>
-              {sesija.isDemo && (
-                <span className="text-[9px] font-black uppercase tracking-widest bg-amber-400/20 text-amber-400 border border-amber-400/30 rounded px-1.5 py-0.5">
-                  DEMO
-                </span>
-              )}
             </div>
             {sesija.lokacija && (
               <p className="text-xs text-muted-foreground">{sesija.lokacija}</p>
@@ -726,17 +714,13 @@ export function PocetniEkran() {
   const isDark = mounted ? resolvedTheme !== "light" : false;
 
   const realneSesije = [...sesije]
-    .filter((s) => !s.isDeleted && !s.isDemo)
+    .filter((s) => !s.isDeleted)
     .sort((a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime());
 
-  const demoSesije = [...sesije]
-    .filter((s) => !s.isDeleted && s.isDemo)
-    .sort((a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime());
-
-  const sveSesije = realneSesije; // za brojac i aktivnu sesiju
+  const sveSesije = realneSesije;
 
   const istaknuta = sesije
-    .filter((s) => !s.isDeleted && !s.isDemo && s.status === "u_radu")
+    .filter((s) => !s.isDeleted && s.status === "u_radu")
     .sort((a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime())[0] ?? null;
 
   if (loadError) {
@@ -870,20 +854,6 @@ export function PocetniEkran() {
             </div>
           )}
         </section>
-
-        {/* ── Demo sesije ──────────────────────────────────────────────────── */}
-        {demoSesije.length > 0 && (
-          <section>
-            <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2.5">
-              Demo <span className="text-muted-foreground/50">({demoSesije.length})</span>
-            </h2>
-            <div className="flex flex-col gap-2">
-              {demoSesije.map((s) => (
-                <SesijaKartica key={s.id} sesija={s} />
-              ))}
-            </div>
-          </section>
-        )}
 
         {/* Bottom spacing */}
         <div className="h-2" />
