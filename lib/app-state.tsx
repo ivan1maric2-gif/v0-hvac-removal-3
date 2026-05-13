@@ -268,7 +268,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       if (trebaSesijaId) {
         const sesijaId = (currentEkran as any).sesijaId;
-        const postoji = sveSesije.some((x) => x.id === sesijaId && !x.isDeleted);
+        const postoji = sesijeRef.current.some((x: Sesija) => x.id === sesijaId && !x.isDeleted);
         if (!postoji) {
           setEkran({ ime: "pocetni" });
           setHistory([]);
