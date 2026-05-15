@@ -198,6 +198,20 @@ function SesijaRedak({
         </p>
       )}
 
+      {/* 3. Demo badge */}
+      {sesija.isDemo && (
+        <span className="self-start text-[10px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded px-2 py-0.5">
+          DEMO
+        </span>
+      )}
+
+      {/* 4. Demo notice */}
+      {sesija.isDemo && (
+        <p className="text-xs text-yellow-900 bg-yellow-100 border border-yellow-300 rounded-lg px-3 py-1.5 leading-snug self-start max-w-xs">
+          Ovo su demo podaci za testiranje.
+        </p>
+      )}
+
       {/* 5. Date + technician + parts */}
       <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-slate-400">
         <span>{sesija.datum}</span>

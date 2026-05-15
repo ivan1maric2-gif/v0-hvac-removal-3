@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from "react";
 import type { Product, ProductPhZone, ProductColorIndicator, ProductMaterialCompatibility } from "./product-types";
+import { INITIAL_PRODUCTS } from "./initial-products";
 import { getProizvodiSync, spremiProizvode } from "./storage";
 import { nowISO, genId } from "./utils";
 
@@ -25,9 +26,13 @@ const ProductContext = createContext<ProductState | null>(null);
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function ProductProvider({ children }: { children: React.ReactNode }) {
-  // Inicijalizacija: učitavamo proizvode iz pohrane
+  // Inicijalizacija: pohrana → inicijalni proizvodi ako pohrana prazna
   // Koristimo sync varijantu jer useState inicijalizator ne može biti async.
-  const [proizvodi, setProizvodi] = useState<Product[]>(() => getProizvodiSync() ?? []);
+  const [proizvodi, setProizvodi] = useState<Product[]>(() => {
+    const stored = getProizvodiSync();
+    if (stored && stored.length > 0) return stored;
+    return INITIAL_PRODUCTS;
+  });
 
   // Svaka izmjena stanja se automatski sprema u pohranu (fire-and-forget async)
   const updateProizvode = useCallback((updater: (prev: Product[]) => Product[]) => {

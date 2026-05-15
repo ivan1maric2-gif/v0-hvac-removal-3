@@ -13,6 +13,7 @@ import type {
   StatusCiklusa,
   CompletionPhases,
 } from "./types";
+import { DEMO_SESIJE } from "./demo-data";
 import { getSesije, spremiSesiju, obrisiSesijuIzPohrane } from "./storage";
 import { nowISO } from "./utils";
 import { getMjerenjePH } from "./types";
@@ -49,7 +50,8 @@ function autoFinalValues(c: Ciklus): Pick<Ciklus, "finalPh" | "finalFlowLMin" | 
   };
 }
 
-
+// IDs of demo sessions — never persisted to storage
+const DEMO_IDS = new Set(DEMO_SESIJE.map((s) => s.id));
 
 // ─── Navigation types ─────────────────────────────────────────────────────────
 
@@ -144,8 +146,8 @@ interface AppState {
 const AppContext = createContext<AppState | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  // Pocinjemo s praznom listom sesija dok se Supabase ne ucita.
-  const [sesije, setSesije] = useState<Sesija[]>([]);
+  // Pocinjemo s demo sesijama kao placeholder dok se Supabase ne ucita.
+  const [sesije, setSesije] = useState<Sesija[]>(DEMO_SESIJE);
   const [ucitavaSe, setUcitavaSe] = useState(true);
   // ── Navigation state ─────────────────────────────────────────────────────────
   // VAŽNO: uvijek počinjemo s { ime: "pocetni" } da server i klijent
@@ -193,11 +195,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [ekran, history]);
 
   // Async ucitavanje sesija iz Supabase nakon mounta.
+  // Demo sesije su UVIJEK prisutne — realne se dodaju uz njih.
   React.useEffect(() => {
     getSesije().then((stored) => {
-      const sesije = stored && stored.length > 0 ? stored : [];
-      if (sesije.length > 0) {
-        setSesije(sesije);
+      const realneSesije = stored && stored.length > 0 ? stored : [];
+      const sveSesije = [...realneSesije, ...DEMO_SESIJE];
+      if (realneSesije.length > 0) {
+        setSesije(sveSesije);
       }
       setUcitavaSe(false);
 
@@ -209,7 +213,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       if (trebaSesijaId) {
         const sesijaId = (currentEkran as any).sesijaId;
-        const postoji = sesije.some((x) => x.id === sesijaId && !x.isDeleted);
+        const postoji = sveSesije.some((x) => x.id === sesijaId && !x.isDeleted);
         if (!postoji) {
           setEkran({ ime: "pocetni" });
           setHistory([]);
@@ -254,7 +258,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
    * 3. Početni ekran
    */
   const getAktivniRadniEkran = useCallback((): Ekran => {
-    const sveSesije = sesijeRef.current.filter((s) => !s.isDeleted);
+    const sveSesije = sesijeRef.current.filter((s) => !s.isDeleted && !DEMO_IDS.has(s.id));
 
     // Traži sesiju koja je u tijeku
     const aktivnaSesija = sveSesije.find((s) =>
@@ -335,24 +339,28 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   );
 
   // Svaka izmjena stanja se automatski sprema u Supabase.
+  // Demo sesije se NIKAD ne zapisuju u Supabase — uvijek ostaju u state-u.
   const updateSesije = useCallback((updater: (prev: Sesija[]) => Sesija[]) => {
     setSesije((prev) => {
       const sljedece = updater(prev);
-      const prevMap = new Map(prev.map((s) => [s.id, s]));
+      const prevMap = new Map(prev.filter((s) => !DEMO_IDS.has(s.id)).map((s) => [s.id, s]));
+      const realneSesije = sljedece.filter((s) => !DEMO_IDS.has(s.id));
+      const demoSesije = DEMO_SESIJE; // uvijek drzimo demo u state-u
 
-      // Upsert promijenjenih/novih sesija u Supabase
-      for (const s of sljedece) {
+      // Upsert promijenjenih/novih realnih sesija u Supabase
+      for (const s of realneSesije) {
         if (prevMap.get(s.id) !== s) {
           void spremiSesiju(s);
         }
       }
-      // Obrisi sesije koje su uklonjene
-      const sljedeceIds = new Set(sljedece.map((s) => s.id));
+      // Obrisi realne sesije koje su uklonjene
+      const sljedeceIds = new Set(realneSesije.map((s) => s.id));
       for (const [id] of prevMap) {
         if (!sljedeceIds.has(id)) void obrisiSesijuIzPohrane(id);
       }
 
-      return sljedece;
+      // State = realne + demo (uvijek zajedno)
+      return [...realneSesije, ...demoSesije];
     });
   }, []);
 
@@ -793,7 +801,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [updateSesije, mapCiklusSesije]
   );
 
-  // ── Session level ─────────────────────────────────��───────────────────────
+  // ── Session level ─────────────────────────────────────────────────────────
 
   const postaviStatusSesije = useCallback(
     (sesijaId: string, status: StatusSesije) =>
@@ -902,13 +910,30 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const obrisiSesiju = useCallback(
     (sesijaId: string) => {
-      updateSesije((prev) =>
-        prev.map((s) =>
-          s.id === sesijaId
-            ? { ...s, isDeleted: true, updatedAt: nowISO() }
-            : s
-        )
+      // Hard-delete: ukloni iz state-a i iz Supabase-a odmah
+      updateSesije((prev) => prev.filter((s) => s.id !== sesijaId));
+      // Direktno briši iz Supabase (ne čeka updateSesije diff)
+      if (!DEMO_IDS.has(sesijaId)) {
+        void obrisiSesijuIzPohrane(sesijaId);
+      }
+      // Očisti history od svih ekrana koji se odnose na obrisanu sesiju
+      setHistory((prev) =>
+        prev.filter((e) => {
+          if (e.ime === "sesija" || e.ime === "setup_ciklus") return e.sesijaId !== sesijaId;
+          if (e.ime === "podsesija") return e.sesijaId !== sesijaId;
+          return true;
+        })
       );
+      // Ako je trenutni ekran ta sesija — vrati na povijest
+      setEkran((current) => {
+        if (
+          (current.ime === "sesija" || current.ime === "setup_ciklus") &&
+          current.sesijaId === sesijaId
+        ) return { ime: "povijest" };
+        if (current.ime === "podsesija" && current.sesijaId === sesijaId)
+          return { ime: "povijest" };
+        return current;
+      });
     },
     [updateSesije]
   );

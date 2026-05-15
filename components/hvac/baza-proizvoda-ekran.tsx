@@ -157,6 +157,11 @@ function ProizvodKartica({ product, onClick }: { product: Product; onClick: () =
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-bold text-foreground text-base">{product.name}</span>
+            {product.isDemo && (
+              <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded px-1.5 py-0.5">
+                DEMO
+              </span>
+            )}
             {product.brand !== "—" && (
               <span className="text-xs text-muted-foreground">{product.brand}</span>
             )}
@@ -174,7 +179,12 @@ function ProizvodKartica({ product, onClick }: { product: Product; onClick: () =
           <StatusPodatakaBadge statusPodataka={product.statusPodataka} />
         </div>
       </div>
-      {product.statusPodataka === "potrebna_dopuna" && (
+      {product.isDemo && (
+        <p className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2 py-1 mb-2 leading-snug">
+          Demo vrijednosti — provjeriti prema tehničkom listu proizvođača.
+        </p>
+      )}
+      {!product.isDemo && product.statusPodataka === "potrebna_dopuna" && (
         <p className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-2 py-1 mb-2 leading-snug">
           Neki podaci još nisu uneseni iz tehničkog lista proizvođača.
         </p>
@@ -236,6 +246,11 @@ function ProizvodDetalj({
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-lg font-bold leading-tight">{product.name}</h1>
+                {product.isDemo && (
+                  <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded px-1.5 py-0.5">
+                    TESTNI / DEMO
+                  </span>
+                )}
                 {product.indicatorType === "color+foam+sludge" && (
                   <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-red-700 text-white rounded px-1.5 py-0.5">
                     DESCALER / SLUDGE CLEANER
@@ -295,8 +310,8 @@ function ProizvodDetalj({
           </div>
         </div>
       </header>
-      {/* Data completeness warning strip — products with incomplete data */}
-      {product.statusPodataka === "potrebna_dopuna" && (
+      {/* Data completeness warning strip — real products with incomplete data */}
+      {!product.isDemo && product.statusPodataka === "potrebna_dopuna" && (
         <div className="px-4 pt-3 max-w-lg mx-auto w-full">
           <div className="bg-amber-50 border border-amber-300 rounded-xl px-3 py-2.5 flex items-start gap-2">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-amber-600 shrink-0 mt-0.5">
@@ -490,7 +505,7 @@ function TabOsnovno({ product }: { product: Product }) {
   );
 }
 
-// ─── Tab: Doziranje ────────��──────────────────────────────────────────────────
+// ─── Tab: Doziranje ───────────────────────────────────────────────────────────
 
 function TabDoziranje({ product }: { product: Product }) {
   const isDS40Style    = product.indicatorType === "color+foam+sludge";   // Fernox DS-40 — prah

@@ -273,6 +273,11 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
             <h1 className="text-xl font-bold leading-tight break-words whitespace-normal">
               {sesija.naziv_objekta}
             </h1>
+            {sesija.isDemo && (
+              <span className="shrink-0 text-[9px] font-black uppercase tracking-widest bg-amber-400 text-amber-900 rounded px-1.5 py-0.5">
+                DEMO
+              </span>
+            )}
           </div>
           <div className="shrink-0 mt-0.5">
             <StatusBadge status={sesija.status} size="md" />
@@ -384,6 +389,19 @@ export function SesijaEkran({ sesijaId }: SesijaEkranProps) {
       </header>
 
       <main className="flex-1 px-4 py-5 max-w-lg mx-auto w-full flex flex-col gap-5">
+
+        {/* Demo data warning */}
+        {sesija.isDemo && (
+          <div className="bg-amber-50 border border-amber-300 rounded-xl px-4 py-3 flex items-start gap-2.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-amber-600 shrink-0 mt-0.5">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <p className="text-xs text-amber-800 leading-relaxed">
+              <span className="font-bold">DEMO sesija</span> — Ovo su demo podaci za prikaz i testiranje aplikacije. Ne koristiti za stvarna terenska izvješća.
+            </p>
+          </div>
+        )}
 
         {/* ══════════════════════════════════════════════════════════════
             MODE A — Direct session workflow
